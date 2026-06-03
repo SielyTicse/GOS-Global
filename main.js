@@ -291,7 +291,7 @@ function updateStats(statsId, data, metricName, metricConfig) {
     <span class="pill">max = ${maxv.toFixed(metricConfig.decimals)}${unit}</span>
     <span class="pill">mean = ${mean.toFixed(metricConfig.decimals)}${unit}</span>
     <span class="pill">colour range = [${metricConfig.cmin}, ${metricConfig.cmax}]${unit}</span>
-    <span class="pill">out of range = ${outside}</span>
+    <!-- <span class="pill">out of range = ${outside}</span> -->
   `;
 }
 
