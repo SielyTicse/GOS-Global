@@ -62,3 +62,52 @@ body {
   text-align: center;
   font-size: 18px;
 }
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin: 12px 0 14px 0;
+}
+
+.controls select {
+  font-size: 15px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #b8c2d6;
+  background: white;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0 14px 0;
+}
+
+.pill {
+  background: #eef3ff;
+  border: 1px solid #dbe5ff;
+  color: #244a9b;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+}
+
+.error {
+  color: #9b1c1c;
+  background: #fff0f0;
+  border: 1px solid #ffd0d0;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+  display: none;
+}
+
+.figure-note {
+  color: #555;
+  font-size: 13px;
+  margin-top: 10px;
+  line-height: 1.5;
+}
