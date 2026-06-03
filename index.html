@@ -56,17 +56,53 @@
     <section class="figure-card" id="figure-4">
       <h2>Figure 4</h2>
       <p class="figure-caption">
-        Placeholder for Figure 4.
+        Figure 5. Validation statistics of the GOS dataset after application of the radiational-tide filter, computed at model grid points located near 216 tide gauge stations..
       </p>
+
+      <div class="controls">
+        <label for="fig4-select"><b>Variable:</b></label>
+        <select id="fig4-select">
+          <option value="Corr">Corr.</option>
+          <option value="Bias">Bias</option>
+          <option value="RMSE">RMSE</option>
+          <option value="NRMSE_prct">NRMSE_prct</option>
+          <option value="NBias">NBias</option>
+        </select>
+      </div>
+
+      <div class="stats" id="fig4-stats"></div>
       <div id="fig4-map" class="plot-container"></div>
+      <div id="fig4-error" class="error"></div>
+
+      <div class="figure-note">
+        Fixed colour ranges: Corr. [-0.2, 1], Bias [-2, 2] cm, RMSE [0, 22] cm,
+        NRMSE_prct [0, 24] %, NBias [-5, 5].
+      </div>
     </section>
 
     <section class="figure-card" id="figure-5">
       <h2>Figure 5</h2>
       <p class="figure-caption">
-        Placeholder for Figure 5.
+        Figure6. Statistical comparison between the unfiltered and radiational-tide–filtered dataset (GOS dataset) at model grid points located near 216 tide-gauge stations.
       </p>
+
+      <div class="controls">
+        <label for="fig5-select"><b>Variable:</b></label>
+        <select id="fig5-select">
+          <option value="Dif_Pearson">Dif_Pearson</option>
+          <option value="Dif_RMSE">Dif_RMSE</option>
+          <option value="NBias_Unfiltered">NBias_Unfiltered</option>
+        </select>
+      </div>
+
+      <div class="stats" id="fig5-stats"></div>
       <div id="fig5-map" class="plot-container"></div>
+      <div id="fig5-error" class="error"></div>
+
+      <div class="figure-note">
+        Fixed colour ranges: Dif_Pearson [-0.3, 0.05], Dif_RMSE [0, 17] cm,
+        NBias_Unfiltered [-5, 5].
+      </div>
     </section>
 
     <section class="figure-card" id="figure-6">
