@@ -185,7 +185,170 @@ function getBaseGeoLayout() {
     }
   };
 }
+// =============================
+// Figure 3 configuration
+// =============================
 
+const fig3PeriodPalette = rgb01ToPlotlyScale([
+  [0.1000,1.0000,1.0000],
+  [0.0825,0.8254,1.0000],
+  [0.0651,0.6508,1.0000],
+  [0.0476,0.4762,1.0000],
+  [0.0270,0.2698,1.0000],
+  [0.0009,0.1139,0.7628],
+  [0.0034,0.5529,0.0034],
+  [0.0013,0.8261,0.0013],
+  [0.3810,1.0000,0.0254],
+  [1.0000,0.9720,0.0711],
+  [1.0000,0.9035,0.0821],
+  [1.0000,0.8350,0.0931],
+  [1.0000,0.7666,0.1040],
+  [1.0000,0.6981,0.1150],
+  [1.0000,0.6296,0.1259],
+  [1.0000,0.5612,0.1369],
+  [1.0000,0.4927,0.1478],
+  [1.0000,0.4242,0.1588],
+  [0.9832,0.5866,0.8633],
+  [0.8775,0.1190,0.9378],
+  [0.5119,0.1787,0.5748],
+  [0.6510,0.6510,0.6510]
+]);
+
+const FIG3_METRICS = {
+  Period: {
+    label: 'Period',
+    unit: 'h',
+    cmin: 6,
+    cmax: 26,
+    decimals: 2,
+    colorscale: fig3PeriodPalette
+  }
+};
+
+let FIG3A_DATA = [];
+let FIG3B_DATA = [];
+
+function normalisedMarkerSizes(values, minSize = 4, maxSize = 18) {
+  const finite = values.filter(Number.isFinite);
+  const vmin = Math.min(...finite);
+  const vmax = Math.max(...finite);
+
+  return values.map(v => {
+    if (!Number.isFinite(v)) return minSize;
+    if (vmax === vmin) return (minSize + maxSize) / 2;
+    return minSize + ((v - vmin) / (vmax - vmin)) * (maxSize - minSize);
+  });
+}
+
+function buildFig3Hover(d) {
+  return (
+    `<b>${d.station}</b><br>` +
+    `Lon: ${d.lon.toFixed(3)}°<br>` +
+    `Lat: ${d.lat.toFixed(3)}°<br>` +
+    `Period: ${d.Period.toFixed(2)} h<br>` +
+    `Normalised amplitude: ${d.Amplit.toFixed(2)}`
+  );
+}
+
+function plotFig3Map(data) {
+  const cfg = FIG3_METRICS.Period;
+  const amplitudes = data.map(d => d.Amplit);
+  const markerSizes = normalisedMarkerSizes(amplitudes, 4, 18);
+  const periods = data.map(d => d.Period);
+
+  const trace = {
+    type: 'scattergeo',
+    mode: 'markers',
+    lon: data.map(d => d.lon),
+    lat: data.map(d => d.lat),
+    text: data.map(buildFig3Hover),
+    hovertemplate: '%{text}<extra></extra>',
+    marker: {
+      size: markerSizes,
+      color: periods,
+      cmin: cfg.cmin,
+      cmax: cfg.cmax,
+      colorscale: cfg.colorscale,
+      line: { color: 'black', width: 0.4 },
+      opacity: 0.88,
+      colorbar: {
+        title: `${cfg.label} [${cfg.unit}]`,
+        orientation: 'h',
+        x: 0.5,
+        y: -0.08,
+        xanchor: 'center',
+        len: 0.65,
+        thickness: 18
+      }
+    }
+  };
+
+  const layout = {
+    margin: { l: 10, r: 10, t: 10, b: 70 },
+    paper_bgcolor: '#ffffff',
+    geo: getBaseGeoLayout()
+  };
+
+  Plotly.react('fig3-map', [trace], layout, {
+    responsive: true,
+    scrollZoom: true,
+    displaylogo: false
+  });
+
+  updateFig3Stats(data);
+}
+
+function updateFig3Stats(data) {
+  const periods = data.map(d => d.Period).filter(Number.isFinite);
+  const amplitudes = data.map(d => d.Amplit).filter(Number.isFinite);
+
+  const n = data.length;
+  const pmin = Math.min(...periods);
+  const pmax = Math.max(...periods);
+  const amin = Math.min(...amplitudes);
+  const amax = Math.max(...amplitudes);
+
+  document.getElementById('fig3-stats').innerHTML = `
+    <span class="pill">N = ${n} points</span>
+    <span class="pill">Period range = ${pmin.toFixed(2)}–${pmax.toFixed(2)} h</span>
+    <span class="pill">Amplitude range = ${amin.toFixed(2)}–${amax.toFixed(2)}</span>
+    <span class="pill">colour range = [6, 26] h</span>
+  `;
+}
+
+function parseFig3Rows(rows, hasStationNames) {
+  return rows.map((r, i) => ({
+    station: hasStationNames ? r.station : `Coastal point ${i + 1}`,
+    lon: parseNumber(r.lon),
+    lat: parseNumber(r.lat),
+    Period: parseNumber(r.Period),
+    Amplit: parseNumber(r['Amplit.'] ?? r.Amplit)
+  })).filter(d =>
+    d.station &&
+    Number.isFinite(d.lon) &&
+    Number.isFinite(d.lat) &&
+    Number.isFinite(d.Period) &&
+    Number.isFinite(d.Amplit)
+  );
+}
+
+function renderFigure3() {
+  const selector = document.getElementById('fig3-select');
+
+  if (selector.value === '3a') {
+    plotFig3Map(FIG3A_DATA);
+  } else {
+    plotFig3Map(FIG3B_DATA);
+  }
+}
+
+function initFigure3Selector() {
+  const selector = document.getElementById('fig3-select');
+
+  selector.addEventListener('change', renderFigure3);
+
+  renderFigure3();
+}
 // =============================
 // Figure 4 configuration
 // =============================
@@ -465,6 +628,35 @@ function initFigure5(rows) {
 // =============================
 // Load files
 // =============================
+Promise.all([
+  fetch('data/fig_3a.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_3a.csv');
+    return response.text();
+  }),
+  fetch('data/fig_3b.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_3b.csv');
+    return response.text();
+  })
+])
+  .then(([text3a, text3b]) => {
+    hideError('fig3-error');
+
+    FIG3A_DATA = parseFig3Rows(parseCSV(text3a), true);
+    FIG3B_DATA = parseFig3Rows(parseCSV(text3b), false);
+
+    if (!FIG3A_DATA.length) {
+      throw new Error('fig_3a.csv has no valid rows.');
+    }
+
+    if (!FIG3B_DATA.length) {
+      throw new Error('fig_3b.csv has no valid rows.');
+    }
+
+    initFigure3Selector();
+  })
+  .catch(err => {
+    showError('fig3-error', err.message);
+  });
 
 fetch('data/fig_4.csv?cache=' + Date.now())
   .then(response => {
