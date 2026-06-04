@@ -279,9 +279,9 @@ function plotFig3Map(data) {
         len: 0.85,
         thickness: 18,
         tickmode: 'array',
-        tickfont: { size: 12 },
+        tickfont: { size: 13 },
         tickvals: [6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26],
-        ticktext: ['6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '26']
+        ticktext: ['6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '>26']
       }
     }
   };
@@ -312,7 +312,7 @@ function updateFig3Stats(data) {
   const amax = Math.max(...amplitudes);
 
   document.getElementById('fig3-stats').innerHTML = `
-    <span class="pill">N = ${n} points</span>
+    <span class="pill">N = ${n} points </span>
     <span class="pill">Period range = [6, >26] hr/c</span>
     <span class="pill">Standardized amplitude = 1–10</span>
   `;
