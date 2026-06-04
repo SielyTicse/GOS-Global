@@ -228,7 +228,7 @@ const FIG3_METRICS = {
 let FIG3A_DATA = [];
 let FIG3B_DATA = [];
 
-function normalisedMarkerSizes(values, minSize = 2, maxSize = 12) {
+function normalisedMarkerSizes(values, minSize = 4, maxSize = 18) {
   const finite = values.filter(Number.isFinite);
   const vmin = Math.min(...finite);
   const vmax = Math.max(...finite);
@@ -252,7 +252,7 @@ function buildFig3Hover(d) {
 function plotFig3Map(data) {
   const cfg = FIG3_METRICS.Period;
   const amplitudes = data.map(d => d.Amplit);
-  const markerSizes = normalisedMarkerSizes(amplitudes, 2, 12);
+  const markerSizes = normalisedMarkerSizes(amplitudes, 4, 18);
   const periods = data.map(d => d.Period);
 
   const trace = {
