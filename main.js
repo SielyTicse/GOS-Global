@@ -781,7 +781,7 @@ function plotFig6Map({ data, metricName, hoverBuilder, pointSize }) {
       cmin: cfg.cmin,
       cmax: cfg.cmax,
       colorscale: cfg.colorscale,
-      line: { color: 'black', width: 0.3 },
+      line: { width: 0 },
       opacity: 0.88,
       colorbar: getFig6Colorbar(metricName, cfg)
     }
@@ -854,7 +854,7 @@ function renderFigure6() {
       data: FIG6A_DATA,
       metricName: 'MOM',
       hoverBuilder: buildFig6aHover,
-      pointSize: 6
+      pointSize: 3
     });
   } else {
     plotFig6Map({
@@ -981,7 +981,7 @@ function plotFig7aMap(data) {
     text: data.map(buildFig7aHover),
     hovertemplate: '%{text}<extra></extra>',
     marker: {
-      size: 6,
+      size: 3,
       color: data.map(d => d.RP50),
       cmin: cfg.cmin,
       cmax: cfg.cmax,
