@@ -228,7 +228,7 @@ const FIG3_METRICS = {
 let FIG3A_DATA = [];
 let FIG3B_DATA = [];
 
-function normalisedMarkerSizes(values, minSize = 4, maxSize = 18) {
+function normalisedMarkerSizes(values, minSize = 2, maxSize = 12) {
   const finite = values.filter(Number.isFinite);
   const vmin = Math.min(...finite);
   const vmax = Math.max(...finite);
@@ -252,7 +252,7 @@ function buildFig3Hover(d) {
 function plotFig3Map(data) {
   const cfg = FIG3_METRICS.Period;
   const amplitudes = data.map(d => d.Amplit);
-  const markerSizes = normalisedMarkerSizes(amplitudes, 4, 18);
+  const markerSizes = normalisedMarkerSizes(amplitudes, 2, 12);
   const periods = data.map(d => d.Period);
 
   const trace = {
@@ -268,7 +268,7 @@ function plotFig3Map(data) {
       cmin: cfg.cmin,
       cmax: cfg.cmax,
       colorscale: cfg.colorscale,
-      line: { color: 'black', width: 0.4 },
+      line: { width: 0 },
       opacity: 0.88,
       colorbar: {
         title: `${cfg.label} [${cfg.unit}]`,
@@ -986,7 +986,7 @@ function plotFig7aMap(data) {
       cmin: cfg.cmin,
       cmax: cfg.cmax,
       colorscale: cfg.colorscale,
-      line: { color: 'black', width: 0.3 },
+      line: { width: 0 },
       opacity: 0.88,
       colorbar: {
         title: `${cfg.label} [${cfg.unit}]`,
@@ -1021,7 +1021,7 @@ function plotFig7aMap(data) {
 
 function plotFig7bMap(data) {
   const cfg = FIG7_METRICS.Month;
-  const markerSizes = normalisedMarkerSizes(data.map(d => d.Ampl), 4, 18);
+  const markerSizes = normalisedMarkerSizes(data.map(d => d.Ampl), 2, 10);
 
   const trace = {
     type: 'scattergeo',
@@ -1036,7 +1036,7 @@ function plotFig7bMap(data) {
       cmin: cfg.cmin,
       cmax: cfg.cmax,
       colorscale: cfg.colorscale,
-      line: { color: 'black', width: 0.3 },
+      line: { width: 0 },
       opacity: 0.88,
       colorbar: {
         title: cfg.label,
