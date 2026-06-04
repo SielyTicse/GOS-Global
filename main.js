@@ -626,10 +626,257 @@ function initFigure5(rows) {
   selector.addEventListener('change', render);
   render();
 }
+// =============================
+// Figure 6 configuration
+// =============================
 
+const fig6MomPalette = rgb01ToPlotlyScale([
+  [0.7545,0.8814,0.9310],
+  [0.6317,0.8221,0.8966],
+  [0.5090,0.7628,0.8621],
+  [0.3862,0.7034,0.8276],
+  [0.2634,0.6441,0.7931],
+  [0.1407,0.5848,0.7586],
+  [0.2021,0.6145,0.7138],
+  [0.3248,0.6738,0.6655],
+  [0.4476,0.7331,0.6172],
+  [0.5703,0.7924,0.5690],
+  [0.6931,0.8517,0.5207],
+  [0.8159,0.9110,0.4724],
+  [0.9386,0.9703,0.4241],
+  [1.0000,0.9379,0.3738],
+  [1.0000,0.8138,0.3214],
+  [1.0000,0.6897,0.2690],
+  [1.0000,0.5655,0.2166],
+  [1.0000,0.4414,0.1641],
+  [1.0000,0.3172,0.1117],
+  [1.0000,0.1931,0.0593],
+  [0.9897,0.0966,0.0193],
+  [0.9483,0.0828,0.0166],
+  [0.9069,0.0690,0.0138],
+  [0.8655,0.0552,0.0110],
+  [0.8241,0.0414,0.0083],
+  [0.7828,0.0276,0.0055],
+  [0.7414,0.0138,0.0028],
+  [0.7000,0.0000,0.0000]
+]);
+
+const fig6MaePalette = rgb01ToPlotlyScale([
+  [0.3020,0.7451,0.9333],
+  [0.3780,0.7544,0.9086],
+  [0.5024,0.8035,0.9269],
+  [0.6268,0.8526,0.9452],
+  [0.7512,0.9018,0.9635],
+  [0.8756,0.9509,0.9817],
+  [1.0000,1.0000,1.0000],
+  [0.9763,0.9885,0.8893],
+  [0.9525,0.9771,0.7787],
+  [0.9288,0.9656,0.6680],
+  [0.9050,0.9541,0.5574],
+  [0.8813,0.9426,0.4467],
+  [0.9358,0.9174,0.4035],
+  [0.9903,0.8922,0.3603],
+  [0.9989,0.7985,0.3155],
+  [1.0000,0.6934,0.2705],
+  [1.0000,0.5867,0.2255],
+  [1.0000,0.4800,0.1805],
+  [1.0000,0.3734,0.1354],
+  [0.9991,0.2691,0.0915],
+  [0.9936,0.1771,0.0530],
+  [0.9776,0.1132,0.0272],
+  [0.9489,0.0830,0.0166],
+  [0.8839,0.0974,0.0938],
+  [0.8190,0.1119,0.1710],
+  [0.7540,0.1264,0.2481],
+  [0.6890,0.1409,0.3253],
+  [0.6241,0.1554,0.4025],
+  [0.5591,0.1698,0.4797],
+  [0.4941,0.1843,0.5569]
+]);
+
+const FIG6_METRICS = {
+  MOM: {
+    label: 'MOM',
+    unit: 'm',
+    cmin: 0,
+    cmax: 3,
+    decimals: 2,
+    colorscale: fig6MomPalette
+  },
+  MAE: {
+    label: 'MAE',
+    unit: 'cm',
+    cmin: -14,
+    cmax: 53,
+    decimals: 2,
+    colorscale: fig6MaePalette
+  }
+};
+
+let FIG6A_DATA = [];
+let FIG6B_DATA = [];
+
+function buildFig6aHover(d) {
+  return (
+    `Lon: ${d.lon.toFixed(3)}°<br>` +
+    `Lat: ${d.lat.toFixed(3)}°<br>` +
+    `MOM: ${d.MOM.toFixed(2)} m`
+  );
+}
+
+function buildFig6bHover(d) {
+  return (
+    `<b>${d.station}</b><br>` +
+    `Lon: ${d.lon.toFixed(3)}°<br>` +
+    `Lat: ${d.lat.toFixed(3)}°<br>` +
+    `MAE: ${d.MAE.toFixed(2)} cm`
+  );
+}
+
+function getFig6Colorbar(metricName, cfg) {
+  if (metricName === 'MOM') {
+    return {
+      title: `${cfg.label} [${cfg.unit}]`,
+      orientation: 'h',
+      x: 0.5,
+      y: -0.08,
+      xanchor: 'center',
+      len: 0.75,
+      thickness: 18,
+      tickmode: 'array',
+      tickvals: [0, 0.5, 1, 1.5, 2, 2.5, 3],
+      ticktext: ['0', '0.5', '1', '1.5', '2', '2.5', '>3'],
+      tickfont: { size: 13 }
+    };
+  }
+
+  return {
+    title: `${cfg.label} [${cfg.unit}]`,
+    orientation: 'h',
+    x: 0.5,
+    y: -0.08,
+    xanchor: 'center',
+    len: 0.75,
+    thickness: 18,
+    tickmode: 'array',
+    tickvals: [-10, 0, 10, 20, 30, 40, 50],
+    ticktext: ['-10', '0', '10', '20', '30', '40', '50'],
+    tickfont: { size: 13 }
+  };
+}
+
+function plotFig6Map({ data, metricName, hoverBuilder, pointSize }) {
+  const cfg = FIG6_METRICS[metricName];
+
+  const trace = {
+    type: 'scattergeo',
+    mode: 'markers',
+    lon: data.map(d => d.lon),
+    lat: data.map(d => d.lat),
+    text: data.map(hoverBuilder),
+    hovertemplate: '%{text}<extra></extra>',
+    marker: {
+      size: pointSize,
+      color: data.map(d => d[metricName]),
+      cmin: cfg.cmin,
+      cmax: cfg.cmax,
+      colorscale: cfg.colorscale,
+      line: { color: 'black', width: 0.3 },
+      opacity: 0.88,
+      colorbar: getFig6Colorbar(metricName, cfg)
+    }
+  };
+
+  const layout = {
+    margin: { l: 10, r: 10, t: 10, b: 70 },
+    paper_bgcolor: '#ffffff',
+    geo: getBaseGeoLayout()
+  };
+
+  Plotly.react('fig6-map', [trace], layout, {
+    responsive: true,
+    scrollZoom: true,
+    displaylogo: false
+  });
+
+  updateFig6Stats(metricName, data);
+}
+
+function updateFig6Stats(metricName, data) {
+  const n = data.length;
+
+  if (metricName === 'MOM') {
+    document.getElementById('fig6-stats').innerHTML = `
+      <span class="pill">N = ${n} coastal points</span>
+      <span class="pill">MOM range = [0, >3] m</span>
+    `;
+    return;
+  }
+
+  document.getElementById('fig6-stats').innerHTML = `
+    <span class="pill">N = ${n} stations</span>
+    <span class="pill">MAE range = [-14, 53] cm</span>
+  `;
+}
+
+function parseFig6aRows(rows) {
+  return rows.map((r, i) => ({
+    station: `Coastal point ${i + 1}`,
+    lon: parseNumber(r.lon),
+    lat: parseNumber(r.lat),
+    MOM: parseNumber(r.MOM)
+  })).filter(d =>
+    Number.isFinite(d.lon) &&
+    Number.isFinite(d.lat) &&
+    Number.isFinite(d.MOM)
+  );
+}
+
+function parseFig6bRows(rows) {
+  return rows.map(r => ({
+    station: r.station,
+    lon: parseNumber(r.lon),
+    lat: parseNumber(r.lat),
+    MAE: parseNumber(r.MAE)
+  })).filter(d =>
+    d.station &&
+    Number.isFinite(d.lon) &&
+    Number.isFinite(d.lat) &&
+    Number.isFinite(d.MAE)
+  );
+}
+
+function renderFigure6() {
+  const selector = document.getElementById('fig6-select');
+
+  if (selector.value === '6a') {
+    plotFig6Map({
+      data: FIG6A_DATA,
+      metricName: 'MOM',
+      hoverBuilder: buildFig6aHover,
+      pointSize: 6
+    });
+  } else {
+    plotFig6Map({
+      data: FIG6B_DATA,
+      metricName: 'MAE',
+      hoverBuilder: buildFig6bHover,
+      pointSize: 8
+    });
+  }
+}
+
+function initFigure6Selector() {
+  const selector = document.getElementById('fig6-select');
+
+  selector.addEventListener('change', renderFigure6);
+
+  renderFigure6();
+}
 // =============================
 // Load files
 // =============================
+// Figure 3
 Promise.all([
   fetch('data/fig_3a.csv?cache=' + Date.now()).then(response => {
     if (!response.ok) throw new Error('Could not read data/fig_3a.csv');
@@ -659,7 +906,37 @@ Promise.all([
   .catch(err => {
     showError('fig3-error', err.message);
   });
+// Figure 6
+Promise.all([
+  fetch('data/fig_6a.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_6a.csv');
+    return response.text();
+  }),
+  fetch('data/fig_6b.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_6b.csv');
+    return response.text();
+  })
+])
+  .then(([text6a, text6b]) => {
+    hideError('fig6-error');
 
+    FIG6A_DATA = parseFig6aRows(parseCSV(text6a));
+    FIG6B_DATA = parseFig6bRows(parseCSV(text6b));
+
+    if (!FIG6A_DATA.length) {
+      throw new Error('fig_6a.csv has no valid rows.');
+    }
+
+    if (!FIG6B_DATA.length) {
+      throw new Error('fig_6b.csv has no valid rows.');
+    }
+
+    initFigure6Selector();
+  })
+  .catch(err => {
+    showError('fig6-error', err.message);
+  });
+// Figure 4
 fetch('data/fig_4.csv?cache=' + Date.now())
   .then(response => {
     if (!response.ok) throw new Error('Could not read data/fig_4.csv');
@@ -672,7 +949,7 @@ fetch('data/fig_4.csv?cache=' + Date.now())
   .catch(err => {
     showError('fig4-error', err.message);
   });
-
+// Figure 5
 fetch('data/fig_5.csv?cache=' + Date.now())
   .then(response => {
     if (!response.ok) throw new Error('Could not read data/fig_5.csv');
