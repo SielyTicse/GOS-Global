@@ -249,10 +249,10 @@ function buildFig3Hover(d) {
   );
 }
 
-function plotFig3Map(data) {
+function plotFig3Map(data, minSize, maxSize) {
   const cfg = FIG3_METRICS.Period;
   const amplitudes = data.map(d => d.Amplit);
-  const markerSizes = normalisedMarkerSizes(amplitudes, 4, 18);
+  const markerSizes = normalisedMarkerSizes(amplitudes, minSize, maxSize);
   const periods = data.map(d => d.Period);
 
   const trace = {
@@ -338,9 +338,9 @@ function renderFigure3() {
   const selector = document.getElementById('fig3-select');
 
   if (selector.value === '3a') {
-    plotFig3Map(FIG3A_DATA);
+    plotFig3Map(FIG3A_DATA, 4, 18);
   } else {
-    plotFig3Map(FIG3B_DATA);
+    plotFig3Map(FIG3B_DATA, 2, 10);
   }
 }
 
