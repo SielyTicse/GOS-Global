@@ -245,8 +245,7 @@ function buildFig3Hover(d) {
     `<b>${d.station}</b><br>` +
     `Lon: ${d.lon.toFixed(3)}°<br>` +
     `Lat: ${d.lat.toFixed(3)}°<br>` +
-    `Period: ${d.Period.toFixed(2)} h<br>` +
-    `Normalised amplitude: ${d.Amplit.toFixed(2)}`
+    `Period: ${d.Period.toFixed(4)} h/c<br>` 
   );
 }
 
@@ -277,8 +276,12 @@ function plotFig3Map(data) {
         x: 0.5,
         y: -0.08,
         xanchor: 'center',
-        len: 0.65,
-        thickness: 18
+        len: 0.85,
+        thickness: 18,
+        tickmode: 'array',
+        tickfont: { size: 12 },
+        tickvals: [6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26],
+        ticktext: ['6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '26']
       }
     }
   };
@@ -310,12 +313,11 @@ function updateFig3Stats(data) {
 
   document.getElementById('fig3-stats').innerHTML = `
     <span class="pill">N = ${n} points</span>
-    <span class="pill">Period range = ${pmin.toFixed(2)}–${pmax.toFixed(2)} h</span>
-    <span class="pill">Amplitude range = ${amin.toFixed(2)}–${amax.toFixed(2)}</span>
-    <span class="pill">colour range = [6, 26] h</span>
+    <span class="pill">Period range = [6, >26] hr/c</span>
+    <span class="pill">Standardized amplitude = 1–10</span>
   `;
 }
-
+ 
 function parseFig3Rows(rows, hasStationNames) {
   return rows.map((r, i) => ({
     station: hasStationNames ? r.station : `Coastal point ${i + 1}`,
