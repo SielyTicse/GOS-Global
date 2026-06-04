@@ -765,7 +765,7 @@ function getFig6Colorbar(metricName, cfg) {
   };
 }
 
-function plotFig6Map({ data, metricName, hoverBuilder, pointSize }) {
+function plotFig6Map({ data, metricName, hoverBuilder, pointSize, lineWidth }) {
   const cfg = FIG6_METRICS[metricName];
 
   const trace = {
@@ -781,7 +781,7 @@ function plotFig6Map({ data, metricName, hoverBuilder, pointSize }) {
       cmin: cfg.cmin,
       cmax: cfg.cmax,
       colorscale: cfg.colorscale,
-      line: { width: 0 },
+      line: { color: 'black', width: lineWidth },
       opacity: 0.88,
       colorbar: getFig6Colorbar(metricName, cfg)
     }
@@ -854,14 +854,16 @@ function renderFigure6() {
       data: FIG6A_DATA,
       metricName: 'MOM',
       hoverBuilder: buildFig6aHover,
-      pointSize: 3
+      pointSize: 3,
+      lineWidth: 0
     });
   } else {
     plotFig6Map({
       data: FIG6B_DATA,
       metricName: 'MAE',
       hoverBuilder: buildFig6bHover,
-      pointSize: 8
+      pointSize: 8,
+      lineWidth: 0.5
     });
   }
 }
