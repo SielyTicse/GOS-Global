@@ -874,6 +874,270 @@ function initFigure6Selector() {
   renderFigure6();
 }
 // =============================
+// Figure 7 configuration
+// =============================
+
+const fig7RpPalette = rgb01ToPlotlyScale([
+  [0.1000,1.0000,1.0000],
+  [0.0800,0.8000,0.9500],
+  [0.0600,0.6000,0.9000],
+  [0.0400,0.4000,0.8500],
+  [0.0200,0.2000,0.8000],
+  [0.0000,0.0000,0.7500],
+  [0.0000,1.0000,0.0000],
+  [0.0000,0.8750,0.0000],
+  [0.0000,0.7500,0.0000],
+  [0.0000,0.6250,0.0000],
+  [0.0000,0.5000,0.0000],
+  [1.0000,1.0000,0.0000],
+  [1.0000,0.9000,0.0000],
+  [1.0000,0.8000,0.0000],
+  [1.0000,0.7000,0.0000],
+  [1.0000,0.6000,0.0000],
+  [1.0000,0.5000,0.0000],
+  [1.0000,0.0000,0.0000],
+  [0.9000,0.0000,0.0000],
+  [0.8000,0.0000,0.0000],
+  [0.7000,0.0000,0.0000],
+  [0.6000,0.0000,0.0000],
+  [0.5000,0.0000,0.0000],
+  [1.0000,0.0000,1.0000],
+  [0.9000,0.0500,0.9500],
+  [0.8000,0.1000,0.9000],
+  [0.7000,0.1500,0.8500],
+  [0.6000,0.2000,0.8000]
+]);
+
+const fig7MonthPalette = rgb01ToPlotlyScale([
+  [0.0000,0.2000,0.5000],
+  [0.4000,0.3000,0.8000],
+  [0.0000,0.5000,0.1000],
+  [0.3000,0.7000,0.0000],
+  [0.7000,0.9000,0.0000],
+  [1.0000,0.9000,0.0000],
+  [1.0000,0.6000,0.0000],
+  [0.9000,0.0000,0.0000],
+  [0.6000,0.0000,0.3000],
+  [0.0000,0.7000,0.7000],
+  [0.4000,0.8000,1.0000],
+  [0.0000,0.4000,0.8000]
+]);
+
+const FIG7_METRICS = {
+  RP50: {
+    label: 'RP-50yr',
+    unit: 'm',
+    cmin: 0,
+    cmax: 4.5,
+    decimals: 2,
+    colorscale: fig7RpPalette
+  },
+  Month: {
+    label: 'Month',
+    unit: '',
+    cmin: 1,
+    cmax: 12,
+    decimals: 0,
+    colorscale: fig7MonthPalette
+  }
+};
+
+let FIG7A_DATA = [];
+let FIG7B_DATA = [];
+
+const FIG7_MONTH_NAMES = [
+  'Jan','Feb','Mar','Apr','May','Jun',
+  'Jul','Aug','Sep','Oct','Nov','Dec'
+];
+
+function buildFig7aHover(d) {
+  return (
+    `<b>${d.station}</b><br>` +
+    `Lon: ${d.lon.toFixed(3)}°<br>` +
+    `Lat: ${d.lat.toFixed(3)}°<br>` +
+    `RP-50yr: ${d.RP50.toFixed(2)} m`
+  );
+}
+
+function buildFig7bHover(d) {
+  const monthName = FIG7_MONTH_NAMES[d.time - 1] ?? `${d.time}`;
+  return (
+    `<b>${d.station}</b><br>` +
+    `Lon: ${d.lon.toFixed(3)}°<br>` +
+    `Lat: ${d.lat.toFixed(3)}°<br>` +
+    `Month: ${d.time} (${monthName})<br>` +
+    `Amplitude: ${d.Ampl.toFixed(2)} m`
+  );
+}
+
+function plotFig7aMap(data) {
+  const cfg = FIG7_METRICS.RP50;
+
+  const trace = {
+    type: 'scattergeo',
+    mode: 'markers',
+    lon: data.map(d => d.lon),
+    lat: data.map(d => d.lat),
+    text: data.map(buildFig7aHover),
+    hovertemplate: '%{text}<extra></extra>',
+    marker: {
+      size: 6,
+      color: data.map(d => d.RP50),
+      cmin: cfg.cmin,
+      cmax: cfg.cmax,
+      colorscale: cfg.colorscale,
+      line: { color: 'black', width: 0.3 },
+      opacity: 0.88,
+      colorbar: {
+        title: `${cfg.label} [${cfg.unit}]`,
+        orientation: 'h',
+        x: 0.5,
+        y: -0.08,
+        xanchor: 'center',
+        len: 0.75,
+        thickness: 18,
+        tickmode: 'array',
+        tickvals: [0, 0.5,1, 1.5, 2, 2.5,3, 3.5,4, 4.5],
+        ticktext: ['0', '0.5','1', '1.5','2', '2.5', '3', '3.5','4', '4.5'],
+        tickfont: { size: 13 }
+      }
+    }
+  };
+
+  const layout = {
+    margin: { l: 10, r: 10, t: 10, b: 70 },
+    paper_bgcolor: '#ffffff',
+    geo: getBaseGeoLayout()
+  };
+
+  Plotly.react('fig7-map', [trace], layout, {
+    responsive: true,
+    scrollZoom: true,
+    displaylogo: false
+  });
+
+  updateFig7Stats('7a', data);
+}
+
+function plotFig7bMap(data) {
+  const cfg = FIG7_METRICS.Month;
+  const markerSizes = normalisedMarkerSizes(data.map(d => d.Ampl), 4, 18);
+
+  const trace = {
+    type: 'scattergeo',
+    mode: 'markers',
+    lon: data.map(d => d.lon),
+    lat: data.map(d => d.lat),
+    text: data.map(buildFig7bHover),
+    hovertemplate: '%{text}<extra></extra>',
+    marker: {
+      size: markerSizes,
+      color: data.map(d => d.time),
+      cmin: cfg.cmin,
+      cmax: cfg.cmax,
+      colorscale: cfg.colorscale,
+      line: { color: 'black', width: 0.3 },
+      opacity: 0.88,
+      colorbar: {
+        title: cfg.label,
+        orientation: 'h',
+        x: 0.5,
+        y: -0.08,
+        xanchor: 'center',
+        len: 0.80,
+        thickness: 18,
+        tickmode: 'array',
+        tickvals: [1,2,3,4,5,6,7,8,9,10,11,12],
+        ticktext: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+        tickfont: { size: 13 }
+      }
+    }
+  };
+
+  const layout = {
+    margin: { l: 10, r: 10, t: 10, b: 70 },
+    paper_bgcolor: '#ffffff',
+    geo: getBaseGeoLayout()
+  };
+
+  Plotly.react('fig7-map', [trace], layout, {
+    responsive: true,
+    scrollZoom: true,
+    displaylogo: false
+  });
+
+  updateFig7Stats('7b', data);
+}
+
+function updateFig7Stats(panel, data) {
+  if (panel === '7a') {
+    const n = data.length;
+    document.getElementById('fig7-stats').innerHTML = `
+      <span class="pill">N = ${n} coastal points</span>
+      <span class="pill">RP-50yr range = [0, 4.2] m</span>
+    `;
+    return;
+  }
+
+  const n = data.length;
+  const amps = data.map(d => d.Ampl).filter(Number.isFinite);
+  const amin = Math.min(...amps);
+  const amax = Math.max(...amps);
+
+  document.getElementById('fig7-stats').innerHTML = `
+    <span class="pill">N = ${n} coastal points</span>
+    <span class="pill">Month colours = 1–12</span>
+    <span class="pill">Amplitude (size) = ${amin.toFixed(2)}–${amax.toFixed(2)} m</span>
+  `;
+}
+
+function parseFig7aRows(rows) {
+  return rows.map((r, i) => ({
+    station: `Coastal point ${i + 1}`,
+    lon: parseNumber(r.lon),
+    lat: parseNumber(r.lat),
+    RP50: parseNumber(r['RP-50yr'] ?? r.RP_50yr ?? r.RP50yr)
+  })).filter(d =>
+    Number.isFinite(d.lon) &&
+    Number.isFinite(d.lat) &&
+    Number.isFinite(d.RP50)
+  );
+}
+
+function parseFig7bRows(rows) {
+  return rows.map((r, i) => ({
+    station: `Coastal point ${i + 1}`,
+    lon: parseNumber(r.lon),
+    lat: parseNumber(r.lat),
+    time: parseNumber(r.time),
+    Ampl: parseNumber(r.Ampl)
+  })).filter(d =>
+    Number.isFinite(d.lon) &&
+    Number.isFinite(d.lat) &&
+    Number.isFinite(d.time) &&
+    d.time >= 1 && d.time <= 12 &&
+    Number.isFinite(d.Ampl)
+  );
+}
+
+function renderFigure7() {
+  const selector = document.getElementById('fig7-select');
+
+  if (selector.value === '7a') {
+    plotFig7aMap(FIG7A_DATA);
+  } else {
+    plotFig7bMap(FIG7B_DATA);
+  }
+}
+
+function initFigure7Selector() {
+  const selector = document.getElementById('fig7-select');
+
+  selector.addEventListener('change', renderFigure7);
+
+  renderFigure7();
+}
+// =============================
 // Load files
 // =============================
 // Figure 3
@@ -961,4 +1225,34 @@ fetch('data/fig_5.csv?cache=' + Date.now())
   })
   .catch(err => {
     showError('fig5-error', err.message);
+  });
+// Figure 7
+Promise.all([
+  fetch('data/fig_7a.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_7a.csv');
+    return response.text();
+  }),
+  fetch('data/fig_7b.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_7b.csv');
+    return response.text();
+  })
+])
+  .then(([text7a, text7b]) => {
+    hideError('fig7-error');
+
+    FIG7A_DATA = parseFig7aRows(parseCSV(text7a));
+    FIG7B_DATA = parseFig7bRows(parseCSV(text7b));
+
+    if (!FIG7A_DATA.length) {
+      throw new Error('fig_7a.csv has no valid rows.');
+    }
+
+    if (!FIG7B_DATA.length) {
+      throw new Error('fig_7b.csv has no valid rows.');
+    }
+
+    initFigure7Selector();
+  })
+  .catch(err => {
+    showError('fig7-error', err.message);
   });
