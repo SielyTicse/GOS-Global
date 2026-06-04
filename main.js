@@ -1023,7 +1023,7 @@ function plotFig7aMap(data) {
 
 function plotFig7bMap(data) {
   const cfg = FIG7_METRICS.Month;
-  const markerSizes = normalisedMarkerSizes(data.map(d => d.Ampl), 2, 10);
+  const markerSizes = normalisedMarkerSizes(data.map(d => d.Ampl), 1.5, 12);
 
   const trace = {
     type: 'scattergeo',
