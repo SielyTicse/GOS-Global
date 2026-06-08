@@ -34,9 +34,10 @@
         <label for="fig1-select"><b>Panel:</b></label>
         <select id="fig1-select">
           <option value="1a">Figure 2a,b</option>
+          <option value="1b">Figure 2c-e</option>
         </select>
       </div>
-
+      <!-- Panel 1a -->
       <div class="fig1-grid">
         <div class="fig1-image-panel">
           <img
@@ -51,6 +52,12 @@
           <div id="fig1-map" class="plot-container-small"></div>
           <div id="fig1-error" class="error"></div>
         </div>
+      </div>
+      <!-- Panel 1b -->
+      <div id="fig1b-panel" class="hidden">
+        <div class="stats" id="fig1b-stats"></div>
+        <div id="fig1b-hist" class="plot-container"></div>
+        <div id="fig1b-error" class="error"></div>
       </div>
 
       <div class="figure-note">
