@@ -1381,6 +1381,202 @@ function initFigure1Selector() {
   selector.addEventListener('change', renderFigure1);
   renderFigure1();
 }
+
+// =============================
+// Figure 2 configuration
+// =============================
+
+const FIG2_CONFIG = {
+  '2a': {
+    tsFile: 'data/fig_2a_ts.csv',
+    locFile: 'data/fig_2a_locations.csv',
+    psdImage: 'images/fig_2a_psd.png',
+    label: 'Figure 3a',
+    series: ['serie_1', 'serie_2', 'serie_3', 'serie_4'],
+    seriesNames: {
+      serie_1: 'Galveston Pier',
+      serie_2: 'Key West FL',
+      serie_3: 'Newport',
+      serie_4: 'Virginia Key'
+    },
+    colours: {
+      serie_1: 'rgb(122,4,3)',
+      serie_2: 'rgb(169,22,1)',
+      serie_3: 'rgb(206,45,4)',
+      serie_4: 'rgb(232,75,12)'
+    }
+  }
+};
+
+let FIG2_DATA = {};
+
+function parseFig2TimeSeriesRows(rows, panelKey) {
+  const cfg = FIG2_CONFIG[panelKey];
+
+  return cfg.series.map(seriesId => {
+    const values = rows.map(r => parseNumber(r[seriesId]));
+    const times = rows.map(r => r.time);
+
+    return {
+      series_id: seriesId,
+      series_name: cfg.seriesNames[seriesId] ?? seriesId,
+      time: times,
+      value: values
+    };
+  });
+}
+
+function parseFig2LocationRows(rows) {
+  return rows.map(r => ({
+    station: r.station,
+    lon: parseNumber(r.lon),
+    lat: parseNumber(r.lat),
+    series_id: r.series_id,
+    series_name: r.series_name || r.station
+  })).filter(d =>
+    d.station &&
+    d.series_id &&
+    Number.isFinite(d.lon) &&
+    Number.isFinite(d.lat)
+  );
+}
+
+function plotFig2TimeSeries(panelKey) {
+  const cfg = FIG2_CONFIG[panelKey];
+  const seriesData = FIG2_DATA[panelKey].ts;
+
+  const traces = seriesData.map(s => ({
+    type: 'scatter',
+    mode: 'lines',
+    name: s.series_name,
+    x: s.time,
+    y: s.value,
+    line: {
+      color: cfg.colours[s.series_id],
+      width: 1.4
+    },
+    hovertemplate:
+      `<b>${s.series_name}</b><br>` +
+      `Time: %{x}<br>` +
+      `Value: %{y:.3f} m<extra></extra>`
+  }));
+
+  const layout = {
+    margin: { l: 65, r: 20, t: 15, b: 60 },
+    paper_bgcolor: '#ffffff',
+    plot_bgcolor: '#ffffff',
+    legend: {
+      orientation: 'h',
+      x: 0.5,
+      y: 1.12,
+      xanchor: 'center',
+      font: { size: 12 }
+    },
+    xaxis: {
+      title: {
+        text: 'Time',
+        font: { size: 16 }
+      },
+      tickfont: { size: 12 }
+    },
+    yaxis: {
+      title: {
+        text: 'Surge [m]',
+        font: { size: 16 }
+      },
+      tickfont: { size: 12 }
+    }
+  };
+
+  Plotly.react('fig2-ts', traces, layout, {
+    responsive: true,
+    scrollZoom: true,
+    displaylogo: false
+  });
+}
+
+function plotFig2LocationMap(panelKey) {
+  const cfg = FIG2_CONFIG[panelKey];
+  const locData = FIG2_DATA[panelKey].locations;
+
+  const traces = locData.map(d => ({
+    type: 'scattergeo',
+    mode: 'markers',
+    name: d.series_name,
+    lon: [d.lon],
+    lat: [d.lat],
+    text: [
+      `<b>${d.series_name}</b><br>` +
+      `Lon: ${d.lon.toFixed(3)}°<br>` +
+      `Lat: ${d.lat.toFixed(3)}°`
+    ],
+    hovertemplate: '%{text}<extra></extra>',
+    marker: {
+      symbol: 'circle',
+      size: 10,
+      color: cfg.colours[d.series_id],
+      line: {
+        color: 'black',
+        width: 0.5
+      }
+    },
+    showlegend: true
+  }));
+
+  const layout = {
+    margin: { l: 10, r: 10, t: 10, b: 25 },
+    paper_bgcolor: '#ffffff',
+    showlegend: true,
+    legend: {
+      orientation: 'h',
+      x: 0.5,
+      y: -0.05,
+      xanchor: 'center',
+      font: { size: 12 }
+    },
+    geo: getBaseGeoLayout()
+  };
+
+  Plotly.react('fig2-map', traces, layout, {
+    responsive: true,
+    scrollZoom: true,
+    displaylogo: false
+  });
+
+  document.getElementById('fig2-stats').innerHTML = `
+    <span class="pill">N = ${locData.length} stations</span>
+    <span class="pill">Panel = ${cfg.label}</span>
+  `;
+}
+
+function updateFig2PsdImage(panelKey) {
+  const cfg = FIG2_CONFIG[panelKey];
+
+  const img = document.getElementById('fig2-psd-img');
+  const link = document.querySelector('.fig2-image-link');
+
+  img.src = cfg.psdImage;
+  img.alt = `Power spectral density for ${cfg.label}`;
+  link.href = cfg.psdImage;
+}
+
+function renderFigure2() {
+  const selector = document.getElementById('fig2-select');
+  const panelKey = selector.value;
+
+  if (!FIG2_DATA[panelKey]) return;
+
+  plotFig2TimeSeries(panelKey);
+  plotFig2LocationMap(panelKey);
+  updateFig2PsdImage(panelKey);
+}
+
+function initFigure2Selector() {
+  const selector = document.getElementById('fig2-select');
+  selector.addEventListener('change', renderFigure2);
+  renderFigure2();
+}
+
 // =============================
 // Load files
 // =============================
@@ -1416,8 +1612,38 @@ Promise.all([
     showError('fig1-error', err.message);
     showError('fig1b-error', err.message);
   });
+// Figure 2
+Promise.all([
+  fetch('data/fig_2a_ts.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_2a_ts.csv');
+    return response.text();
+  }),
+  fetch('data/fig_2a_locations.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_2a_locations.csv');
+    return response.text();
+  })
+])
+  .then(([textTs, textLoc]) => {
+    hideError('fig2-error');
 
+    FIG2_DATA['2a'] = {
+      ts: parseFig2TimeSeriesRows(parseCSV(textTs), '2a'),
+      locations: parseFig2LocationRows(parseCSV(textLoc))
+    };
 
+    if (!FIG2_DATA['2a'].ts.length) {
+      throw new Error('fig_2a_ts.csv has no valid rows.');
+    }
+
+    if (!FIG2_DATA['2a'].locations.length) {
+      throw new Error('fig_2a_locations.csv has no valid rows.');
+    }
+
+    initFigure2Selector();
+  })
+  .catch(err => {
+    showError('fig2-error', err.message);
+  });
 // Figure 3
 Promise.all([
   fetch('data/fig_3a.csv?cache=' + Date.now()).then(response => {
