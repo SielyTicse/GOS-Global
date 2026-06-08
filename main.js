@@ -1144,6 +1144,27 @@ function initFigure7Selector() {
 // =============================
 
 let FIG1A_POINTS = [];
+let FIG1B_SERIES = [];
+let FIG1B_NPOINTS = 0;
+
+const FIG1_BIN_WIDTH = 13.1606 / 60.0; // hr/c
+
+const FIG1B_HIST_RGB = [
+  [0.4796,0.0158,0.0106],
+  [0.7941,0.1660,0.0143],
+  [0.9643,0.4186,0.0964],
+  [0.9800,0.7300,0.2216],
+  [0.7824,0.9376,0.2033],
+  [0.4483,0.9959,0.3694],
+  [0.1034,0.8960,0.7150],
+  [0.2093,0.6654,0.9760],
+  [0.2737,0.3835,0.8449],
+  [0.1900,0.0718,0.2322]
+];
+
+const FIG1B_HIST_COLOURS = FIG1B_HIST_RGB.map(([r, g, b]) =>
+  `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`
+);
 
 function buildFig1Hover(d) {
   return (
@@ -1192,7 +1213,7 @@ function plotFig1aMap(data) {
       size: 5,
       color: 'turquoise',
       opacity: 0.75,
-      line: { color: 'black', width: 0.7 },
+      line: { color: 'black', width: 0.7 }
     }
   };
 
@@ -1209,7 +1230,7 @@ function plotFig1aMap(data) {
       size: 8,
       color: 'magenta',
       opacity: 0.95,
-      line: { color: 'black', width: 0.7 },
+      line: { color: 'black', width: 0.7 }
     }
   };
 
@@ -1243,30 +1264,146 @@ function updateFig1Stats(nCoastal, nStations) {
   `;
 }
 
-function initFigure1a(rows) {
-  FIG1A_POINTS = parseFig1aRows(rows);
+function parseFig1bRows(rows) {
+  FIG1B_NPOINTS = rows.length;
 
-  if (!FIG1A_POINTS.length) {
-    throw new Error('fig_2a.csv has no valid rows.');
+  const series = Array.from({ length: 10 }, () => []);
+
+  rows.forEach(r => {
+    for (let k = 1; k <= 10; k++) {
+      const value = parseNumber(r[`period_${k}`]);
+      if (Number.isFinite(value)) {
+        series[k - 1].push(value);
+      }
+    }
+  });
+
+  return series;
+}
+
+function plotFig1bHistogram(series) {
+  const traces = series.map((values, idx) => ({
+    type: 'histogram',
+    name: `period_${idx + 1}`,
+    x: values,
+    opacity: 0.30,
+    marker: {
+      color: FIG1B_HIST_COLOURS[idx]
+    },
+    xbins: {
+      start: 0,
+      size: FIG1_BIN_WIDTH
+    },
+    hovertemplate:
+      `<b>period_${idx + 1}</b><br>` +
+      `Period bin: %{x}<br>` +
+      `Occurrence: %{y}<extra></extra>`
+  }));
+
+  const layout = {
+    barmode: 'overlay',
+    margin: { l: 60, r: 20, t: 20, b: 60 },
+    paper_bgcolor: '#ffffff',
+    plot_bgcolor: '#ffffff',
+    legend: {
+      orientation: 'h',
+      x: 0.5,
+      y: 1.10,
+      xanchor: 'center'
+    },
+    xaxis: {
+      title: 'Period [hr/c]',
+      range: [5, 25]
+    },
+    yaxis: {
+      title: 'Occurrence'
+    }
+  };
+
+  Plotly.react('fig1b-hist', traces, layout, {
+    responsive: true,
+    scrollZoom: true,
+    displaylogo: false
+  });
+
+  updateFig1bStats(series);
+}
+
+function updateFig1bStats(series) {
+  const totalValues = series.reduce((acc, arr) => acc + arr.length, 0);
+
+  document.getElementById('fig1b-stats').innerHTML = `
+    <span class="pill">N = ${FIG1B_NPOINTS} points</span>
+    <span class="pill">Top periods per point = 10</span>
+    <span class="pill">Total values plotted = ${totalValues}</span>
+    <span class="pill">Bin width = 13.1606 min</span>
+  `;
+}
+
+function renderFigure1() {
+  const selector = document.getElementById('fig1-select');
+  const panel1a = document.getElementById('fig1a-panel');
+  const panel1b = document.getElementById('fig1b-panel');
+  const note = document.getElementById('fig1-note');
+
+  if (selector.value === '1a') {
+    panel1a.classList.remove('hidden');
+    panel1b.classList.add('hidden');
+
+    note.innerHTML =
+      'Figure 1a: turquoise circles indicate coastal points and magenta triangles indicate the 216 validation stations.';
+
+    plotFig1aMap(FIG1A_POINTS);
+  } else {
+    panel1a.classList.add('hidden');
+    panel1b.classList.remove('hidden');
+
+    note.innerHTML =
+      'Figure 1b: overlaid histograms of period_1 to period_10. Histogram transparency is 30%, and the bin width is 13.1606 min.';
+
+    plotFig1bHistogram(FIG1B_SERIES);
   }
+}
 
-  plotFig1aMap(FIG1A_POINTS);
+function initFigure1Selector() {
+  const selector = document.getElementById('fig1-select');
+  selector.addEventListener('change', renderFigure1);
+  renderFigure1();
 }
 // =============================
 // Load files
 // =============================
 // Figure 1
-fetch('data/fig_2a.csv?cache=' + Date.now())
-  .then(response => {
+Promise.all([
+  fetch('data/fig_2a.csv?cache=' + Date.now()).then(response => {
     if (!response.ok) throw new Error('Could not read data/fig_2a.csv');
     return response.text();
+  }),
+  fetch('data/fig_1b.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_1b.csv');
+    return response.text();
   })
-  .then(text => {
+])
+  .then(([text1a, text1b]) => {
     hideError('fig1-error');
-    initFigure1a(parseCSV(text));
+    hideError('fig1b-error');
+
+    FIG1A_POINTS = parseFig1aRows(parseCSV(text1a));
+    FIG1B_SERIES = parseFig1bRows(parseCSV(text1b));
+
+    if (!FIG1A_POINTS.length) {
+      throw new Error('fig_2a.csv has no valid rows.');
+    }
+
+    if (!FIG1B_SERIES.length) {
+      throw new Error('fig_1b.csv has no valid rows.');
+    }
+
+    initFigure1Selector();
   })
   .catch(err => {
     showError('fig1-error', err.message);
+    showError('fig1b-error', err.message);
   });
 
 
