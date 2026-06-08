@@ -1318,9 +1318,9 @@ function plotFig1bHistogram(series) {
     font: { size: 18 }
   },
   range: [5, 25],
-  dtick: .5,
-  tickfont: { size: 14 }
-},
+  tickfont: { size: 14 },
+  tickformat: '.1f'
+  },
   yaxis: {
     title: {
       text: 'ocurrence',
