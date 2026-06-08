@@ -1192,7 +1192,7 @@ function plotFig1aMap(data) {
       size: 5,
       color: 'turquoise',
       opacity: 0.75,
-      line: { width: 0 }
+      line: { color: 'black', width: 0.7 },
     }
   };
 
@@ -1209,7 +1209,7 @@ function plotFig1aMap(data) {
       size: 8,
       color: 'magenta',
       opacity: 0.95,
-      line: { width: 0 }
+      line: { color: 'black', width: 0.7 },
     }
   };
 
