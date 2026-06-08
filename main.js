@@ -1302,7 +1302,7 @@ function plotFig1bHistogram(series) {
 
   const layout = {
     barmode: 'overlay',
-    margin: { l: 60, r: 20, t: 20, b: 60 },
+    margin: { l: 80, r: 20, t: 30, b: 80 },
     paper_bgcolor: '#ffffff',
     plot_bgcolor: '#ffffff',
     legend: {
@@ -1312,13 +1312,33 @@ function plotFig1bHistogram(series) {
       xanchor: 'center'
     },
     xaxis: {
-      title: 'Period [hr/c]',
-      range: [5, 25]
+      title: {
+        text: 'period [h/c]',
+        font: { size: 22 }
+      },
+      range: [5, 25],
+      tickmode: 'array',
+      tickvals: [
+        5, 6, 7, 8, 9, 10,
+        11, 12, 13, 14, 15,
+        16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25
+      ],
+      ticktext: [
+        '5', '6', '7', '8', '9', '10',
+        '11', '12', '13', '14', '15',
+        '16', '17', '18', '19', '20',
+        '21', '22', '23', '24', '25'
+      ],
+      tickfont: { size: 16 }
     },
     yaxis: {
-      title: 'Occurrence'
-    }
-  };
+      title: {
+        text: 'ocurrence',
+        font: { size: 22 }
+      },
+      tickfont: { size: 16 }
+    };
 
   Plotly.react('fig1b-hist', traces, layout, {
     responsive: true,
