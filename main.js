@@ -1392,6 +1392,7 @@ const FIG2_CONFIG = {
     locFile: 'data/fig_2a_locations.csv',
     psdImage: 'images/fig_2a_psd.png',
     label: 'Figure 3a',
+     xRange: ['2023-08-18 00:00:00', '2023-09-15 23:00:00'],
     series: ['serie_1', 'serie_2', 'serie_3', 'serie_4'],
     seriesNames: {
       serie_1: 'Galveston Pier',
@@ -1477,6 +1478,8 @@ function plotFig2TimeSeries(panelKey) {
         text: 'Time',
         font: { size: 16 }
       },
+      type: 'date',
+      range: cfg.xRange,
       tickfont: { size: 12 }
     },
     yaxis: {
