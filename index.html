@@ -24,46 +24,56 @@
   <main class="page-content">
 
     <section class="figure-card" id="figure-1">
-      <h2>Figure 1</h2>
+  <h2>Figure 1</h2>
 
-      <p class="figure-caption">
-        Figure 2: (a) Spectral power derived from 1,099 points worldwide. The locations of these points are shown in (b), distributed across 883 grid points spaced every 8° and 216 points located near tide gauge stations (in colour, including the point groups illustrated in Figure 2). (c–e) Histograms of the ten highest-energy peaks within the (c) semidiurnal, (d) diurnal, and (e) terdiurnal bands, respectively. The bin width is approximately 4 minutes.
-      </p>
+  <p class="figure-caption">
+    Figure 2: (a) Spectral power derived from 1,099 points worldwide. The locations of these points are shown in (b), distributed across 883 grid points spaced every 8° and 216 points located near tide gauge stations (in colour, including the point groups illustrated in Figure 2). (c–e) Histograms of the ten highest-energy peaks within the (c) semidiurnal, (d) diurnal, and (e) terdiurnal bands, respectively. The bin width is approximately 14 minutes.
+  </p>
 
-      <div class="controls">
-        <label for="fig1-select"><b>Panel:</b></label>
-        <select id="fig1-select">
-          <option value="1a">Figure 2a,b</option>
-          <option value="1b">Figure 2c-e</option>
-        </select>
-      </div>
-      <!-- Panel 1a -->
-      <div class="fig1-grid">
-        <div class="fig1-image-panel">
+  <div class="controls">
+    <label for="fig1-select"><b>Panel:</b></label>
+    <select id="fig1-select">
+      <option value="1a">Figure 2a,b</option>
+      <option value="1b">Figure 2c-e</option>
+    </select>
+  </div>
+
+  <!-- Panel 1a -->
+  <div id="fig1a-panel">
+    <div class="fig1-grid">
+      <div class="fig1-image-panel">
+        <a href="images/fig_1a_spectrum.png" target="_blank" class="fig1-image-link">
           <img
             src="images/fig_1a_spectrum.png"
             alt="Power spectral density plot"
             class="fig1-spectrum-img"
           >
-        </div>
+        </a>
 
-        <div class="fig1-map-panel">
-          <div class="stats" id="fig1-stats"></div>
-          <div id="fig1-map" class="plot-container-small"></div>
-          <div id="fig1-error" class="error"></div>
-        </div>
-      </div>
-      <!-- Panel 1b -->
-      <div id="fig1b-panel" class="hidden">
-        <div class="stats" id="fig1b-stats"></div>
-        <div id="fig1b-hist" class="plot-container"></div>
-        <div id="fig1b-error" class="error"></div>
+        <p class="image-note">
+          Click the image to open it in a new tab and zoom in.
+        </p>
       </div>
 
-      <div class="figure-note">
-        Propiedad de Elsy Ticse - IHCANTABRIA
+      <div class="fig1-map-panel">
+        <div class="stats" id="fig1-stats"></div>
+        <div id="fig1-map" class="plot-container-small"></div>
+        <div id="fig1-error" class="error"></div>
       </div>
-    </section>
+    </div>
+  </div>
+
+  <!-- Panel 1b -->
+  <div id="fig1b-panel" class="hidden">
+    <div class="stats" id="fig1b-stats"></div>
+    <div id="fig1b-hist" class="plot-container"></div>
+    <div id="fig1b-error" class="error"></div>
+  </div>
+
+  <div class="figure-note" id="fig1-note">
+    Propiedad de Elsy Ticse - IHCANTABRIA
+  </div>
+</section>
 
     <section class="figure-card" id="figure-2">
       <h2>Figure 2</h2>
