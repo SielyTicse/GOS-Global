@@ -1301,44 +1301,47 @@ function plotFig1bHistogram(series) {
   }));
 
   const layout = {
-    barmode: 'overlay',
-    margin: { l: 80, r: 20, t: 30, b: 80 },
-    paper_bgcolor: '#ffffff',
-    plot_bgcolor: '#ffffff',
-    legend: {
-      orientation: 'h',
-      x: 0.5,
-      y: 1.10,
-      xanchor: 'center'
+  barmode: 'overlay',
+  margin: { l: 90, r: 20, t: 40, b: 90 },
+  paper_bgcolor: '#ffffff',
+  plot_bgcolor: '#ffffff',
+  legend: {
+    orientation: 'h',
+    x: 0.5,
+    y: 1.12,
+    xanchor: 'center',
+    font: { size: 13 }
+  },
+  xaxis: {
+    title: {
+      text: 'period [h/c]',
+      font: { size: 22 }
     },
-    xaxis: {
-      title: {
-        text: 'period [h/c]',
-        font: { size: 22 }
-      },
-      range: [5, 25],
-      tickmode: 'array',
-      tickvals: [
-        5, 6, 7, 8, 9, 10,
-        11, 12, 13, 14, 15,
-        16, 17, 18, 19, 20,
-        21, 22, 23, 24, 25
-      ],
-      ticktext: [
-        '5', '6', '7', '8', '9', '10',
-        '11', '12', '13', '14', '15',
-        '16', '17', '18', '19', '20',
-        '21', '22', '23', '24', '25'
-      ],
-      tickfont: { size: 16 }
+    range: [5, 25],
+    tickmode: 'array',
+    tickvals: [
+      5, 6, 7, 8, 9, 10,
+      11, 12, 13, 14, 15,
+      16, 17, 18, 19, 20,
+      21, 22, 23, 24, 25
+    ],
+    ticktext: [
+      '5', '6', '7', '8', '9', '10',
+      '11', '12', '13', '14', '15',
+      '16', '17', '18', '19', '20',
+      '21', '22', '23', '24', '25'
+    ],
+    tickfont: { size: 16 }
+  },
+  yaxis: {
+    title: {
+      text: 'ocurrence',
+      font: { size: 22 }
     },
-    yaxis: {
-      title: {
-        text: 'ocurrence',
-        font: { size: 22 }
-      },
-      tickfont: { size: 16 }
-    };
+    tickfont: { size: 16 }
+  }
+};
+  
 
   Plotly.react('fig1b-hist', traces, layout, {
     responsive: true,
