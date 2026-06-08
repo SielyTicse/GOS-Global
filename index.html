@@ -25,11 +25,36 @@
 
     <section class="figure-card" id="figure-1">
       <h2>Figure 1</h2>
+
       <p class="figure-caption">
-        Placeholder for Figure 1.
+        Figure 2: (a) Spectral power derived from 1,099 points worldwide. The locations of these points are shown in (b), distributed across 883 grid points spaced every 8° and 216 points located near tide gauge stations (in colour, including the point groups illustrated in Figure 2). (c–e) Histograms of the ten highest-energy peaks within the (c) semidiurnal, (d) diurnal, and (e) terdiurnal bands, respectively. The bin width is approximately 4 minutes.
       </p>
-      <div class="placeholder">
-        Figure 1 will be added here.
+
+      <div class="controls">
+        <label for="fig1-select"><b>Panel:</b></label>
+        <select id="fig1-select">
+          <option value="1a">Figure 2b</option>
+        </select>
+      </div>
+
+      <div class="fig1-grid">
+        <div class="fig1-image-panel">
+          <img
+            src="images/fig_1a_spectrum.png"
+            alt="Power spectral density plot"
+            class="fig1-spectrum-img"
+          >
+        </div>
+
+        <div class="fig1-map-panel">
+          <div class="stats" id="fig1-stats"></div>
+          <div id="fig1-map" class="plot-container-small"></div>
+          <div id="fig1-error" class="error"></div>
+        </div>
+      </div>
+
+      <div class="figure-note">
+        Propiedad de Elsy Ticse - IHCANTABRIA
       </div>
     </section>
 
