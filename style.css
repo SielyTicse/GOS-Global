@@ -143,3 +143,49 @@ body {
 .hidden {
   display: none !important;
 }
+
+.fig2-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  align-items: stretch;
+}
+
+.fig2-panel,
+.fig2-map-panel {
+  border: 1px solid #dbe2ef;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fbfcff;
+  margin-top: 12px;
+}
+
+.fig2-panel h3,
+.fig2-map-panel h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+}
+
+.plot-container-medium {
+  width: 100%;
+  height: 52vh;
+  min-height: 440px;
+}
+
+.fig2-image-link {
+  display: block;
+  cursor: zoom-in;
+}
+
+.fig2-psd-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+@media (max-width: 1000px) {
+  .fig2-grid {
+    grid-template-columns: 1fr;
+  }
+}
