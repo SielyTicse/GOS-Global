@@ -1392,7 +1392,7 @@ const FIG2_CONFIG = {
     locFile: 'data/fig_2a_locations.csv',
     psdImage: 'images/fig_2a_psd.png',
     label: 'Figure 3a',
-     xRange: ['2023-08-18 00:00:00', '2023-09-15 23:00:00'],
+    xRange: ['18-Aug-2023 00:00:00', '15-Sep-2023 23:00:00'],
     series: ['serie_1', 'serie_2', 'serie_3', 'serie_4'],
     seriesNames: {
       serie_1: 'Galveston Pier',
