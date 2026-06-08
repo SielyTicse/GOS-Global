@@ -1371,7 +1371,7 @@ function renderFigure1() {
     panel1b.classList.add('hidden');
 
     note.innerHTML =
-      'Figure 1a: turquoise circles indicate coastal points and magenta triangles indicate the 216 validation stations.';
+      'Propiedad de Elsy Ticse - IHCANTABRIA';
 
     plotFig1aMap(FIG1A_POINTS);
   } else {
@@ -1379,7 +1379,7 @@ function renderFigure1() {
     panel1b.classList.remove('hidden');
 
     note.innerHTML =
-      'Figure 1b: overlaid histograms of period_1 to period_10. Histogram transparency is 30%, and the bin width is 13.1606 min.';
+      'Propiedad de Elsy Ticse - IHCANTABRIA';
 
     plotFig1bHistogram(FIG1B_SERIES);
   }
