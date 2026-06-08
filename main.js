@@ -1140,8 +1140,136 @@ function initFigure7Selector() {
   renderFigure7();
 }
 // =============================
+// Figure 1 configuration
+// =============================
+
+let FIG1A_POINTS = [];
+
+function buildFig1Hover(d) {
+  return (
+    `<b>${d.station}</b><br>` +
+    `Lon: ${d.lon.toFixed(3)}°<br>` +
+    `Lat: ${d.lat.toFixed(3)}°<br>` +
+    `Type: ${d.type}`
+  );
+}
+
+function parseFig1aRows(rows) {
+  const nTotal = rows.length;
+  const nStations = 216;
+  const firstStationIndex = nTotal - nStations;
+
+  return rows.map((r, i) => {
+    const isStation = i >= firstStationIndex;
+
+    return {
+      station: r.station || (isStation ? `Station ${i - firstStationIndex + 1}` : `Point ${i + 1}`),
+      lon: parseNumber(r.lon),
+      lat: parseNumber(r.lat),
+      type: isStation ? 'Validation station' : 'Coastal point',
+      isStation: isStation
+    };
+  }).filter(d =>
+    Number.isFinite(d.lon) &&
+    Number.isFinite(d.lat)
+  );
+}
+
+function plotFig1aMap(data) {
+  const coastalPoints = data.filter(d => !d.isStation);
+  const stationPoints = data.filter(d => d.isStation);
+
+  const coastalTrace = {
+    type: 'scattergeo',
+    mode: 'markers',
+    name: 'Coastal points',
+    lon: coastalPoints.map(d => d.lon),
+    lat: coastalPoints.map(d => d.lat),
+    text: coastalPoints.map(buildFig1Hover),
+    hovertemplate: '%{text}<extra></extra>',
+    marker: {
+      symbol: 'circle',
+      size: 5,
+      color: 'turquoise',
+      opacity: 0.75,
+      line: { width: 0 }
+    }
+  };
+
+  const stationTrace = {
+    type: 'scattergeo',
+    mode: 'markers',
+    name: 'Validation stations',
+    lon: stationPoints.map(d => d.lon),
+    lat: stationPoints.map(d => d.lat),
+    text: stationPoints.map(buildFig1Hover),
+    hovertemplate: '%{text}<extra></extra>',
+    marker: {
+      symbol: 'triangle-up',
+      size: 8,
+      color: 'magenta',
+      opacity: 0.95,
+      line: { width: 0 }
+    }
+  };
+
+  const layout = {
+    margin: { l: 10, r: 10, t: 10, b: 20 },
+    paper_bgcolor: '#ffffff',
+    showlegend: true,
+    legend: {
+      orientation: 'h',
+      x: 0.5,
+      y: -0.05,
+      xanchor: 'center'
+    },
+    geo: getBaseGeoLayout()
+  };
+
+  Plotly.react('fig1-map', [coastalTrace, stationTrace], layout, {
+    responsive: true,
+    scrollZoom: true,
+    displaylogo: false
+  });
+
+  updateFig1Stats(coastalPoints.length, stationPoints.length);
+}
+
+function updateFig1Stats(nCoastal, nStations) {
+  document.getElementById('fig1-stats').innerHTML = `
+    <span class="pill">N = ${nCoastal + nStations} points</span>
+    <span class="pill">Coastal points = ${nCoastal}</span>
+    <span class="pill">Stations = ${nStations}</span>
+  `;
+}
+
+function initFigure1a(rows) {
+  FIG1A_POINTS = parseFig1aRows(rows);
+
+  if (!FIG1A_POINTS.length) {
+    throw new Error('fig_2a.csv has no valid rows.');
+  }
+
+  plotFig1aMap(FIG1A_POINTS);
+}
+// =============================
 // Load files
 // =============================
+// Figure 1
+fetch('data/fig_2a.csv?cache=' + Date.now())
+  .then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_2a.csv');
+    return response.text();
+  })
+  .then(text => {
+    hideError('fig1-error');
+    initFigure1a(parseCSV(text));
+  })
+  .catch(err => {
+    showError('fig1-error', err.message);
+  });
+
+
 // Figure 3
 Promise.all([
   fetch('data/fig_3a.csv?cache=' + Date.now()).then(response => {
