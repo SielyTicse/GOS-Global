@@ -75,15 +75,55 @@
   </div>
 </section>
 
-    <section class="figure-card" id="figure-2">
-      <h2>Figure 2</h2>
-      <p class="figure-caption">
-        Placeholder for Figure 2.
+  <section class="figure-card" id="figure-2">
+    <h2>Figure 2</h2>
+
+    <p class="figure-caption">
+      Figure 3. Time series of the raw simulated data from 18 locations near tide gauges  in four regions historically identified as storm surge hotspots (Bernier et al., 2024). (a)USA Group, (b)EU Group, (c)ASIA Group, (d)AUSTR Group. The locations are shown in colours in Figure 2. Panels (e), (f), (g), and (h) display their corresponding power spectra for both the observational data (tide gauges, shown in grey) and the raw simulated data (colored lines, corresponding to the time series legends).
+    </p>
+
+  <div class="controls">
+    <label for="fig2-select"><b>Panel:</b></label>
+    <select id="fig2-select">
+      <option value="2a">Figure 3a,e</option>
+    </select>
+  </div>
+
+  <div class="fig2-grid">
+    <div class="fig2-panel">
+      <h3>Time series</h3>
+      <div id="fig2-ts" class="plot-container-medium"></div>
+    </div>
+
+    <div class="fig2-panel">
+      <h3>Power spectral density</h3>
+
+      <a href="images/fig_2a_psd.png" target="_blank" class="fig2-image-link">
+        <img
+          id="fig2-psd-img"
+          src="images/fig_2a_psd.png"
+          alt="PSD"
+          class="fig2-psd-img"
+        >
+      </a>
+
+      <p class="image-note">
+        Click on the image to open it in a new tab and zoom.
       </p>
-      <div class="placeholder">
-        Figure 2 will be added here.
-      </div>
-    </section>
+    </div>
+  </div>
+
+  <div class="fig2-map-panel">
+    <h3>Station locations</h3>
+    <div class="stats" id="fig2-stats"></div>
+    <div id="fig2-map" class="plot-container-small"></div>
+    <div id="fig2-error" class="error"></div>
+  </div>
+
+  <div class="figure-note">
+    Propiedad de Elsy Ticse - IHCANTABRIA.
+  </div>
+</section>
 
     <section class="figure-card" id="figure-3">
       <h2>Figure 3</h2>
