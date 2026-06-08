@@ -1313,26 +1313,14 @@ function plotFig1bHistogram(series) {
     font: { size: 13 }
   },
   xaxis: {
-    title: {
-      text: 'period [h/c]',
-      font: { size: 22 }
-    },
-    range: [5, 25],
-    tickmode: 'array',
-    tickvals: [
-      5, 6, 7, 8, 9, 10,
-      11, 12, 13, 14, 15,
-      16, 17, 18, 19, 20,
-      21, 22, 23, 24, 25
-    ],
-    ticktext: [
-      '5', '6', '7', '8', '9', '10',
-      '11', '12', '13', '14', '15',
-      '16', '17', '18', '19', '20',
-      '21', '22', '23', '24', '25'
-    ],
-    tickfont: { size: 16 }
+  title: {
+    text: 'period [h/c]',
+    font: { size: 18 }
   },
+  range: [5, 25],
+  dtick: .5,
+  tickfont: { size: 14 }
+},
   yaxis: {
     title: {
       text: 'ocurrence',
