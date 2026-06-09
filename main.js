@@ -1314,7 +1314,7 @@ function plotFig1bHistogram(series) {
   },
   xaxis: {
   title: {
-    text: 'period [h/c]',
+    text: 'period [hr/c]',
     font: { size: 18 }
   },
   range: [5, 25],
@@ -1391,7 +1391,7 @@ const FIG2_CONFIG = {
     tsFile: 'data/fig_2a_ts.csv',
     locFile: 'data/fig_2a_locations.csv',
     psdImage: 'images/fig_2a_psd.png',
-    label: 'Figure 2a',
+    label: 'Figure 3a',
     xRange: ['2023-08-18 00:00:00', '2023-09-15 23:00:00'],
     series: ['serie_1', 'serie_2', 'serie_3', 'serie_4'],
     colours: {
@@ -1406,7 +1406,7 @@ const FIG2_CONFIG = {
     tsFile: 'data/fig_2b_ts.csv',
     locFile: 'data/fig_2b_locations.csv',
     psdImage: 'images/fig_2b_psd.png',
-    label: 'Figure 2b',
+    label: 'Figure 3b',
     xRange: ['2013-11-15 00:00:00', '2013-12-20 23:00:00'],
     series: ['serie_1', 'serie_2', 'serie_3', 'serie_4', 'serie_5'],
     colours: {
@@ -1422,7 +1422,7 @@ const FIG2_CONFIG = {
     tsFile: 'data/fig_2c_ts.csv',
     locFile: 'data/fig_2c_locations.csv',
     psdImage: 'images/fig_2c_psd.png',
-    label: 'Figure 2c',
+    label: 'Figure 3c',
     xRange: ['2018-07-24 00:00:00', '2018-09-25 23:00:00'],
     series: ['serie_1', 'serie_2', 'serie_3', 'serie_4'],
     colours: {
@@ -1437,7 +1437,7 @@ const FIG2_CONFIG = {
     tsFile: 'data/fig_2d_ts.csv',
     locFile: 'data/fig_2d_locations.csv',
     psdImage: 'images/fig_2d_psd.png',
-    label: 'Figure 2d',
+    label: 'Figure 3d',
     xRange: ['2023-02-15 00:00:00', '2023-03-10 23:00:00'],
     series: ['serie_1', 'serie_2', 'serie_3', 'serie_4', 'serie_5'],
     colours: {
