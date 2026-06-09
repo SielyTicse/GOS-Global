@@ -1391,24 +1391,64 @@ const FIG2_CONFIG = {
     tsFile: 'data/fig_2a_ts.csv',
     locFile: 'data/fig_2a_locations.csv',
     psdImage: 'images/fig_2a_psd.png',
-    label: 'Figure 3a',
+    label: 'Figure 2a',
     xRange: ['2023-08-18 00:00:00', '2023-09-15 23:00:00'],
     series: ['serie_1', 'serie_2', 'serie_3', 'serie_4'],
-    seriesNames: {
-      serie_1: 'Galveston Pier',
-      serie_2: 'Key West FL',
-      serie_3: 'Newport',
-      serie_4: 'Virginia Key'
-    },
     colours: {
       serie_1: 'rgb(122,4,3)',
       serie_2: 'rgb(169,22,1)',
       serie_3: 'rgb(206,45,4)',
       serie_4: 'rgb(232,75,12)'
     }
+  },
+
+  '2b': {
+    tsFile: 'data/fig_2b_ts.csv',
+    locFile: 'data/fig_2b_locations.csv',
+    psdImage: 'images/fig_2b_psd.png',
+    label: 'Figure 2b',
+    xRange: ['2013-11-15 00:00:00', '2013-12-20 23:00:00'],
+    series: ['serie_1', 'serie_2', 'serie_3', 'serie_4', 'serie_5'],
+    colours: {
+      serie_1: 'rgb(249,117,29)',
+      serie_2: 'rgb(254,161,48)',
+      serie_3: 'rgb(245,197,58)',
+      serie_4: 'rgb(219,226,54)',
+      serie_5: 'rgb(183,247,53)'
+    }
+  },
+
+  '2c': {
+    tsFile: 'data/fig_2c_ts.csv',
+    locFile: 'data/fig_2c_locations.csv',
+    psdImage: 'images/fig_2c_psd.png',
+    label: 'Figure 2c',
+    xRange: ['2018-07-24 00:00:00', '2018-09-25 23:00:00'],
+    series: ['serie_1', 'serie_2', 'serie_3', 'serie_4'],
+    colours: {
+      serie_1: 'rgb(139,255,75)',
+      serie_2: 'rgb(82,250,122)',
+      serie_3: 'rgb(34,235,170)',
+      serie_4: 'rgb(26,212,208)'
+    }
+  },
+
+  '2d': {
+    tsFile: 'data/fig_2d_ts.csv',
+    locFile: 'data/fig_2d_locations.csv',
+    psdImage: 'images/fig_2d_psd.png',
+    label: 'Figure 2d',
+    xRange: ['2023-02-15 00:00:00', '2023-03-10 23:00:00'],
+    series: ['serie_1', 'serie_2', 'serie_3', 'serie_4', 'serie_5'],
+    colours: {
+      serie_1: 'rgb(47,178,244)',
+      serie_2: 'rgb(69,140,253)',
+      serie_3: 'rgb(70,102,221)',
+      serie_4: 'rgb(63,62,156)',
+      serie_5: 'rgb(48,18,59)'
+    }
   }
 };
-
 let FIG2_DATA = {};
 
 function parseFig2TimeSeriesRows(rows, panelKey) {
@@ -1420,7 +1460,7 @@ function parseFig2TimeSeriesRows(rows, panelKey) {
 
     return {
       series_id: seriesId,
-      series_name: cfg.seriesNames[seriesId] ?? seriesId,
+      series_name: cfg.seriesNames?.[seriesId] ?? seriesId,
       time: times,
       value: values
     };
@@ -1616,32 +1656,51 @@ Promise.all([
     showError('fig1b-error', err.message);
   });
 // Figure 2
-Promise.all([
-  fetch('data/fig_2a_ts.csv?cache=' + Date.now()).then(response => {
-    if (!response.ok) throw new Error('Could not read data/fig_2a_ts.csv');
-    return response.text();
-  }),
-  fetch('data/fig_2a_locations.csv?cache=' + Date.now()).then(response => {
-    if (!response.ok) throw new Error('Could not read data/fig_2a_locations.csv');
-    return response.text();
-  })
-])
-  .then(([textTs, textLoc]) => {
+function loadFigure2Panel(panelKey) {
+  const cfg = FIG2_CONFIG[panelKey];
+
+  return Promise.all([
+    fetch(cfg.tsFile + '?cache=' + Date.now()).then(response => {
+      if (!response.ok) throw new Error(`Could not read ${cfg.tsFile}`);
+      return response.text();
+    }),
+    fetch(cfg.locFile + '?cache=' + Date.now()).then(response => {
+      if (!response.ok) throw new Error(`Could not read ${cfg.locFile}`);
+      return response.text();
+    })
+  ])
+    .then(([textTs, textLoc]) => {
+      const locations = parseFig2LocationRows(parseCSV(textLoc));
+      const ts = parseFig2TimeSeriesRows(parseCSV(textTs), panelKey);
+
+      const nameMap = Object.fromEntries(
+        locations.map(d => [d.series_id, d.series_name])
+      );
+
+      ts.forEach(s => {
+        if (nameMap[s.series_id]) {
+          s.series_name = nameMap[s.series_id];
+        }
+      });
+
+      FIG2_DATA[panelKey] = {
+        ts,
+        locations
+      };
+
+      if (!FIG2_DATA[panelKey].ts.length) {
+        throw new Error(`${cfg.tsFile} has no valid rows.`);
+      }
+
+      if (!FIG2_DATA[panelKey].locations.length) {
+        throw new Error(`${cfg.locFile} has no valid rows.`);
+      }
+    });
+}
+
+Promise.all(Object.keys(FIG2_CONFIG).map(panelKey => loadFigure2Panel(panelKey)))
+  .then(() => {
     hideError('fig2-error');
-
-    FIG2_DATA['2a'] = {
-      ts: parseFig2TimeSeriesRows(parseCSV(textTs), '2a'),
-      locations: parseFig2LocationRows(parseCSV(textLoc))
-    };
-
-    if (!FIG2_DATA['2a'].ts.length) {
-      throw new Error('fig_2a_ts.csv has no valid rows.');
-    }
-
-    if (!FIG2_DATA['2a'].locations.length) {
-      throw new Error('fig_2a_locations.csv has no valid rows.');
-    }
-
     initFigure2Selector();
   })
   .catch(err => {
