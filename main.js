@@ -1484,7 +1484,7 @@ function plotFig2TimeSeries(panelKey) {
     },
     yaxis: {
       title: {
-        text: 'Surge [m]',
+        text: '[m]',
         font: { size: 16 }
       },
       tickfont: { size: 12 }
