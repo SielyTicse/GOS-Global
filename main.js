@@ -1284,7 +1284,7 @@ function parseFig1bRows(rows) {
 function plotFig1bHistogram(series) {
   const traces = series.map((values, idx) => ({
     type: 'histogram',
-    name: `period_${idx + 1}`,
+    name: `peak_${idx + 1}`,
     x: values,
     opacity: 0.30,
     marker: {
@@ -1295,7 +1295,7 @@ function plotFig1bHistogram(series) {
       size: FIG1_BIN_WIDTH
     },
     hovertemplate:
-      `<b>period_${idx + 1}</b><br>` +
+      `<b>peak_${idx + 1}</b><br>` +
       `Period bin: %{x}<br>` +
       `Occurrence: %{y}<extra></extra>`
   }));
