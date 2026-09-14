@@ -15,9 +15,10 @@
 <body>
 
   <header class="page-header">
-    <h1>Global Ocean Surge (GOS): A 32-Year Storm Surge Dataset Free of Radiational Tide Signal</h1>
+    <h1>The Global Ocean Surge (GOS) and derived Extreme Storm Sea Levels</h1>
     <p>
       Interactive visualisation of figures for the GOS database.
+      We present GOS, a global ocean storm-surge dataset spanning more than 30 years (1993–2024), produced with a barotropic ocean model and evaluated against tide-gauge observations. GOS includes a dedicated treatment of periodic signals known as radiational tides and provides a consistent basis for analysing storm-surge variability and extreme sea levels worldwide. GOS is further applied in an extreme-value analysis to estimate storm-surge return levels worldwide
     </p>
 
     <nav class="page-nav">
@@ -33,10 +34,10 @@
          titulo de seccion (<h2>) y el pie de figura reales.
          =================================================================== -->
     <section class="figure-card" id="figure-1">
-      <h2>1. INTRODUCTION</h2>
+      <h2>2. METODOLOGY -> 2.1 Modelling Approach</h2>
 
       <p class="figure-caption">
-        Figure 1. <em>[pendiente: pie de figura]</em>
+        Figure 1. <em>Bathymetry of the Global Ocean Surge (GOS) domain. Colour shading indicates depth (m). Triangles indicate 216 tide-gauge stations used for validation, including the tide-gauges groups identified in the legend and used in Figure 3.</em>
       </p>
 
       <div class="figure-image-panel">
@@ -64,17 +65,17 @@
          El PNG del espectro se reemplaza: images/fig_2a_spectrum.png
          =================================================================== -->
     <section class="figure-card" id="figure-2">
-      <h2>2. METODOLOGY -> 2.2 Radiational Tide Filtering</h2>
+      <h2>2. METODOLOGY -> 2.2 Radiational Tides Filtering</h2>
 
       <p class="figure-caption">
-        Figure 2: (a) Spectral power derived from 1,099 points worldwide. The locations of these points are shown in (b), distributed across 883 grid points spaced every 8° and 216 points located near tide gauge stations (in colour, including the point groups illustrated in Figure 3). (c–e) Histograms of the ten highest-energy peaks within the (c) semidiurnal, (d) diurnal, and (e) terdiurnal bands, respectively. The bin width is approximately 13 minutes.
+        Figure 2: (a) Spectral power derived from 1,099 points worldwide, every 8° and 216 locations tide-gauge stations (b)Histograms of the ten highest-energy peaks within the semidiurnal, diurnal, and terdiurnal bands, respectively. The bin width is approximately 4 minutes. 
       </p>
 
       <div class="controls">
         <label for="fig2-select"><b>Panel:</b></label>
         <select id="fig2-select">
-          <option value="2a">Figure 2a,b</option>
-          <option value="2b">Figure 2c-e</option>
+          <option value="2a">Figure 2a</option>
+          <option value="2b">Figure 2b</option>
         </select>
       </div>
 
@@ -122,16 +123,15 @@
       <h2>2. METODOLOGY -> 2.2 Radiational Tide Filtering</h2>
 
       <p class="figure-caption">
-        Figure 3. Time series of the raw simulated data from 18 locations near tide gauges in four regions historically identified as storm surge hotspots (Bernier et al., 2024). (a) USA Group, (b) EU Group, (c) ASIA Group, (d) AUSTR Group. The locations are shown in colours in Figure 2. Panels (e), (f), (g), and (h) display their corresponding power spectra for both the observational data (tide gauges, shown in grey) and the raw simulated data (colored lines, corresponding to the time series legends).
-      </p>
+        Figure 3. Time series of the raw simulated data from 18 tide-gauges locations in four regions historically identified as storm surge hotspots (Bernier et al., 2024). (a)USA Group, (b)EU Group, (c)ASIA Group, (d)AUSTR Group. The locations are shown in colours in Figure 1. Panels at the right of time series display their corresponding power spectra for both the observational data (tide gauges, shown in grey) and the raw simulated data (colored lines).
 
       <div class="controls">
         <label for="fig3-select"><b>Panel:</b></label>
         <select id="fig3-select">
-          <option value="3a">Figure 3a,e</option>
-          <option value="3b">Figure 3b,f</option>
-          <option value="3c">Figure 3c,g</option>
-          <option value="3d">Figure 3d,h</option>
+          <option value="3a">Figure 3a</option>
+          <option value="3b">Figure 3b</option>
+          <option value="3c">Figure 3c</option>
+          <option value="3d">Figure 3d</option>
         </select>
       </div>
 
@@ -178,7 +178,7 @@
          PENDIENTE: titulo de seccion (<h2>) y pie de figura reales.
          =================================================================== -->
     <section class="figure-card" id="figure-4">
-      <h2>3. RESULTS <em>[pendiente: subseccion]</em></h2>
+      <h2>2. METODOLOGY -> 2.4 Extreme Value Analysis </h2>
 
       <p class="figure-caption">
         Figure 4. <em>[pendiente: pie de figura]</em> Monthly maxima from the GOS dataset (MM-GOS, grey squares) at three tide-gauge locations, with the month-dependent 50-year return level (red dotted) and the year-integrated 50-year return level (blue dash-dot).
@@ -209,10 +209,10 @@
          PENDIENTE: colocar el archivo en images/fig_5b.png
          =================================================================== -->
     <section class="figure-card" id="figure-5">
-      <h2>3. RESULTS -> 3.1 Radiational Tide</h2>
+      <h2>3. THE GOS DATASET EVALUATION</h2>
 
       <p class="figure-caption">
-        Figure 5. Frequency of the highest energy peak derived from the power spectral density analysis at (a) coastal grid points, and (b) grid points spaced approximately every 8° and 216 points near tide gauges.
+        Figure 5. (a) Coastal worldwide scatter plot showing the dominant frequency (expressed as period in hours) of the highest-energy peak derived from power spectral density analysis. Line thickness represents the normalised amplitude corresponding to the highest-energy frequency. (b) Global map showing the spatial distribution of normalised amplitudes for the dominant highest-energy frequency sampled on a 1º x 1º grid.
       </p>
 
       <div class="controls">
@@ -257,10 +257,10 @@
          FIGURE 6 - antes "Figure 5" (seccion figure-4). Sin cambios.
          =================================================================== -->
     <section class="figure-card" id="figure-6">
-      <h2>3. RESULTS -> 3.2 Validation</h2>
+      <h2>3. THE GOS DATA EVALUATION</h2>
 
       <p class="figure-caption">
-        Figure 6. Validation statistics of the GOS dataset after application of the radiational-tide filter, computed at model grid points located near 216 tide gauge stations.
+        Figure 6. Validation statistics of the GOS dataset, computed at model grid points nearest to 216 tide-gauge stations. (a) Pearson correlation coefficient (r); (b) bias (cm); (c) root-mean-square error (RMSE, cm); (d) percentile-based normalised RMSE (NRMSEprct}, %); and (e) normalised bias (NBias). The inset box provides overall summary statistics for each metric, where the overline denotes the mean, vertical bars denote the absolute value, and p+ and p- represent the percentage of locations with positive and negative values, respectively.
       </p>
 
       <div class="controls">
@@ -287,10 +287,10 @@
          FIGURE 7 - antes "Figure 7" (seccion figure-6). Sin cambios.
          =================================================================== -->
     <section class="figure-card" id="figure-7">
-      <h2>3. RESULTS -> 3.2 Validation</h2>
+      <h2>3. THE GOS DATASET EVALUATION</h2>
 
       <p class="figure-caption">
-        Figure 7. (a) Maximum storm surge level (maximum of maxima - MOM) calculated from the GOS dataset (1993–2024) for the coastal zones and (b) Maximum Absolute Error (MAE, cm) between simulated and observed mean annual surge maxima at tide gauge stations, defined in Eq. (3).
+        Figure 7. Maximum storm surge level (maximum of maxima) calculated from the GOS dataset for the coastal zones and (b) Maximum Absolute Error (MAE, cm) between simulated and observed mean annual surge maxima at tide gauge stations, defined in Eq. (3)
       </p>
 
       <div class="controls">
@@ -317,10 +317,10 @@
          PENDIENTE: titulo de seccion (<h2>) y pie de figura reales.
          =================================================================== -->
     <section class="figure-card" id="figure-8">
-      <h2>3. RESULTS <em>[pendiente: subseccion]</em></h2>
+      <h2>4. EXTREME STORM SURGE</h2>
 
       <p class="figure-caption">
-        Figure 8. <em>[pendiente: pie de figura]</em> Shape parameter (&phi;<sub>0</sub>) of the stationary GEV distribution fitted at the coastal grid points of the GOS dataset.
+        Figure 8. Estimated shape parameter (&phi;<sub>0</sub>) of GEV non-stationary for the coastal GOS dataset grid points.
       </p>
 
       <div class="stats" id="fig8-stats"></div>
@@ -336,10 +336,10 @@
          FIGURE 9 - antes "Figure 8" (seccion figure-7). Sin cambios.
          =================================================================== -->
     <section class="figure-card" id="figure-9">
-      <h2>3. RESULTS -> 3.3 Climatical Analysis</h2>
+      <h2>4. EXTREME STORM SURGE</h2>
 
       <p class="figure-caption">
-        Figure 9: (a) 50-year return level of storm surges (m). (b) Intra-annual variability of the 50-year return level, colours indicate the month with the highest probability of occurrence of the largest extremes, while the circle size represents the amplitude of the seasonal curve at each point.
+        Figure 9:(a) Integrated 50-year return level of storm surges derived from the GOS dataset (m). (b) Intra-annual variability of the 50-year return level; colours indicate the month with the highest probability of occurrence of the largest extremes, while line thickness represents the amplitude of the seasonal curve at each grid point.
       </p>
 
       <div class="controls">
