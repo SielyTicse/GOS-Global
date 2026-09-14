@@ -254,7 +254,7 @@
          FIGURE 6 - antes "Figure 5" (seccion figure-4). Sin cambios.
          =================================================================== -->
     <section class="figure-card" id="figure-6">
-      <h2>3. THE GOS DATA EVALUATION</h2>
+      <h2>3. THE GOS DATASET EVALUATION</h2>
 
       <p class="figure-caption">
         Figure 6. Validation statistics of the GOS dataset, computed at model grid points nearest to 216 tide-gauge stations. (a) Pearson correlation coefficient (r); (b) bias (cm); (c) root-mean-square error (RMSE, cm); (d) percentile-based normalised RMSE (NRMSEprct}, %); and (e) normalised bias (NBias). The inset box provides overall summary statistics for each metric, where the overline denotes the mean, vertical bars denote the absolute value, and p+ and p- represent the percentage of locations with positive and negative values, respectively.
@@ -262,13 +262,12 @@
 
       <div class="controls">
         <label for="fig6-select"><b>Variable:</b></label>
-        <!-- las letras son las de los cinco paneles de la figura del paper -->
         <select id="fig6-select">
-          <option value="Corr">(a) r</option>
-          <option value="Bias">(b) bias</option>
-          <option value="RMSE">(c) RMSE</option>
-          <option value="NRMSE_prct">(d) NRMSE_prct</option>
-          <option value="NBias">(e) Nbias</option>
+          <option value="Corr">Pearson</option>
+          <option value="Bias">bias</option>
+          <option value="RMSE">RMSE</option>
+          <option value="NRMSE_prct">NRMSE_prct</option>
+          <option value="NBias">Nbias</option>
         </select>
       </div>
 

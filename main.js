@@ -353,7 +353,9 @@ const fig5PeriodPalette = rgb01ToPlotlyScale([
 const FIG5_METRICS = {
   Period: {
     label: 'Period',
-    unit: 'h',
+    // unidades en una linea y con exponente negativo, nunca con '/':
+    //   unit: 'h',   -> no reflejaba el denominador (ciclo)
+    unit: 'h c<sup>-1</sup>',
     cmin: 6,
     cmax: 26,
     decimals: 2,
@@ -384,7 +386,7 @@ function buildFig5Hover(d) {
     `<b>${d.station}</b><br>` +
     `Lon: ${d.lon.toFixed(3)}°<br>` +
     `Lat: ${d.lat.toFixed(3)}°<br>` +
-    `Period: ${d.Period.toFixed(4)} h/c<br>` 
+    `Period: ${d.Period.toFixed(4)} h c<sup>-1</sup><br>`
   );
 }
 
@@ -452,7 +454,7 @@ function updateFig5Stats(data) {
 
   document.getElementById('fig5-stats').innerHTML = `
     <span class="pill">N = ${n} points </span>
-    <span class="pill">Period range = [6, >26] hr/c</span>
+    <span class="pill">Period range = [6, >26] h c<sup>-1</sup></span>
     <span class="pill">Standardized amplitude = 1–10</span>
   `;
 }
@@ -512,7 +514,7 @@ const FIG6_METRICS = {
   // (a) correlacion. La barra iba de -0.2 a 1; ahora va de 0 a 1:
   //   cmin: -0.2,
   Corr: {
-    label: 'r',
+    label: 'Pearson',
     unit: '',
     cmin: 0,
     cmax: 1,
@@ -1507,7 +1509,10 @@ function plotFig2bHistogram(series) {
   },
   xaxis: {
   title: {
-    text: 'Period [hr c^-^1]',
+    // '^-^1' es sintaxis TeX de MATLAB y Plotly la imprime tal cual;
+    // aqui el exponente se marca con <sup>:
+    //   text: 'Period [hr c^-^1]',
+    text: 'Period [h c<sup>-1</sup>]',
     font: { size: 18 }
   },
   range: [5, 25],
@@ -1516,7 +1521,7 @@ function plotFig2bHistogram(series) {
   },
   yaxis: {
     title: {
-      text: 'Ocurrence',
+      text: 'Occurrence',
       font: { size: 22 }
     },
     tickfont: { size: 16 }
