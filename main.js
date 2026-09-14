@@ -1263,7 +1263,14 @@ let FIG2A_POINTS = [];
 let FIG2B_SERIES = [];
 let FIG2B_NPOINTS = 0;
 
-const FIG2_BIN_WIDTH = 13.1606 / 60.0; // hr/c
+// Definicion de los bins del histograma. Antes estaba fijada a mano
+// (13.1606 min) y se quedo desfasada cuando cambio 'edges' en MATLAB:
+//   const FIG2_BIN_WIDTH = 13.1606 / 60.0; // hr/c
+// Ahora se lee de data/fig_2b_bins.csv, que exporta el propio script que
+// dibuja la figura, asi que no puede volver a desincronizarse.
+// El origen NO es 0: MATLAB arranca los bins en min(h(:)).
+let FIG2_BIN_START = 0;      // h   -> edges(1)
+let FIG2_BIN_WIDTH = 0;      // h   -> edges(2) - edges(1)
 
 const FIG2B_HIST_RGB = [
   [0.4796,0.0158,0.0106],
@@ -1303,7 +1310,8 @@ function parseFig2aRows(rows) {
       station: r.station || (isStation ? `Station ${i - firstStationIndex + 1}` : `Point ${i + 1}`),
       lon: parseNumber(r.lon),
       lat: parseNumber(r.lat),
-      type: isStation ? 'Validation station' : 'Coastal point',
+      // mismo criterio que la leyenda del mapa: no son puntos costeros
+      type: isStation ? 'Validation station' : 'Point c/8º',
       isStation: isStation
     };
   }).filter(d =>
@@ -1319,7 +1327,8 @@ function plotFig2aMap(data) {
   const coastalTrace = {
     type: 'scattergeo',
     mode: 'markers',
-    name: 'Coastal points',
+    // no son puntos costeros, sino la malla global espaciada cada 8 grados
+    name: 'Points c/8º',
     lon: coastalPoints.map(d => d.lon),
     lat: coastalPoints.map(d => d.lat),
     text: coastalPoints.map(buildFig2Hover),
@@ -1373,11 +1382,34 @@ function plotFig2aMap(data) {
 }
 
 function updateFig2Stats(nCoastal, nStations) {
+  // Los desgloses por tipo se quitan: esa informacion ya la da la leyenda
+  // que va debajo del mapa.
+  //  <span class="pill">Coastal points = ${nCoastal}</span>
+  //  <span class="pill">Stations = ${nStations}</span>
   document.getElementById('fig2-stats').innerHTML = `
     <span class="pill">N = ${nCoastal + nStations} points</span>
-    <span class="pill">Coastal points = ${nCoastal}</span>
-    <span class="pill">Stations = ${nStations}</span>
   `;
+}
+
+// Lee data/fig_2b_bins.csv, que trae una sola fila con la definicion de
+// 'edges' tal como la calcula el script MATLAB de la figura. Sin esto el
+// histograma de la web no coincide con el panel (b) del paper.
+function applyFig2BinDefinition(rows) {
+  const row = rows[0];
+
+  if (!row) {
+    throw new Error('fig_2b_bins.csv has no rows.');
+  }
+
+  const start = parseNumber(row.edge_min);
+  const width = parseNumber(row.bin_width_h);
+
+  if (!Number.isFinite(start) || !Number.isFinite(width) || width <= 0) {
+    throw new Error('fig_2b_bins.csv: edge_min / bin_width_h are not valid numbers.');
+  }
+
+  FIG2_BIN_START = start;
+  FIG2_BIN_WIDTH = width;
 }
 
 function parseFig2bRows(rows) {
@@ -1407,7 +1439,9 @@ function plotFig2bHistogram(series) {
       color: FIG2B_HIST_COLOURS[idx]
     },
     xbins: {
-      start: 0,
+      // mismo origen y mismo ancho que el 'edges' de MATLAB, para que las
+      // barras caigan exactamente donde el panel (b) de la figura del paper
+      start: FIG2_BIN_START,
       size: FIG2_BIN_WIDTH
     },
     hovertemplate:
@@ -1463,7 +1497,7 @@ function updateFig2bStats(series) {
     <span class="pill">N = ${FIG2B_NPOINTS} points</span>
     <span class="pill">Top periods per point = 10</span>
     <span class="pill">Total values plotted = ${totalValues}</span>
-    <span class="pill">Bin width = 13.1606 min</span>
+    <span class="pill">Bin width = ${(FIG2_BIN_WIDTH * 60).toFixed(2)} min</span>
   `;
 }
 
@@ -1753,14 +1787,20 @@ Promise.all([
   fetch('data/fig_2b.csv?cache=' + Date.now()).then(response => {
     if (!response.ok) throw new Error('Could not read data/fig_2b.csv');
     return response.text();
+  }),
+  fetch('data/fig_2b_bins.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_2b_bins.csv');
+    return response.text();
   })
 ])
-  .then(([text1a, text1b]) => {
+  .then(([text1a, text1b, textBins]) => {
     hideError('fig2-error');
     hideError('fig2b-error');
 
     FIG2A_POINTS = parseFig2aRows(parseCSV(text1a));
     FIG2B_SERIES = parseFig2bRows(parseCSV(text1b));
+
+    applyFig2BinDefinition(parseCSV(textBins));
 
     if (!FIG2A_POINTS.length) {
       throw new Error('fig_2a.csv has no valid rows.');
