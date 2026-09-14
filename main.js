@@ -89,105 +89,162 @@ function buildFig4MmHover(d) {
   );
 }
 
-function plotFig4(panelKey) {
-  const mm = FIG4_MM[panelKey] ?? [];
-  const rl = FIG4_RL[panelKey] ?? [];
-  const meta = FIG4_PANELS[panelKey] ?? {};
+// Los tres paneles se dibujan a la vez, uno al lado del otro, igual que el
+// tiledlayout(1,3) del script MATLAB. Antes habia un selector que mostraba
+// solo un panel cada vez (funcion plotFig4(panelKey)).
+const FIG4_PANEL_KEYS = ['4a', '4b', '4c'];
+const FIG4_PANEL_LETTERS = ['(a)', '(b)', '(c)'];
 
-  const traces = [
-    {
+// separacion horizontal entre paneles, en fraccion del ancho total
+const FIG4_PANEL_GAP = 0.06;
+
+const FIG4_AXIS_COMMON = {
+  showgrid: true,
+  gridcolor: 'rgba(120,120,120,0.25)',
+  zeroline: false,
+  showline: true,
+  mirror: true,
+  linecolor: '#444'
+};
+
+function plotFig4All() {
+  const n = FIG4_PANEL_KEYS.length;
+  const width = (1 - FIG4_PANEL_GAP * (n - 1)) / n;
+
+  const traces = [];
+  const annotations = [];
+
+  const layout = {
+    margin: { l: 62, r: 24, t: 44, b: 84 },
+    paper_bgcolor: '#ffffff',
+    plot_bgcolor: '#ffffff',
+    hovermode: 'closest',
+    showlegend: true,
+    legend: {
+      orientation: 'h',
+      x: 0.5,
+      xanchor: 'center',
+      y: -0.16,
+      yanchor: 'top'
+    },
+    annotations: annotations
+  };
+
+  FIG4_PANEL_KEYS.forEach((panelKey, i) => {
+    // Plotly nombra los ejes xaxis, xaxis2, xaxis3 y las trazas x, x2, x3
+    const sfx = i === 0 ? '' : String(i + 1);
+    const mm = FIG4_MM[panelKey] ?? [];
+    const rl = FIG4_RL[panelKey] ?? [];
+    const meta = FIG4_PANELS[panelKey] ?? {};
+    const x0 = i * (width + FIG4_PANEL_GAP);
+
+    layout['xaxis' + sfx] = Object.assign({}, FIG4_AXIS_COMMON, {
+      domain: [x0, x0 + width],
+      anchor: 'y' + sfx,
+      range: [0, 1],
+      tickmode: 'array',
+      tickvals: FIG4_MONTH_TICKS,
+      ticktext: FIG4_MONTH_LABELS
+    });
+
+    // cada panel conserva su propia escala vertical, como en MATLAB
+    layout['yaxis' + sfx] = Object.assign({}, FIG4_AXIS_COMMON, {
+      anchor: 'x' + sfx,
+      title: i === 0 ? '[m]' : ''
+    });
+
+    // titulo de cada panel: letra + nombre de la estacion
+    annotations.push({
+      text: `${FIG4_PANEL_LETTERS[i]} ${meta.station ?? ''}`.trim(),
+      x: x0 + width / 2,
+      xref: 'paper',
+      xanchor: 'center',
+      y: 1.04,
+      yref: 'paper',
+      yanchor: 'bottom',
+      showarrow: false,
+      font: { size: 15 }
+    });
+
+    // la leyenda es unica para los tres paneles: solo la declara el primero
+    const showLegend = i === 0;
+
+    traces.push({
       // maximos mensuales: cuadrados grises con borde negro
       type: 'scatter',
       mode: 'markers',
       name: 'MM-GOS',
+      legendgroup: 'mm',
+      showlegend: showLegend,
+      xaxis: 'x' + sfx,
+      yaxis: 'y' + sfx,
       x: mm.map(d => d.t),
       y: mm.map(d => d.value),
       text: mm.map(buildFig4MmHover),
       hovertemplate: '%{text}<extra></extra>',
       marker: {
         symbol: 'square',
-        size: 7,
+        size: 6,
         color: FIG4_COL_MM,
         line: { color: 'black', width: 1 }
       }
-    },
-    {
+    });
+
+    traces.push({
       // nivel de retorno de 50 anios, mes a mes
       type: 'scatter',
       mode: 'lines',
       name: FIG4_LBL_MON,
+      legendgroup: 'z50t',
+      showlegend: showLegend,
+      xaxis: 'x' + sfx,
+      yaxis: 'y' + sfx,
       x: rl.map(d => d.t),
       y: rl.map(d => d.z50),
       line: { color: FIG4_COL_MON, width: 2, dash: 'dot' },
       hovertemplate: 'Z50(t) = %{y:.3f} m<extra></extra>'
-    },
-    {
+    });
+
+    traces.push({
       // nivel de retorno de 50 anios integrado en el anio (linea horizontal)
       type: 'scatter',
       mode: 'lines',
       name: FIG4_LBL_INT,
+      legendgroup: 'z50',
+      showlegend: showLegend,
+      xaxis: 'x' + sfx,
+      yaxis: 'y' + sfx,
       x: [0, 1],
       y: [meta.z50_int, meta.z50_int],
       line: { color: FIG4_COL_INT, width: 2, dash: 'dashdot' },
       hovertemplate: 'Z50 = %{y:.3f} m<extra></extra>'
-    }
-  ];
-
-  const axisCommon = {
-    showgrid: true,
-    gridcolor: 'rgba(120,120,120,0.25)',
-    zeroline: false,
-    showline: true,
-    mirror: true,
-    linecolor: '#444'
-  };
-
-  const layout = {
-    margin: { l: 64, r: 24, t: 24, b: 64 },
-    paper_bgcolor: '#ffffff',
-    plot_bgcolor: '#ffffff',
-    hovermode: 'closest',
-    xaxis: Object.assign({}, axisCommon, {
-      range: [0, 1],
-      tickmode: 'array',
-      tickvals: FIG4_MONTH_TICKS,
-      ticktext: FIG4_MONTH_LABELS
-    }),
-    yaxis: Object.assign({}, axisCommon, {
-      title: '[m]'
-    }),
-    legend: {
-      orientation: 'h',
-      x: 0.5,
-      xanchor: 'center',
-      y: -0.14,
-      yanchor: 'top'
-    }
-  };
+    });
+  });
 
   Plotly.react('fig4-plot', traces, layout, {
     responsive: true,
     displaylogo: false
   });
 
-  updateFig4Stats(panelKey);
+  updateFig4Stats();
 }
 
-function updateFig4Stats(panelKey) {
-  const mm = FIG4_MM[panelKey] ?? [];
-  const meta = FIG4_PANELS[panelKey] ?? {};
-  const values = mm.map(d => d.value).filter(Number.isFinite);
+function updateFig4Stats() {
+  const pills = FIG4_PANEL_KEYS.map((panelKey, i) => {
+    const meta = FIG4_PANELS[panelKey] ?? {};
+    const station = meta.station ?? '—';
+    const z50 = Number.isFinite(meta.z50_int) ? meta.z50_int.toFixed(3) : '—';
 
-  const station = meta.station ?? '—';
-  const z50 = Number.isFinite(meta.z50_int) ? meta.z50_int.toFixed(3) : '—';
-  const vmax = values.length ? Math.max(...values).toFixed(3) : '—';
+    return `<span class="pill">${FIG4_PANEL_LETTERS[i]} ${station} &middot; ` +
+           `Z&#773;<sub>50</sub> = ${z50} m</span>`;
+  });
 
-  document.getElementById('fig4-stats').innerHTML = `
-    <span class="pill">Station = ${station}</span>
-    <span class="pill">N = ${values.length} monthly maxima</span>
-    <span class="pill">max MM-GOS = ${vmax} m</span>
-    <span class="pill">Z&#773;<sub>50</sub> = ${z50} m</span>
-  `;
+  const totalMm = FIG4_PANEL_KEYS.reduce(
+    (acc, panelKey) => acc + (FIG4_MM[panelKey] ?? []).length, 0);
+
+  pills.push(`<span class="pill">N = ${totalMm} monthly maxima</span>`);
+
+  document.getElementById('fig4-stats').innerHTML = pills.join('\n');
 }
 
 function parseFig4MmRows(rows) {
@@ -246,18 +303,20 @@ function parseFig4PanelRows(rows) {
   return out;
 }
 
-function renderFigure4() {
-  const selector = document.getElementById('fig4-select');
+// Ya no hay selector: los tres paneles se ven a la vez.
+// function renderFigure4() {
+//   const selector = document.getElementById('fig4-select');
+//   plotFig4(selector.value);
+// }
+//
+// function initFigure4Selector() {
+//   const selector = document.getElementById('fig4-select');
+//   selector.addEventListener('change', renderFigure4);
+//   renderFigure4();
+// }
 
-  plotFig4(selector.value);
-}
-
-function initFigure4Selector() {
-  const selector = document.getElementById('fig4-select');
-
-  selector.addEventListener('change', renderFigure4);
-
-  renderFigure4();
+function initFigure4() {
+  plotFig4All();
 }
 // =============================
 // Figure 5 configuration
@@ -1408,34 +1467,39 @@ function updateFig2bStats(series) {
   `;
 }
 
+// Ya no hay selector: los tres subpaneles (espectro, mapa e histogramas) se
+// ven a la vez, con la misma estructura que la Figura 3.
+// function renderFigure2() {
+//   const selector = document.getElementById('fig2-select');
+//   const panel1a = document.getElementById('fig2a-panel');
+//   const panel1b = document.getElementById('fig2b-panel');
+//   const note = document.getElementById('fig2-note');
+//
+//   if (selector.value === '2a') {
+//     panel1a.classList.remove('hidden');
+//     panel1b.classList.add('hidden');
+//     note.innerHTML = 'Propiedad de Elsy Ticse - IHCANTABRIA';
+//     plotFig2aMap(FIG2A_POINTS);
+//   } else {
+//     panel1a.classList.add('hidden');
+//     panel1b.classList.remove('hidden');
+//     note.innerHTML = 'Propiedad de Elsy Ticse - IHCANTABRIA';
+//     plotFig2bHistogram(FIG2B_SERIES);
+//   }
+// }
+//
+// function initFigure2Selector() {
+//   const selector = document.getElementById('fig2-select');
+//   selector.addEventListener('change', renderFigure2);
+//   renderFigure2();
+// }
+
 function renderFigure2() {
-  const selector = document.getElementById('fig2-select');
-  const panel1a = document.getElementById('fig2a-panel');
-  const panel1b = document.getElementById('fig2b-panel');
-  const note = document.getElementById('fig2-note');
-
-  if (selector.value === '2a') {
-    panel1a.classList.remove('hidden');
-    panel1b.classList.add('hidden');
-
-    note.innerHTML =
-      'Propiedad de Elsy Ticse - IHCANTABRIA';
-
-    plotFig2aMap(FIG2A_POINTS);
-  } else {
-    panel1a.classList.add('hidden');
-    panel1b.classList.remove('hidden');
-
-    note.innerHTML =
-      'Propiedad de Elsy Ticse - IHCANTABRIA';
-
-    plotFig2bHistogram(FIG2B_SERIES);
-  }
+  plotFig2aMap(FIG2A_POINTS);
+  plotFig2bHistogram(FIG2B_SERIES);
 }
 
-function initFigure2Selector() {
-  const selector = document.getElementById('fig2-select');
-  selector.addEventListener('change', renderFigure2);
+function initFigure2() {
   renderFigure2();
 }
 
@@ -1706,7 +1770,7 @@ Promise.all([
       throw new Error('fig_2b.csv has no valid rows.');
     }
 
-    initFigure2Selector();
+    initFigure2();
   })
   .catch(err => {
     showError('fig2-error', err.message);
@@ -1865,7 +1929,7 @@ Promise.all([
       throw new Error('fig_4_panels.csv has no valid rows.');
     }
 
-    initFigure4Selector();
+    initFigure4();
   })
   .catch(err => {
     showError('fig4-error', err.message);

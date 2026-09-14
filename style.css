@@ -114,17 +114,32 @@ body {
 
 .fig2-grid {
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
+  /* antes 1.15fr 0.85fr, cuando el panel era espectro + mapa con selector;
+     ahora se reparte a medias, igual que .fig3-grid */
+  grid-template-columns: 1fr 1fr;
   gap: 18px;
   align-items: stretch;
 }
 
-.fig2-image-panel,
-.fig2-map-panel {
+/* .fig2-image-panel y .fig2-map-panel se unifican en .fig2-panel, y se anade
+   .fig2-hist-panel para el histograma que va debajo; mismo tratamiento que
+   .fig3-panel / .fig3-map-panel */
+.fig2-panel,
+.fig2-hist-panel {
   border: 1px solid #dbe2ef;
   border-radius: 12px;
   padding: 12px;
   background: #fbfcff;
+}
+
+.fig2-hist-panel {
+  margin-top: 18px;
+}
+
+.fig2-panel h3,
+.fig2-hist-panel h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
 }
 
 .fig2-spectrum-img {

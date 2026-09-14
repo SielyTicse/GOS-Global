@@ -71,41 +71,36 @@
         Figure 2: (a) Spectral power derived from 1,099 points worldwide, every 8° and 216 locations tide-gauge stations (b)Histograms of the ten highest-energy peaks within the semidiurnal, diurnal, and terdiurnal bands, respectively. The bin width is approximately 4 minutes. 
       </p>
 
-      <div class="controls">
-        <label for="fig2-select"><b>Panel:</b></label>
-        <select id="fig2-select">
-          <option value="2a">Figure 2a</option>
-          <option value="2b">Figure 2b</option>
-        </select>
-      </div>
+      <!-- Tres subpaneles a la vez, misma estructura que la Figura 3:
+           dos arriba en rejilla y el tercero a lo ancho debajo.
+           Antes habia un selector que mostraba 2a o 2b por separado. -->
+      <div class="fig2-grid">
+        <div class="fig2-panel">
+          <h3>Power spectral density</h3>
 
-      <!-- Panel 2a -->
-      <div id="fig2a-panel">
-        <div class="fig2-grid">
-          <div class="fig2-image-panel">
-            <a href="images/fig_2a_spectrum.png" target="_blank" class="fig2-image-link">
-              <img
-                src="images/fig_2a_spectrum.png"
-                alt="Power spectral density plot"
-                class="fig2-spectrum-img"
-              >
-            </a>
+          <a href="images/fig_2a_spectrum.png" target="_blank" class="fig2-image-link">
+            <img
+              src="images/fig_2a_spectrum.png"
+              alt="Power spectral density plot"
+              class="fig2-spectrum-img"
+            >
+          </a>
 
-            <p class="image-note">
-              Click the image to open it in a new tab and zoom in.
-            </p>
-          </div>
+          <p class="image-note">
+            Click the image to open it in a new tab and zoom in.
+          </p>
+        </div>
 
-          <div class="fig2-map-panel">
-            <div class="stats" id="fig2-stats"></div>
-            <div id="fig2-map" class="plot-container-small"></div>
-            <div id="fig2-error" class="error"></div>
-          </div>
+        <div class="fig2-panel">
+          <h3>Point locations</h3>
+          <div class="stats" id="fig2-stats"></div>
+          <div id="fig2-map" class="plot-container-small"></div>
+          <div id="fig2-error" class="error"></div>
         </div>
       </div>
 
-      <!-- Panel 2b -->
-      <div id="fig2b-panel" class="hidden">
+      <div class="fig2-hist-panel">
+        <h3>Histograms of the ten highest-energy peaks</h3>
         <div class="stats" id="fig2b-stats"></div>
         <div id="fig2b-hist" class="plot-container"></div>
         <div id="fig2b-error" class="error"></div>
@@ -184,15 +179,9 @@
         Figure 4. Monthly maxima from the GOS dataset (MM-GOS, grey squares) at three tide-gauge locations, with the month-dependent 50-year return level (red dotted) and the year-integrated 50-year return level (blue dash-dot).
       </p>
 
-      <div class="controls">
-        <label for="fig4-select"><b>Panel:</b></label>
-        <select id="fig4-select">
-          <option value="4a">Figure 4a</option>
-          <option value="4b">Figure 4b</option>
-          <option value="4c">Figure 4c</option>
-        </select>
-      </div>
-
+      <!-- Los tres paneles se dibujan en una sola fila dentro del mismo
+           grafico, como el tiledlayout(1,3) del script MATLAB.
+           Antes habia un selector que mostraba un panel cada vez. -->
       <div class="stats" id="fig4-stats"></div>
       <div id="fig4-plot" class="plot-container-medium"></div>
       <div id="fig4-error" class="error"></div>
