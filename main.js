@@ -17,8 +17,10 @@ const corrPalette = rgb01ToPlotlyScale([
   [0.6464,0,0.4500],[0.6792,0.0417,0.7208],[0.6429,0.2857,0.8214],[0.8214,0.6429,0.9107]
 ]);
 
+// flip(hot(30)) y luego pal_rmse(2:end,:): el primer color (blanco puro) se
+// descarta, por eso esta comentado y quedan 29 en vez de 30.
 const rmsePalette = rgb01ToPlotlyScale([
-  [1.0000,1.0000,1.0000],[1.0000,1.0000,0.8750],[1.0000,1.0000,0.7500],[1.0000,1.0000,0.6250],
+  /* [1.0000,1.0000,1.0000], */ [1.0000,1.0000,0.8750],[1.0000,1.0000,0.7500],[1.0000,1.0000,0.6250],
   [1.0000,1.0000,0.5000],[1.0000,1.0000,0.3750],[1.0000,1.0000,0.2500],[1.0000,1.0000,0.1250],
   [1.0000,1.0000,0.0000],[1.0000,0.9091,0.0000],[1.0000,0.8182,0.0000],[1.0000,0.7273,0.0000],
   [1.0000,0.6364,0.0000],[1.0000,0.5455,0.0000],[1.0000,0.4545,0.0000],[1.0000,0.3636,0.0000],
@@ -40,16 +42,18 @@ const nrmsePalette = rgb01ToPlotlyScale([
   [1.0000,0.0000,0.1500]
 ]);
 
-const nbiasPalette = rgb01ToPlotlyScale([
-  [0.9500,1.0000,0.0000],[0.8000,1.0000,0.0000],[0.6500,1.0000,0.0000],[0.5000,1.0000,0.0000],
-  [0.3500,1.0000,0.0000],[0.2000,1.0000,0.0000],[0.0500,1.0000,0.0000],[0.0000,1.0000,0.1000],
-  [0.0000,1.0000,0.2500],[0.0000,1.0000,0.4000],[0.0000,1.0000,0.5500],[0.0000,1.0000,0.7000],
-  [0.0000,1.0000,0.8500],[0.0000,1.0000,1.0000],[0.0000,0.8500,1.0000],[0.0000,0.7000,1.0000],
-  [0.0000,0.5500,1.0000],[0.0000,0.4000,1.0000],[0.0000,0.2500,1.0000],[0.0000,0.1000,1.0000],
-  [0.0500,0.0000,1.0000],[0.2000,0.0000,1.0000],[0.3500,0.0000,1.0000],[0.5000,0.0000,1.0000],
-  [0.6500,0.0000,1.0000],[0.8000,0.0000,1.0000],[0.9500,0.0000,1.0000],[1.0000,0.0000,0.9000],
-  [1.0000,0.0000,0.7500],[1.0000,0.0000,0.6000],[1.0000,0.0000,0.4500],[1.0000,0.0000,0.3000],
-  [1.0000,0.0000,0.1500]
+// boonlib('rbmap',30): la usan los dos paneles de sesgo de la Figura 6,
+// el (b) bias [cm] y el (e) Nbias. Antes cada uno llevaba una paleta
+// distinta y ninguna era esta.
+const fig6RbPalette = rgb01ToPlotlyScale([
+  [0.0000,0.0000,0.5000],[0.0000,0.0000,0.5862],[0.0000,0.0000,0.6724],[0.0000,0.0000,0.7586],
+  [0.0000,0.0000,0.8448],[0.0000,0.0000,0.9310],[0.0230,0.0230,1.0000],[0.1379,0.1379,1.0000],
+  [0.2529,0.2529,1.0000],[0.3678,0.3678,1.0000],[0.4828,0.4828,1.0000],[0.5977,0.5977,1.0000],
+  [0.7126,0.7126,1.0000],[0.8276,0.8276,1.0000],[0.9425,0.9425,1.0000],[1.0000,0.9425,0.9425],
+  [1.0000,0.8276,0.8276],[1.0000,0.7126,0.7126],[1.0000,0.5977,0.5977],[1.0000,0.4828,0.4828],
+  [1.0000,0.3678,0.3678],[1.0000,0.2529,0.2529],[1.0000,0.1379,0.1379],[1.0000,0.0230,0.0230],
+  [0.9310,0.0000,0.0000],[0.8448,0.0000,0.0000],[0.7586,0.0000,0.0000],[0.6724,0.0000,0.0000],
+  [0.5862,0.0000,0.0000],[0.5000,0.0000,0.0000]
 ]);
 
 // Paletas de la antigua "Figure 6" (difPearson / difRmse / nbiasUnfiltered)
@@ -242,7 +246,6 @@ function updateFig4Stats() {
   const totalMm = FIG4_PANEL_KEYS.reduce(
     (acc, panelKey) => acc + (FIG4_MM[panelKey] ?? []).length, 0);
 
-  pills.push(`<span class="pill">N = ${totalMm} monthly maxima</span>`);
 
   document.getElementById('fig4-stats').innerHTML = pills.join('\n');
 }
@@ -506,29 +509,26 @@ function initFigure5Selector() {
 // =============================
 
 const FIG6_METRICS = {
+  // (a) correlacion. La barra iba de -0.2 a 1; ahora va de 0 a 1:
+  //   cmin: -0.2,
   Corr: {
-    label: 'Corr.',
+    label: 'r',
     unit: '',
-    cmin: -0.2,
+    cmin: 0,
     cmax: 1,
     decimals: 3,
     colorscale: corrPalette
   },
+  // (b) bias. Antes llevaba una escala RdYlBu puesta a mano; ahora usa la
+  // misma rbmap(30) que el script MATLAB:
+  //   colorscale: [[0.00,'rgb(49,54,149)'], ... [1.00,'rgb(165,0,38)']]
   Bias: {
-    label: 'Bias',
+    label: 'bias',
     unit: 'cm',
     cmin: -2,
     cmax: 2,
     decimals: 2,
-    colorscale: [
-      [0.00, 'rgb(49,54,149)'],
-      [0.20, 'rgb(69,117,180)'],
-      [0.40, 'rgb(171,217,233)'],
-      [0.50, 'rgb(255,255,255)'],
-      [0.60, 'rgb(253,174,97)'],
-      [0.80, 'rgb(215,48,39)'],
-      [1.00, 'rgb(165,0,38)']
-    ]
+    colorscale: fig6RbPalette
   },
   RMSE: {
     label: 'RMSE',
@@ -539,20 +539,22 @@ const FIG6_METRICS = {
     colorscale: rmsePalette
   },
   NRMSE_prct: {
-    label: 'NRMSE_prct',
+    label: 'NRMSE<sub>prct</sub>',
     unit: '%',
     cmin: 0,
     cmax: 24,
     decimals: 2,
     colorscale: nrmsePalette
   },
+  // (e) bias normalizado. Llevaba una copia de la hsv del panel (d); en
+  // MATLAB comparte la rbmap(30) con el panel (b).
   NBias: {
-    label: 'NBias',
+    label: 'Nbias',
     unit: '',
     cmin: -5,
     cmax: 5,
     decimals: 2,
-    colorscale: nbiasPalette
+    colorscale: fig6RbPalette
   }
 };
 
@@ -571,12 +573,52 @@ function buildFig6Hover(d) {
     `<b>${d.station}</b><br>` +
     `Lon: ${d.lon.toFixed(3)}°<br>` +
     `Lat: ${d.lat.toFixed(3)}°<br>` +
-    `Corr.: ${d.Corr.toFixed(3)}<br>` +
-    `Bias: ${d.Bias.toFixed(2)} cm<br>` +
+    `r: ${d.Corr.toFixed(3)}<br>` +
+    `bias: ${d.Bias.toFixed(2)} cm<br>` +
     `RMSE: ${d.RMSE.toFixed(2)} cm<br>` +
-    `NRMSE_prct: ${d.NRMSE_prct.toFixed(2)} %<br>` +
-    `NBias: ${d.NBias.toFixed(2)}`
+    `NRMSE<sub>prct</sub>: ${d.NRMSE_prct.toFixed(2)} %<br>` +
+    `Nbias: ${d.NBias.toFixed(2)}`
   );
+}
+
+// Reproduce, para la variable seleccionada, la linea que le corresponde en el
+// cuadro de resumen de la figura del paper (seccion "ESTADISTICOS QUE VAN AL
+// CUADRO DE RESUMEN" de fig6_validacion_paneles.m). Alli las seis lineas van
+// juntas en un recuadro porque se ven los cinco mapas a la vez; aqui solo se
+// ve un mapa cada vez, asi que se muestran las de esa variable.
+function updateFig6Stats(statsId, data, metricName, metricConfig) {
+  const values = data.map(d => d[metricName]).filter(Number.isFinite);
+  const n = values.length;
+  const mean = arr => arr.reduce((s, v) => s + v, 0) / arr.length;
+  const unit = metricConfig.unit ? ' ' + metricConfig.unit : '';
+
+  // porcentaje de estaciones con valor positivo y con valor negativo
+  const pctPos = (values.filter(v => v > 0).length / n) * 100;
+  const pctNeg = (values.filter(v => v < 0).length / n) * 100;
+
+  const pills = [`<span class="pill">N = ${n} stations</span>`];
+
+  if (metricName === 'Corr') {
+    pills.push(`<span class="pill">r&#773; = ${mean(values).toFixed(2)}</span>`);
+  } else if (metricName === 'Bias' || metricName === 'NBias') {
+    const absMean = mean(values.map(Math.abs)).toFixed(2);
+    const name = metricName === 'Bias' ? 'bias' : 'Nbias';
+
+    pills.push(`<span class="pill">mean |${name}| = ${absMean}${unit}</span>`);
+    pills.push(`<span class="pill">p&#8314; = ${pctPos.toFixed(0)}%</span>`);
+    pills.push(`<span class="pill">p&#8315; = ${pctNeg.toFixed(0)}%</span>`);
+  } else if (metricName === 'RMSE') {
+    pills.push(`<span class="pill">mean RMSE = ${mean(values).toFixed(2)}${unit}</span>`);
+  } else if (metricName === 'NRMSE_prct') {
+    pills.push(`<span class="pill">mean NRMSE<sub>prct</sub> = ${mean(values).toFixed(2)}${unit}</span>`);
+    pills.push(`<span class="pill">max NRMSE<sub>prct</sub> = ${Math.max(...values).toFixed(2)}${unit}</span>`);
+  }
+
+  pills.push(
+    `<span class="pill">colour range = [${metricConfig.cmin}, ${metricConfig.cmax}]${unit}</span>`
+  );
+
+  document.getElementById(statsId).innerHTML = pills.join('\n');
 }
 
 function initFigure6(rows) {
@@ -614,7 +656,8 @@ function initFigure6(rows) {
       data: FIG6_DATA,
       metricName: metric,
       metricConfig: FIG6_METRICS[metric],
-      hoverBuilder: buildFig6Hover
+      hoverBuilder: buildFig6Hover,
+      statsUpdater: updateFig6Stats
     });
   }
 
@@ -1499,33 +1542,6 @@ function updateFig2bStats(series) {
     <span class="pill">Bin width = ${(FIG2_BIN_WIDTH * 60).toFixed(2)} min</span>
   `;
 }
-
-// Ya no hay selector: los tres subpaneles (espectro, mapa e histogramas) se
-// ven a la vez, con la misma estructura que la Figura 3.
-// function renderFigure2() {
-//   const selector = document.getElementById('fig2-select');
-//   const panel1a = document.getElementById('fig2a-panel');
-//   const panel1b = document.getElementById('fig2b-panel');
-//   const note = document.getElementById('fig2-note');
-//
-//   if (selector.value === '2a') {
-//     panel1a.classList.remove('hidden');
-//     panel1b.classList.add('hidden');
-//     note.innerHTML = 'Propiedad de Elsy Ticse - IHCANTABRIA';
-//     plotFig2aMap(FIG2A_POINTS);
-//   } else {
-//     panel1a.classList.add('hidden');
-//     panel1b.classList.remove('hidden');
-//     note.innerHTML = 'Propiedad de Elsy Ticse - IHCANTABRIA';
-//     plotFig2bHistogram(FIG2B_SERIES);
-//   }
-// }
-//
-// function initFigure2Selector() {
-//   const selector = document.getElementById('fig2-select');
-//   selector.addEventListener('change', renderFigure2);
-//   renderFigure2();
-// }
 
 function renderFigure2() {
   plotFig2aMap(FIG2A_POINTS);

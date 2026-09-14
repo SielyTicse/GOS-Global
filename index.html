@@ -68,7 +68,7 @@
       <h2>2. METODOLOGY -> 2.2 Radiational Tides Filtering</h2>
 
       <p class="figure-caption">
-        Figure 2: (a) Spectral power derived from 1,099 points worldwide, every 8° and 216 locations tide-gauge stations (b)Histograms of the ten highest-energy peaks within the semidiurnal, diurnal, and terdiurnal bands, respectively. The bin width is approximately 4 minutes. 
+        Figure 2: (a) Spectral power derived from 1,099 points worldwide, every 8° and 216 locations tide-gauge stations (b)Histograms of the ten highest-energy peaks within the semidiurnal, diurnal, and terdiurnal bands, respectively. The bin width is approximately 3 minutes. 
       </p>
 
       <!-- Tres subpaneles a la vez, misma estructura que la Figura 3:
@@ -262,12 +262,13 @@
 
       <div class="controls">
         <label for="fig6-select"><b>Variable:</b></label>
+        <!-- las letras son las de los cinco paneles de la figura del paper -->
         <select id="fig6-select">
-          <option value="Corr">Pearson</option>
-          <option value="Bias">Bias</option>
-          <option value="RMSE">RMSE</option>
-          <option value="NRMSE_prct">NRMSE_prct</option>
-          <option value="NBias">NBias</option>
+          <option value="Corr">(a) r</option>
+          <option value="Bias">(b) bias</option>
+          <option value="RMSE">(c) RMSE</option>
+          <option value="NRMSE_prct">(d) NRMSE_prct</option>
+          <option value="NBias">(e) Nbias</option>
         </select>
       </div>
 

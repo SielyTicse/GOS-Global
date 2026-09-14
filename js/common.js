@@ -135,7 +135,11 @@ function plotStationMap({
   data,
   metricName,
   metricConfig,
-  hoverBuilder
+  hoverBuilder,
+  // opcional: funcion (statsId, data, metricName, metricConfig) que pinta
+  // las pastillas. Si no se pasa, se usan las genericas de updateStats().
+  // La Figura 6 pasa la suya para reproducir el cuadro de resumen del paper.
+  statsUpdater
 }) {
   const trace = {
     type: 'scattergeo',
@@ -175,5 +179,5 @@ function plotStationMap({
     displaylogo: false
   });
 
-  updateStats(statsId, data, metricName, metricConfig);
+  (statsUpdater ?? updateStats)(statsId, data, metricName, metricConfig);
 }
