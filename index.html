@@ -19,34 +19,33 @@
     <p>
       Interactive visualisation of figures for the GOS database.
     </p>
+
+    <nav class="page-nav">
+      <a class="nav-button" href="supplementary.html">Supplementary figures &rarr;</a>
+    </nav>
   </header>
 
   <main class="page-content">
 
+    <!-- ===================================================================
+         FIGURE 1 - NUEVA. Imagen estatica.
+         PENDIENTE: colocar el archivo en images/fig_1.png y escribir el
+         titulo de seccion (<h2>) y el pie de figura reales.
+         =================================================================== -->
     <section class="figure-card" id="figure-1">
-  <h2>2. METODOLOGY -> 2.2 Radiational Tide Filtering</h2>
+      <h2>1. INTRODUCTION</h2>
 
-  <p class="figure-caption">
-    Figure 2: (a) Spectral power derived from 1,099 points worldwide. The locations of these points are shown in (b), distributed across 883 grid points spaced every 8° and 216 points located near tide gauge stations (in colour, including the point groups illustrated in Figure 2). (c–e) Histograms of the ten highest-energy peaks within the (c) semidiurnal, (d) diurnal, and (e) terdiurnal bands, respectively. The bin width is approximately 13 minutes.
-  </p>
+      <p class="figure-caption">
+        Figure 1. <em>[pendiente: pie de figura]</em>
+      </p>
 
-  <div class="controls">
-    <label for="fig1-select"><b>Panel:</b></label>
-    <select id="fig1-select">
-      <option value="1a">Figure 2a,b</option>
-      <option value="1b">Figure 2c-e</option>
-    </select>
-  </div>
-
-  <!-- Panel 1a -->
-  <div id="fig1a-panel">
-    <div class="fig1-grid">
-      <div class="fig1-image-panel">
-        <a href="images/fig_1a_spectrum.png" target="_blank" class="fig1-image-link">
+      <div class="figure-image-panel">
+        <a href="images/fig_1.png" target="_blank" class="figure-image-link">
           <img
-            src="images/fig_1a_spectrum.png"
-            alt="Power spectral density plot"
-            class="fig1-spectrum-img"
+            src="images/fig_1.png"
+            alt="Figure 1"
+            class="figure-image"
+            onerror="this.parentNode.outerHTML='&lt;div class=&quot;placeholder&quot;&gt;Falta images/fig_1.png&lt;/div&gt;'"
           >
         </a>
 
@@ -55,113 +54,218 @@
         </p>
       </div>
 
-      <div class="fig1-map-panel">
-        <div class="stats" id="fig1-stats"></div>
-        <div id="fig1-map" class="plot-container-small"></div>
-        <div id="fig1-error" class="error"></div>
+      <div class="figure-note">
+        Propiedad de Elsy Ticse - IHCANTABRIA
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Panel 1b -->
-  <div id="fig1b-panel" class="hidden">
-    <div class="stats" id="fig1b-stats"></div>
-    <div id="fig1b-hist" class="plot-container"></div>
-    <div id="fig1b-error" class="error"></div>
-  </div>
+    <!-- ===================================================================
+         FIGURE 2 - antes "Figure 2" (seccion figure-1).
+         El PNG del espectro se reemplaza: images/fig_2a_spectrum.png
+         =================================================================== -->
+    <section class="figure-card" id="figure-2">
+      <h2>2. METODOLOGY -> 2.2 Radiational Tide Filtering</h2>
 
-  <div class="figure-note" id="fig1-note">
-    Propiedad de Elsy Ticse - IHCANTABRIA
-  </div>
-</section>
-
-<section class="figure-card" id="figure-2">
-   <h2>2. METODOLOGY -> 2.2 Radiational Tide Filtering</h2>
-
-   <p class="figure-caption">
-      Figure 3. Time series of the raw simulated data from 18 locations near tide gauges  in four regions historically identified as storm surge hotspots (Bernier et al., 2024). (a)USA Group, (b)EU Group, (c)ASIA Group, (d)AUSTR Group. The locations are shown in colours in Figure 2. Panels (e), (f), (g), and (h) display their corresponding power spectra for both the observational data (tide gauges, shown in grey) and the raw simulated data (colored lines, corresponding to the time series legends).
-   </p>
-
-  <div class="controls">
-    <label for="fig2-select"><b>Panel:</b></label>
-    <select id="fig2-select">
-      <option value="2a">Figure 3a,e</option>
-      <option value="2b">Figure 3b,f</option>
-      <option value="2c">Figure 3c,g</option>
-      <option value="2d">Figure 3d,h</option>
-    </select>
-  </div>
-
-  <div class="fig2-grid">
-    <div class="fig2-panel">
-      <h3>Time series</h3>
-      <div id="fig2-ts" class="plot-container-medium"></div>
-    </div>
-
-    <div class="fig2-panel">
-      <h3>Power spectral density</h3>
-
-      <a href="images/fig_2a_psd.png" target="_blank" class="fig2-image-link">
-        <img
-          id="fig2-psd-img"
-          src="images/fig_2a_psd.png"
-          alt="PSD"
-          class="fig2-psd-img"
-        >
-      </a>
-
-      <p class="image-note">
-        Click on the image to open it in a new tab and zoom.
-      </p>
-    </div>
-  </div>
-
-  <div class="fig2-map-panel">
-    <h3>Station locations</h3>
-    <div class="stats" id="fig2-stats"></div>
-    <div id="fig2-map" class="plot-container-small"></div>
-    <div id="fig2-error" class="error"></div>
-  </div>
-
-  <div class="figure-note">
-    Propiedad de Elsy Ticse - IHCANTABRIA.
-  </div>
-</section>
-
-    <section class="figure-card" id="figure-3">
-      <h2>3. RESULTS -> 3.1 Radiational Tide</h2>
       <p class="figure-caption">
-        Figure 4. Frequency of the highest energy peak derived from the power spectral density analysis at (a) grid points spaced approximately every 8° and 216 points near tide gauges, and (b) coastal grid points.
+        Figure 2: (a) Spectral power derived from 1,099 points worldwide. The locations of these points are shown in (b), distributed across 883 grid points spaced every 8° and 216 points located near tide gauge stations (in colour, including the point groups illustrated in Figure 3). (c–e) Histograms of the ten highest-energy peaks within the (c) semidiurnal, (d) diurnal, and (e) terdiurnal bands, respectively. The bin width is approximately 13 minutes.
+      </p>
+
+      <div class="controls">
+        <label for="fig2-select"><b>Panel:</b></label>
+        <select id="fig2-select">
+          <option value="2a">Figure 2a,b</option>
+          <option value="2b">Figure 2c-e</option>
+        </select>
+      </div>
+
+      <!-- Panel 2a -->
+      <div id="fig2a-panel">
+        <div class="fig2-grid">
+          <div class="fig2-image-panel">
+            <a href="images/fig_2a_spectrum.png" target="_blank" class="fig2-image-link">
+              <img
+                src="images/fig_2a_spectrum.png"
+                alt="Power spectral density plot"
+                class="fig2-spectrum-img"
+              >
+            </a>
+
+            <p class="image-note">
+              Click the image to open it in a new tab and zoom in.
+            </p>
+          </div>
+
+          <div class="fig2-map-panel">
+            <div class="stats" id="fig2-stats"></div>
+            <div id="fig2-map" class="plot-container-small"></div>
+            <div id="fig2-error" class="error"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 2b -->
+      <div id="fig2b-panel" class="hidden">
+        <div class="stats" id="fig2b-stats"></div>
+        <div id="fig2b-hist" class="plot-container"></div>
+        <div id="fig2b-error" class="error"></div>
+      </div>
+
+      <div class="figure-note" id="fig2-note">
+        Propiedad de Elsy Ticse - IHCANTABRIA
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         FIGURE 3 - antes "Figure 3" (seccion figure-2). Sin cambios.
+         =================================================================== -->
+    <section class="figure-card" id="figure-3">
+      <h2>2. METODOLOGY -> 2.2 Radiational Tide Filtering</h2>
+
+      <p class="figure-caption">
+        Figure 3. Time series of the raw simulated data from 18 locations near tide gauges in four regions historically identified as storm surge hotspots (Bernier et al., 2024). (a) USA Group, (b) EU Group, (c) ASIA Group, (d) AUSTR Group. The locations are shown in colours in Figure 2. Panels (e), (f), (g), and (h) display their corresponding power spectra for both the observational data (tide gauges, shown in grey) and the raw simulated data (colored lines, corresponding to the time series legends).
       </p>
 
       <div class="controls">
         <label for="fig3-select"><b>Panel:</b></label>
         <select id="fig3-select">
-          <option value="3a">Figure 4a</option>
-          <option value="3b">Figure 4b</option>
+          <option value="3a">Figure 3a,e</option>
+          <option value="3b">Figure 3b,f</option>
+          <option value="3c">Figure 3c,g</option>
+          <option value="3d">Figure 3d,h</option>
         </select>
       </div>
 
-      <div class="stats" id="fig3-stats"></div>
+      <div class="fig3-grid">
+        <div class="fig3-panel">
+          <h3>Time series</h3>
+          <div id="fig3-ts" class="plot-container-medium"></div>
+        </div>
 
-      <div id="fig3-map" class="plot-container"></div>
+        <div class="fig3-panel">
+          <h3>Power spectral density</h3>
 
-      <div id="fig3-error" class="error"></div>
+          <a href="images/fig_3a_psd.png" target="_blank" class="fig3-image-link">
+            <img
+              id="fig3-psd-img"
+              src="images/fig_3a_psd.png"
+              alt="PSD"
+              class="fig3-psd-img"
+            >
+          </a>
+
+          <p class="image-note">
+            Click on the image to open it in a new tab and zoom.
+          </p>
+        </div>
+      </div>
+
+      <div class="fig3-map-panel">
+        <h3>Station locations</h3>
+        <div class="stats" id="fig3-stats"></div>
+        <div id="fig3-map" class="plot-container-small"></div>
+        <div id="fig3-error" class="error"></div>
+      </div>
 
       <div class="figure-note">
-        Propiedad de Elsy Ticse IHCANTABRIA.
+        Propiedad de Elsy Ticse - IHCANTABRIA.
       </div>
     </section>
 
+    <!-- ===================================================================
+         FIGURE 4 - NUEVA. Interactiva.
+         Origen: codigos_GEV_ESTACIONARIO/fig4_panel_GOS_3estaciones.m
+         Datos:  data/fig_4_mm.csv, fig_4_rl.csv, fig_4_panels.csv
+         PENDIENTE: titulo de seccion (<h2>) y pie de figura reales.
+         =================================================================== -->
     <section class="figure-card" id="figure-4">
-      <h2>3. RESULTS -> 3.2 Validation</h2>
+      <h2>3. RESULTS <em>[pendiente: subseccion]</em></h2>
+
       <p class="figure-caption">
-        Figure 5. Validation statistics of the GOS dataset after application of the radiational-tide filter, computed at model grid points located near 216 tide gauge stations.
+        Figure 4. <em>[pendiente: pie de figura]</em> Monthly maxima from the GOS dataset (MM-GOS, grey squares) at three tide-gauge locations, with the month-dependent 50-year return level (red dotted) and the year-integrated 50-year return level (blue dash-dot).
       </p>
 
       <div class="controls">
-        <label for="fig4-select"><b>Variable:</b></label>
+        <label for="fig4-select"><b>Panel:</b></label>
         <select id="fig4-select">
+          <option value="4a">Figure 4a</option>
+          <option value="4b">Figure 4b</option>
+          <option value="4c">Figure 4c</option>
+        </select>
+      </div>
+
+      <div class="stats" id="fig4-stats"></div>
+      <div id="fig4-plot" class="plot-container-medium"></div>
+      <div id="fig4-error" class="error"></div>
+
+      <div class="figure-note">
+        Propiedad de Elsy Ticse - IHCANTABRIA
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         FIGURE 5 - antes "Figure 4" (seccion figure-3).
+         El antiguo panel (b) costero pasa a ser el panel (a) interactivo,
+         y el antiguo panel (a) pasa a ser una imagen estatica.
+         PENDIENTE: colocar el archivo en images/fig_5b.png
+         =================================================================== -->
+    <section class="figure-card" id="figure-5">
+      <h2>3. RESULTS -> 3.1 Radiational Tide</h2>
+
+      <p class="figure-caption">
+        Figure 5. Frequency of the highest energy peak derived from the power spectral density analysis at (a) coastal grid points, and (b) grid points spaced approximately every 8° and 216 points near tide gauges.
+      </p>
+
+      <div class="controls">
+        <label for="fig5-select"><b>Panel:</b></label>
+        <select id="fig5-select">
+          <option value="5a">Figure 5a</option>
+          <option value="5b">Figure 5b</option>
+        </select>
+      </div>
+
+      <!-- Panel 5a: mapa interactivo (data/fig_5a.csv) -->
+      <div id="fig5a-panel">
+        <div class="stats" id="fig5-stats"></div>
+        <div id="fig5-map" class="plot-container"></div>
+        <div id="fig5-error" class="error"></div>
+      </div>
+
+      <!-- Panel 5b: imagen estatica -->
+      <div id="fig5b-panel" class="hidden">
+        <div class="figure-image-panel">
+          <a href="images/fig_5b.png" target="_blank" class="figure-image-link">
+            <img
+              src="images/fig_5b.png"
+              alt="Figure 5b"
+              class="figure-image"
+              onerror="this.parentNode.outerHTML='&lt;div class=&quot;placeholder&quot;&gt;Falta images/fig_5b.png&lt;/div&gt;'"
+            >
+          </a>
+
+          <p class="image-note">
+            Click the image to open it in a new tab and zoom in.
+          </p>
+        </div>
+      </div>
+
+      <div class="figure-note">
+        Propiedad de Elsy Ticse - IHCANTABRIA.
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         FIGURE 6 - antes "Figure 5" (seccion figure-4). Sin cambios.
+         =================================================================== -->
+    <section class="figure-card" id="figure-6">
+      <h2>3. RESULTS -> 3.2 Validation</h2>
+
+      <p class="figure-caption">
+        Figure 6. Validation statistics of the GOS dataset after application of the radiational-tide filter, computed at model grid points located near 216 tide gauge stations.
+      </p>
+
+      <div class="controls">
+        <label for="fig6-select"><b>Variable:</b></label>
+        <select id="fig6-select">
           <option value="Corr">Pearson</option>
           <option value="Bias">Bias</option>
           <option value="RMSE">RMSE</option>
@@ -170,81 +274,85 @@
         </select>
       </div>
 
-      <div class="stats" id="fig4-stats"></div>
-      <div id="fig4-map" class="plot-container"></div>
-      <div id="fig4-error" class="error"></div>
+      <div class="stats" id="fig6-stats"></div>
+      <div id="fig6-map" class="plot-container"></div>
+      <div id="fig6-error" class="error"></div>
 
       <div class="figure-note">
         Propiedad de Elsy Ticse - IHCANTABRIA
       </div>
     </section>
 
-    <section class="figure-card" id="figure-5">
+    <!-- ===================================================================
+         FIGURE 7 - antes "Figure 7" (seccion figure-6). Sin cambios.
+         =================================================================== -->
+    <section class="figure-card" id="figure-7">
       <h2>3. RESULTS -> 3.2 Validation</h2>
-      <p class="figure-caption">
-        Figure 6. Statistical comparison between the unfiltered and radiational-tide–filtered dataset (GOS dataset) at model grid points located near 216 tide-gauge stations.
-      </p>
 
-      <div class="controls">
-        <label for="fig5-select"><b>Variable:</b></label>
-        <select id="fig5-select">
-          <option value="Dif_Pearson">Dif_Pearson</option>
-          <option value="Dif_RMSE">Dif_RMSE</option>
-          <option value="NBias_Unfiltered">NBias_Unfiltered</option>
-        </select>
-      </div>
-
-      <div class="stats" id="fig5-stats"></div>
-      <div id="fig5-map" class="plot-container"></div>
-      <div id="fig5-error" class="error"></div>
-
-      <div class="figure-note">
-       Propiedad de Elsy Ticse - IHCANTABRIA
-      </div>
-    </section>
-
-    <section class="figure-card" id="figure-6">
-      <h2>3. RESULTS -> 3.2 Validation</h2>
       <p class="figure-caption">
         Figure 7. (a) Maximum storm surge level (maximum of maxima - MOM) calculated from the GOS dataset (1993–2024) for the coastal zones and (b) Maximum Absolute Error (MAE, cm) between simulated and observed mean annual surge maxima at tide gauge stations, defined in Eq. (3).
       </p>
+
       <div class="controls">
-        <label for="fig6-select"><b>Panel:</b></label>
-        <select id="fig6-select">
-          <option value="6a">Figure 7a</option>
-          <option value="6b">Figure 7b</option>
+        <label for="fig7-select"><b>Panel:</b></label>
+        <select id="fig7-select">
+          <option value="7a">Figure 7a</option>
+          <option value="7b">Figure 7b</option>
         </select>
       </div>
 
-      <div class="stats" id="fig6-stats"></div>
-
-      <div id="fig6-map" class="plot-container"></div>
-
-      <div id="fig6-error" class="error"></div>
+      <div class="stats" id="fig7-stats"></div>
+      <div id="fig7-map" class="plot-container"></div>
+      <div id="fig7-error" class="error"></div>
 
       <div class="figure-note">
         Propiedad de Elsy Ticse - IHCANTABRIA.
       </div>
     </section>
 
-    <section class="figure-card" id="figure-7">
-      <h2>3. RESULTS -> 3.3 Climatical Analysis</h2>
+    <!-- ===================================================================
+         FIGURE 8 - NUEVA. Interactiva.
+         Origen: codigos_GEV_ESTACIONARIO/fig8_parametro_forma_phi0.m
+         Datos:  data/fig_8.csv
+         PENDIENTE: titulo de seccion (<h2>) y pie de figura reales.
+         =================================================================== -->
+    <section class="figure-card" id="figure-8">
+      <h2>3. RESULTS <em>[pendiente: subseccion]</em></h2>
+
       <p class="figure-caption">
-        Figure 8: (a) 50-year return level of storm surges (m). (b) Intra-annual variability of the 50-year return level, colours indicate the month with the highest probability of occurrence of the largest extremes, while the circle size represents the amplitude of the seasonal curve at each point.
+        Figure 8. <em>[pendiente: pie de figura]</em> Shape parameter (&phi;<sub>0</sub>) of the stationary GEV distribution fitted at the coastal grid points of the GOS dataset.
       </p>
+
+      <div class="stats" id="fig8-stats"></div>
+      <div id="fig8-map" class="plot-container"></div>
+      <div id="fig8-error" class="error"></div>
+
+      <div class="figure-note">
+        Propiedad de Elsy Ticse - IHCANTABRIA
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         FIGURE 9 - antes "Figure 8" (seccion figure-7). Sin cambios.
+         =================================================================== -->
+    <section class="figure-card" id="figure-9">
+      <h2>3. RESULTS -> 3.3 Climatical Analysis</h2>
+
+      <p class="figure-caption">
+        Figure 9: (a) 50-year return level of storm surges (m). (b) Intra-annual variability of the 50-year return level, colours indicate the month with the highest probability of occurrence of the largest extremes, while the circle size represents the amplitude of the seasonal curve at each point.
+      </p>
+
       <div class="controls">
-        <label for="fig7-select"><b>Panel:</b></label>
-        <select id="fig7-select">
-          <option value="7a">Figure 8a</option>
-          <option value="7b">Figure 8b</option>
+        <label for="fig9-select"><b>Panel:</b></label>
+        <select id="fig9-select">
+          <option value="9a">Figure 9a</option>
+          <option value="9b">Figure 9b</option>
         </select>
       </div>
 
-      <div class="stats" id="fig7-stats"></div>
-
-      <div id="fig7-map" class="plot-container"></div>
-
-      <div id="fig7-error" class="error"></div>
+      <div class="stats" id="fig9-stats"></div>
+      <div id="fig9-map" class="plot-container"></div>
+      <div id="fig9-error" class="error"></div>
 
       <div class="figure-note">
         Propiedad de Elsy Ticse - IHCANTABRIA.
@@ -253,6 +361,7 @@
 
   </main>
 
+  <script src="js/common.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

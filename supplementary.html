@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>GOS GLOBAL - Supplementary</title>
+
+  <script src="https://cdn.plot.ly/plotly-3.1.0.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <header class="page-header">
+    <h1>Supplementary figures</h1>
+    <p>
+      Global Ocean Surge (GOS): A 32-Year Storm Surge Dataset Free of Radiational Tide Signal.
+    </p>
+
+    <nav class="page-nav">
+      <a class="nav-button" href="index.html">&larr; Back to main figures</a>
+    </nav>
+  </header>
+
+  <main class="page-content">
+
+    <!-- ===================================================================
+         SUPPLEMENTARY FIGURE 1 - antes "Figure 6" de index.html.
+         Datos: data/fig_s1.csv (antes data/fig_5.csv)
+         Codigo: js/supplementary.js
+         =================================================================== -->
+    <section class="figure-card" id="figure-s1">
+      <h2>Supplementary Figure 1</h2>
+
+      <p class="figure-caption">
+        Supplementary Figure 1. Statistical comparison between the unfiltered and radiational-tide–filtered dataset (GOS dataset) at model grid points located near 216 tide-gauge stations.
+      </p>
+
+      <div class="controls">
+        <label for="figs1-select"><b>Variable:</b></label>
+        <select id="figs1-select">
+          <option value="Dif_Pearson">Dif_Pearson</option>
+          <option value="Dif_RMSE">Dif_RMSE</option>
+          <option value="NBias_Unfiltered">NBias_Unfiltered</option>
+        </select>
+      </div>
+
+      <div class="stats" id="figs1-stats"></div>
+      <div id="figs1-map" class="plot-container"></div>
+      <div id="figs1-error" class="error"></div>
+
+      <div class="figure-note">
+        Propiedad de Elsy Ticse - IHCANTABRIA
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SUPPLEMENTARY FIGURE 2 - PENDIENTE.
+         Si es imagen: colocar images/fig_s2.png y borrar este comentario.
+         Si es interactiva: hace falta data/fig_s2.csv y un bloque en
+         js/supplementary.js equivalente al de la Supp 1.
+         =================================================================== -->
+    <section class="figure-card" id="figure-s2">
+      <h2>Supplementary Figure 2</h2>
+
+      <p class="figure-caption">
+        Supplementary Figure 2. <em>[pendiente: pie de figura]</em>
+      </p>
+
+      <div class="figure-image-panel">
+        <a href="images/fig_s2.png" target="_blank" class="figure-image-link">
+          <img
+            src="images/fig_s2.png"
+            alt="Supplementary Figure 2"
+            class="figure-image"
+            onerror="this.parentNode.outerHTML='&lt;div class=&quot;placeholder&quot;&gt;Falta images/fig_s2.png&lt;/div&gt;'"
+          >
+        </a>
+
+        <p class="image-note">
+          Click the image to open it in a new tab and zoom in.
+        </p>
+      </div>
+
+      <div class="figure-note">
+        Propiedad de Elsy Ticse - IHCANTABRIA
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SUPPLEMENTARY FIGURE 3 - PENDIENTE. Mismo criterio que la Supp 2.
+         =================================================================== -->
+    <section class="figure-card" id="figure-s3">
+      <h2>Supplementary Figure 3</h2>
+
+      <p class="figure-caption">
+        Supplementary Figure 3. <em>[pendiente: pie de figura]</em>
+      </p>
+
+      <div class="figure-image-panel">
+        <a href="images/fig_s3.png" target="_blank" class="figure-image-link">
+          <img
+            src="images/fig_s3.png"
+            alt="Supplementary Figure 3"
+            class="figure-image"
+            onerror="this.parentNode.outerHTML='&lt;div class=&quot;placeholder&quot;&gt;Falta images/fig_s3.png&lt;/div&gt;'"
+          >
+        </a>
+
+        <p class="image-note">
+          Click the image to open it in a new tab and zoom in.
+        </p>
+      </div>
+
+      <div class="figure-note">
+        Propiedad de Elsy Ticse - IHCANTABRIA
+      </div>
+    </section>
+
+  </main>
+
+  <script src="js/common.js"></script>
+  <script src="js/supplementary.js"></script>
+</body>
+</html>

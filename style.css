@@ -112,72 +112,22 @@ body {
   line-height: 1.5;
 }
 
-.fig1-grid {
+.fig2-grid {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
   gap: 18px;
   align-items: stretch;
 }
 
-.fig1-image-panel,
-.fig1-map-panel {
-  border: 1px solid #dbe2ef;
-  border-radius: 12px;
-  padding: 12px;
-  background: #fbfcff;
-}
-
-.fig1-spectrum-img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 8px;
-}
-
-@media (max-width: 1000px) {
-  .fig1-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.hidden {
-  display: none !important;
-}
-
-.fig2-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  align-items: stretch;
-}
-
-.fig2-panel,
+.fig2-image-panel,
 .fig2-map-panel {
   border: 1px solid #dbe2ef;
   border-radius: 12px;
   padding: 12px;
   background: #fbfcff;
-  margin-top: 12px;
 }
 
-.fig2-panel h3,
-.fig2-map-panel h3 {
-  margin: 0 0 10px 0;
-  font-size: 18px;
-}
-
-.plot-container-medium {
-  width: 100%;
-  height: 52vh;
-  min-height: 440px;
-}
-
-.fig2-image-link {
-  display: block;
-  cursor: zoom-in;
-}
-
-.fig2-psd-img {
+.fig2-spectrum-img {
   width: 100%;
   height: auto;
   display: block;
@@ -188,4 +138,122 @@ body {
   .fig2-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.hidden {
+  display: none !important;
+}
+
+.fig3-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  align-items: stretch;
+}
+
+.fig3-panel,
+.fig3-map-panel {
+  border: 1px solid #dbe2ef;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fbfcff;
+  margin-top: 12px;
+}
+
+.fig3-panel h3,
+.fig3-map-panel h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+}
+
+.plot-container-medium {
+  width: 100%;
+  height: 52vh;
+  min-height: 440px;
+}
+
+.fig3-image-link {
+  display: block;
+  cursor: zoom-in;
+}
+
+.fig3-psd-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+@media (max-width: 1000px) {
+  .fig3-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Navegacion entre index.html y supplementary.html
+   --------------------------------------------------------------- */
+
+.page-nav {
+  margin-top: 16px;
+}
+
+.nav-button {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #244a9b;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 15px;
+  border: 1px solid #1b376f;
+  transition: background 0.15s ease;
+}
+
+.nav-button:hover {
+  background: #1b376f;
+}
+
+/* ---------------------------------------------------------------
+   Paneles de figura que son imagen estatica (Fig 1, 4, 5b, 8, Supp)
+   --------------------------------------------------------------- */
+
+.figure-image-panel {
+  border: 1px solid #dbe2ef;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fbfcff;
+}
+
+.figure-image-link {
+  display: block;
+  cursor: zoom-in;
+}
+
+.figure-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+/* ---------------------------------------------------------------
+   Clases que ya se usaban en el HTML pero no estaban definidas
+   --------------------------------------------------------------- */
+
+.plot-container-small {
+  width: 100%;
+  height: 46vh;
+  min-height: 380px;
+}
+
+.image-note {
+  color: #65738a;
+  font-size: 13px;
+  margin: 8px 0 0 0;
+}
+
+.fig2-image-link {
+  display: block;
+  cursor: zoom-in;
 }

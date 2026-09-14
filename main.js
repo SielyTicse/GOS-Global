@@ -1,82 +1,11 @@
-// =============================
-// Utility functions
-// =============================
-
-function rgb01ToPlotlyScale(rgbArray) {
-  const n = rgbArray.length;
-  return rgbArray.map((rgb, i) => {
-    const [r, g, b] = rgb;
-    return [
-      i / (n - 1),
-      `rgb(${Math.round(r * 255)},${Math.round(g * 255)},${Math.round(b * 255)})`
-    ];
-  });
-}
-
-function parseCSV(text) {
-  const rows = [];
-  let row = [];
-  let cell = '';
-  let inQuotes = false;
-
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    const next = text[i + 1];
-
-    if (char === '"' && inQuotes && next === '"') {
-      cell += '"';
-      i++;
-    } else if (char === '"') {
-      inQuotes = !inQuotes;
-    } else if (char === ',' && !inQuotes) {
-      row.push(cell);
-      cell = '';
-    } else if ((char === '\n' || char === '\r') && !inQuotes) {
-      if (char === '\r' && next === '\n') i++;
-      row.push(cell);
-      if (row.some(v => v.trim() !== '')) rows.push(row);
-      row = [];
-      cell = '';
-    } else {
-      cell += char;
-    }
-  }
-
-  if (cell.length > 0 || row.length > 0) {
-    row.push(cell);
-    if (row.some(v => v.trim() !== '')) rows.push(row);
-  }
-
-  const headers = rows.shift().map(h => h.trim());
-  return rows.map(r => {
-    const obj = {};
-    headers.forEach((h, i) => obj[h] = (r[i] ?? '').trim());
-    return obj;
-  });
-}
-
-function parseNumber(value) {
-  if (value === null || value === undefined) return NaN;
-  return Number(String(value).replace(',', '.'));
-}
-
-function showError(elementId, message) {
-  const box = document.getElementById(elementId);
-  box.style.display = 'block';
-  box.textContent = message;
-}
-
-function hideError(elementId) {
-  const box = document.getElementById(elementId);
-  box.style.display = 'none';
-  box.textContent = '';
-}
+// Utilidades compartidas (rgb01ToPlotlyScale, parseCSV, parseNumber,
+// showError, hideError) -> movidas a js/common.js
 
 // =============================
 // Palettes
 // =============================
 
-// Figure 4 palettes
+// Figure 6 palettes
 const corrPalette = rgb01ToPlotlyScale([
   [0.3313,0.2812,0.4056],[0.3313,0.2812,0.4056],[0.3313,0.2812,0.4056],[0.3313,0.2812,0.4056],
   [0.3313,0.2812,0.4056],[0.3313,0.2812,0.4056],[0.3313,0.2812,0.4056],[0.3313,0.2812,0.4056],
@@ -123,73 +52,218 @@ const nbiasPalette = rgb01ToPlotlyScale([
   [1.0000,0.0000,0.1500]
 ]);
 
-// Figure 5 palettes
-const difPearsonPalette = rgb01ToPlotlyScale([
-  [0.5000,0.0000,0.0000],[0.5424,0.0000,0.0000],[0.5847,0.0000,0.0000],[0.6271,0.0000,0.0000],
-  [0.6695,0.0000,0.0000],[0.7119,0.0000,0.0000],[0.7542,0.0000,0.0000],[0.7966,0.0000,0.0000],
-  [0.8390,0.0000,0.0000],[0.8814,0.0000,0.0000],[0.9237,0.0000,0.0000],[0.9661,0.0000,0.0000],
-  [1.0000,0.0113,0.0113],[1.0000,0.0678,0.0678],[1.0000,0.1243,0.1243],[1.0000,0.1808,0.1808],
-  [1.0000,0.2373,0.2373],[1.0000,0.2938,0.2938],[1.0000,0.3503,0.3503],[1.0000,0.4068,0.4068],
-  [1.0000,0.4633,0.4633],[1.0000,0.5198,0.5198],[1.0000,0.5763,0.5763],[1.0000,0.6328,0.6328],
-  [1.0000,0.6893,0.6893],[1.0000,0.7458,0.7458],[1.0000,0.8023,0.8023],[1.0000,0.8588,0.8588],
-  [1.0000,0.9153,0.9153],[1.0000,0.9718,0.9718],[0.9718,0.9718,1.0000],[0.9153,0.9153,1.0000],
-  [0.8588,0.8588,1.0000],[0.8023,0.8023,1.0000],[0.7458,0.7458,1.0000]
-]);
+// Paletas de la antigua "Figure 6" (difPearson / difRmse / nbiasUnfiltered)
+// -> movidas a js/supplementary.js (Supplementary Figure 1)
 
-const difRmsePalette = rgb01ToPlotlyScale([
-  [0.8750,1.0000,1.0000],[0.7500,1.0000,1.0000],[0.6250,1.0000,1.0000],[0.5000,1.0000,1.0000],
-  [0.3750,1.0000,1.0000],[0.2500,1.0000,1.0000],[0.1250,1.0000,1.0000],[0.0000,1.0000,1.0000],
-  [0.0000,0.9432,1.0000],[0.0000,0.8864,1.0000],[0.0000,0.8295,1.0000],[0.0000,0.7727,1.0000],
-  [0.0000,0.7159,1.0000],[0.0000,0.6591,1.0000],[0.0000,0.6023,1.0000],[0.0000,0.5455,1.0000],
-  [0.0000,0.4886,1.0000],[0.0000,0.4318,1.0000],[0.0000,0.3750,1.0000],[0.0000,0.3182,1.0000],
-  [0.0000,0.2614,1.0000],[0.0000,0.2045,1.0000],[0.0000,0.1477,1.0000],[0.0000,0.0909,1.0000],
-  [0.0000,0.0341,1.0000],[0.0000,0.0000,0.9688],[0.0000,0.0000,0.8906],[0.0000,0.0000,0.8125],
-  [0.0000,0.0000,0.7344],[0.0000,0.0000,0.6562],[0.0000,0.0000,0.5781],[0.0000,0.0000,0.5000]
-]);
-
-const nbiasUnfilteredPalette = rgb01ToPlotlyScale([
-  [0.0000,0.0000,0.5000],[0.0000,0.0000,0.5862],[0.0000,0.0000,0.6724],[0.0000,0.0000,0.7586],
-  [0.0000,0.0000,0.8448],[0.0000,0.0000,0.9310],[0.0230,0.0230,1.0000],[0.1379,0.1379,1.0000],
-  [0.2529,0.2529,1.0000],[0.3678,0.3678,1.0000],[0.4828,0.4828,1.0000],[0.5977,0.5977,1.0000],
-  [0.7126,0.7126,1.0000],[0.8276,0.8276,1.0000],[0.9425,0.9425,1.0000],[1.0000,0.9425,0.9425],
-  [1.0000,0.8276,0.8276],[1.0000,0.7126,0.7126],[1.0000,0.5977,0.5977],[1.0000,0.4828,0.4828],
-  [1.0000,0.3678,0.3678],[1.0000,0.2529,0.2529],[1.0000,0.1379,0.1379],[1.0000,0.0230,0.0230],
-  [0.9310,0.0000,0.0000],[0.8448,0.0000,0.0000],[0.7586,0.0000,0.0000],[0.6724,0.0000,0.0000],
-  [0.5862,0.0000,0.0000],[0.5000,0.0000,0.0000]
-]);
-
+// getBaseGeoLayout() -> movida a js/common.js
 // =============================
-// Shared map style
+// Figure 4 configuration
 // =============================
+// Panel de 3 estaciones con solo datos GOS. Equivale a
+// codigos_GEV_ESTACIONARIO/fig4_panel_GOS_3estaciones.m
+// Datos: fig_4_mm.csv, fig_4_rl.csv, fig_4_panels.csv
 
-function getBaseGeoLayout() {
-  return {
-    projection: { type: 'natural earth' },
-    showland: true,
-    landcolor: 'rgb(230,235,225)',
-    showocean: true,
-    oceancolor: 'rgb(245,248,252)',
-    showcountries: true,
-    countrycolor: 'rgba(120,120,120,0.45)',
-    showcoastlines: true,
-    coastlinecolor: 'rgba(70,70,70,0.75)',
-    lonaxis: {
-      showgrid: true,
-      gridcolor: 'rgba(120,120,120,0.28)',
-      dtick: 60
+const FIG4_MONTH_LABELS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+
+// Posicion de los ticks del eje X: (0.5:1:12)/12, igual que ax.XTick en MATLAB
+const FIG4_MONTH_TICKS = FIG4_MONTH_LABELS.map((_, i) => (i + 0.5) / 12);
+
+// Colores tomados del script MATLAB
+const FIG4_COL_MM = 'rgb(128,128,128)';   // col_mm  = [0.5 0.5 0.5]
+const FIG4_COL_MON = 'rgb(255,0,0)';      // col_mon = 'r'
+const FIG4_COL_INT = 'rgb(0,0,255)';      // col_int = 'b'
+
+// Z con macron combinante (U+0305), equivalente al \overline{Z_{50}} del paper
+const FIG4_LBL_MON = 'Z̅<sub>50</sub>(t)';
+const FIG4_LBL_INT = 'Z̅<sub>50</sub>';
+
+let FIG4_MM = {};       // panel -> [{ date, t, value }]
+let FIG4_RL = {};       // panel -> [{ t, z50 }]
+let FIG4_PANELS = {};   // panel -> { station, z50_int }
+
+function buildFig4MmHover(d) {
+  return (
+    `<b>MM-GOS</b><br>` +
+    `${d.date}<br>` +
+    `Surge: ${d.value.toFixed(3)} m`
+  );
+}
+
+function plotFig4(panelKey) {
+  const mm = FIG4_MM[panelKey] ?? [];
+  const rl = FIG4_RL[panelKey] ?? [];
+  const meta = FIG4_PANELS[panelKey] ?? {};
+
+  const traces = [
+    {
+      // maximos mensuales: cuadrados grises con borde negro
+      type: 'scatter',
+      mode: 'markers',
+      name: 'MM-GOS',
+      x: mm.map(d => d.t),
+      y: mm.map(d => d.value),
+      text: mm.map(buildFig4MmHover),
+      hovertemplate: '%{text}<extra></extra>',
+      marker: {
+        symbol: 'square',
+        size: 7,
+        color: FIG4_COL_MM,
+        line: { color: 'black', width: 1 }
+      }
     },
-    lataxis: {
-      showgrid: true,
-      gridcolor: 'rgba(120,120,120,0.28)',
-      dtick: 30
+    {
+      // nivel de retorno de 50 anios, mes a mes
+      type: 'scatter',
+      mode: 'lines',
+      name: FIG4_LBL_MON,
+      x: rl.map(d => d.t),
+      y: rl.map(d => d.z50),
+      line: { color: FIG4_COL_MON, width: 2, dash: 'dot' },
+      hovertemplate: 'Z50(t) = %{y:.3f} m<extra></extra>'
+    },
+    {
+      // nivel de retorno de 50 anios integrado en el anio (linea horizontal)
+      type: 'scatter',
+      mode: 'lines',
+      name: FIG4_LBL_INT,
+      x: [0, 1],
+      y: [meta.z50_int, meta.z50_int],
+      line: { color: FIG4_COL_INT, width: 2, dash: 'dashdot' },
+      hovertemplate: 'Z50 = %{y:.3f} m<extra></extra>'
+    }
+  ];
+
+  const axisCommon = {
+    showgrid: true,
+    gridcolor: 'rgba(120,120,120,0.25)',
+    zeroline: false,
+    showline: true,
+    mirror: true,
+    linecolor: '#444'
+  };
+
+  const layout = {
+    margin: { l: 64, r: 24, t: 24, b: 64 },
+    paper_bgcolor: '#ffffff',
+    plot_bgcolor: '#ffffff',
+    hovermode: 'closest',
+    xaxis: Object.assign({}, axisCommon, {
+      range: [0, 1],
+      tickmode: 'array',
+      tickvals: FIG4_MONTH_TICKS,
+      ticktext: FIG4_MONTH_LABELS
+    }),
+    yaxis: Object.assign({}, axisCommon, {
+      title: '[m]'
+    }),
+    legend: {
+      orientation: 'h',
+      x: 0.5,
+      xanchor: 'center',
+      y: -0.14,
+      yanchor: 'top'
     }
   };
+
+  Plotly.react('fig4-plot', traces, layout, {
+    responsive: true,
+    displaylogo: false
+  });
+
+  updateFig4Stats(panelKey);
+}
+
+function updateFig4Stats(panelKey) {
+  const mm = FIG4_MM[panelKey] ?? [];
+  const meta = FIG4_PANELS[panelKey] ?? {};
+  const values = mm.map(d => d.value).filter(Number.isFinite);
+
+  const station = meta.station ?? '—';
+  const z50 = Number.isFinite(meta.z50_int) ? meta.z50_int.toFixed(3) : '—';
+  const vmax = values.length ? Math.max(...values).toFixed(3) : '—';
+
+  document.getElementById('fig4-stats').innerHTML = `
+    <span class="pill">Station = ${station}</span>
+    <span class="pill">N = ${values.length} monthly maxima</span>
+    <span class="pill">max MM-GOS = ${vmax} m</span>
+    <span class="pill">Z&#773;<sub>50</sub> = ${z50} m</span>
+  `;
+}
+
+function parseFig4MmRows(rows) {
+  const out = {};
+
+  rows.forEach(r => {
+    const panel = (r.panel ?? '').trim();
+    const d = {
+      date: (r.date ?? '').trim(),
+      t: parseNumber(r.t),
+      value: parseNumber(r.value)
+    };
+
+    if (!panel || !Number.isFinite(d.t) || !Number.isFinite(d.value)) return;
+
+    (out[panel] = out[panel] ?? []).push(d);
+  });
+
+  return out;
+}
+
+function parseFig4RlRows(rows) {
+  const out = {};
+
+  rows.forEach(r => {
+    const panel = (r.panel ?? '').trim();
+    const d = {
+      t: parseNumber(r.t),
+      z50: parseNumber(r.z50)
+    };
+
+    if (!panel || !Number.isFinite(d.t) || !Number.isFinite(d.z50)) return;
+
+    (out[panel] = out[panel] ?? []).push(d);
+  });
+
+  // la curva se dibuja como linea: hay que recorrerla en orden de t
+  Object.values(out).forEach(series => series.sort((a, b) => a.t - b.t));
+
+  return out;
+}
+
+function parseFig4PanelRows(rows) {
+  const out = {};
+
+  rows.forEach(r => {
+    const panel = (r.panel ?? '').trim();
+    if (!panel) return;
+
+    out[panel] = {
+      station: (r.station ?? '').trim(),
+      z50_int: parseNumber(r.z50_int)
+    };
+  });
+
+  return out;
+}
+
+function renderFigure4() {
+  const selector = document.getElementById('fig4-select');
+
+  plotFig4(selector.value);
+}
+
+function initFigure4Selector() {
+  const selector = document.getElementById('fig4-select');
+
+  selector.addEventListener('change', renderFigure4);
+
+  renderFigure4();
 }
 // =============================
-// Figure 3 configuration
+// Figure 5 configuration
 // =============================
 
-const fig3PeriodPalette = rgb01ToPlotlyScale([
+const fig5PeriodPalette = rgb01ToPlotlyScale([
   [0.1000,1.0000,1.0000],
   [0.0825,0.8254,1.0000],
   [0.0651,0.6508,1.0000],
@@ -214,19 +288,22 @@ const fig3PeriodPalette = rgb01ToPlotlyScale([
   [0.6510,0.6510,0.6510]
 ]);
 
-const FIG3_METRICS = {
+const FIG5_METRICS = {
   Period: {
     label: 'Period',
     unit: 'h',
     cmin: 6,
     cmax: 26,
     decimals: 2,
-    colorscale: fig3PeriodPalette
+    colorscale: fig5PeriodPalette
   }
 };
 
-let FIG3A_DATA = [];
-let FIG3B_DATA = [];
+// Panel (a): puntos de malla costeros (antes panel 4b, data/fig_5a.csv).
+let FIG5A_DATA = [];
+// Panel (b) pasa a ser una imagen estatica, ya no se dibuja con Plotly.
+// Los datos siguen en data/fig_5b.csv por si se quiere volver al mapa interactivo.
+// let FIG5B_DATA = [];
 
 function normalisedMarkerSizes(values, minSize = 4, maxSize = 18) {
   const finite = values.filter(Number.isFinite);
@@ -240,7 +317,7 @@ function normalisedMarkerSizes(values, minSize = 4, maxSize = 18) {
   });
 }
 
-function buildFig3Hover(d) {
+function buildFig5Hover(d) {
   return (
     `<b>${d.station}</b><br>` +
     `Lon: ${d.lon.toFixed(3)}°<br>` +
@@ -249,8 +326,8 @@ function buildFig3Hover(d) {
   );
 }
 
-function plotFig3Map(data, minSize, maxSize) {
-  const cfg = FIG3_METRICS.Period;
+function plotFig5Map(data, minSize, maxSize) {
+  const cfg = FIG5_METRICS.Period;
   const amplitudes = data.map(d => d.Amplit);
   const markerSizes = normalisedMarkerSizes(amplitudes, minSize, maxSize);
   const periods = data.map(d => d.Period);
@@ -260,7 +337,7 @@ function plotFig3Map(data, minSize, maxSize) {
     mode: 'markers',
     lon: data.map(d => d.lon),
     lat: data.map(d => d.lat),
-    text: data.map(buildFig3Hover),
+    text: data.map(buildFig5Hover),
     hovertemplate: '%{text}<extra></extra>',
     marker: {
       size: markerSizes,
@@ -292,16 +369,16 @@ function plotFig3Map(data, minSize, maxSize) {
     geo: getBaseGeoLayout()
   };
 
-  Plotly.react('fig3-map', [trace], layout, {
+  Plotly.react('fig5-map', [trace], layout, {
     responsive: true,
     scrollZoom: true,
     displaylogo: false
   });
 
-  updateFig3Stats(data);
+  updateFig5Stats(data);
 }
 
-function updateFig3Stats(data) {
+function updateFig5Stats(data) {
   const periods = data.map(d => d.Period).filter(Number.isFinite);
   const amplitudes = data.map(d => d.Amplit).filter(Number.isFinite);
 
@@ -311,14 +388,14 @@ function updateFig3Stats(data) {
   const amin = Math.min(...amplitudes);
   const amax = Math.max(...amplitudes);
 
-  document.getElementById('fig3-stats').innerHTML = `
+  document.getElementById('fig5-stats').innerHTML = `
     <span class="pill">N = ${n} points </span>
     <span class="pill">Period range = [6, >26] hr/c</span>
     <span class="pill">Standardized amplitude = 1–10</span>
   `;
 }
  
-function parseFig3Rows(rows, hasStationNames) {
+function parseFig5Rows(rows, hasStationNames) {
   return rows.map((r, i) => ({
     station: hasStationNames ? r.station : `Coastal point ${i + 1}`,
     lon: parseNumber(r.lon),
@@ -334,28 +411,42 @@ function parseFig3Rows(rows, hasStationNames) {
   );
 }
 
-function renderFigure3() {
-  const selector = document.getElementById('fig3-select');
+function renderFigure5() {
+  const selector = document.getElementById('fig5-select');
 
-  if (selector.value === '3a') {
-    plotFig3Map(FIG3A_DATA, 4, 18);
+  // Antes ambos paneles eran mapas interactivos:
+  // if (selector.value === '3a') {
+  //   plotFig5Map(FIG5A_DATA, 4, 18);
+  // } else {
+  //   plotFig5Map(FIG5B_DATA, 2, 10);
+  // }
+
+  // Ahora el panel (a) es el mapa de puntos costeros y el (b) una imagen.
+  const mapPanel = document.getElementById('fig5a-panel');
+  const imgPanel = document.getElementById('fig5b-panel');
+
+  if (selector.value === '5a') {
+    mapPanel.classList.remove('hidden');
+    imgPanel.classList.add('hidden');
+    plotFig5Map(FIG5A_DATA, 2, 10);
   } else {
-    plotFig3Map(FIG3B_DATA, 2, 10);
+    mapPanel.classList.add('hidden');
+    imgPanel.classList.remove('hidden');
   }
 }
 
-function initFigure3Selector() {
-  const selector = document.getElementById('fig3-select');
+function initFigure5Selector() {
+  const selector = document.getElementById('fig5-select');
 
-  selector.addEventListener('change', renderFigure3);
+  selector.addEventListener('change', renderFigure5);
 
-  renderFigure3();
+  renderFigure5();
 }
 // =============================
-// Figure 4 configuration
+// Figure 6 configuration
 // =============================
 
-const FIG4_METRICS = {
+const FIG6_METRICS = {
   Corr: {
     label: 'Corr.',
     unit: '',
@@ -406,116 +497,17 @@ const FIG4_METRICS = {
   }
 };
 
-// =============================
-// Figure 5 configuration
-// =============================
+// FIGS1_METRICS -> movida a js/supplementary.js
 
-const FIG5_METRICS = {
-  Dif_Pearson: {
-    label: 'Dif_Pearson',
-    unit: '',
-    cmin: -0.3,
-    cmax: 0.05,
-    decimals: 3,
-    colorscale: difPearsonPalette
-  },
-  Dif_RMSE: {
-    label: 'Dif_RMSE',
-    unit: 'cm',
-    cmin: 0,
-    cmax: 17,
-    decimals: 2,
-    colorscale: difRmsePalette
-  },
-  NBias_Unfiltered: {
-    label: 'NBias_Unfiltered',
-    unit: '',
-    cmin: -5,
-    cmax: 5,
-    decimals: 2,
-    colorscale: nbiasUnfilteredPalette
-  }
-};
+// updateStats() y plotStationMap() -> movidas a js/common.js
 
 // =============================
-// Generic map builder
+// Figure 6
 // =============================
 
-function updateStats(statsId, data, metricName, metricConfig) {
-  const values = data.map(d => d[metricName]).filter(Number.isFinite);
-  const n = values.length;
-  const minv = Math.min(...values);
-  const maxv = Math.max(...values);
-  const mean = values.reduce((s, v) => s + v, 0) / n;
-  const outside = values.filter(v => v < metricConfig.cmin || v > metricConfig.cmax).length;
-  const unit = metricConfig.unit ? ' ' + metricConfig.unit : '';
+let FIG6_DATA = [];
 
-  document.getElementById(statsId).innerHTML = `
-    <span class="pill">N = ${n} stations</span>
-    <span class="pill">min = ${minv.toFixed(metricConfig.decimals)}${unit}</span>
-    <span class="pill">max = ${maxv.toFixed(metricConfig.decimals)}${unit}</span>
-    <span class="pill">mean = ${mean.toFixed(metricConfig.decimals)}${unit}</span>
-    <span class="pill">colour range = [${metricConfig.cmin}, ${metricConfig.cmax}]${unit}</span>
-    <!-- <span class="pill">out of range = ${outside}</span> -->
-  `;
-}
-
-function plotStationMap({
-  plotId,
-  statsId,
-  data,
-  metricName,
-  metricConfig,
-  hoverBuilder
-}) {
-  const trace = {
-    type: 'scattergeo',
-    mode: 'markers',
-    lon: data.map(d => d.lon),
-    lat: data.map(d => d.lat),
-    text: data.map(hoverBuilder),
-    hovertemplate: '%{text}<extra></extra>',
-    marker: {
-      size: 8,
-      color: data.map(d => d[metricName]),
-      cmin: metricConfig.cmin,
-      cmax: metricConfig.cmax,
-      colorscale: metricConfig.colorscale,
-      line: { color: 'black', width: 0.7 },
-      colorbar: {
-        title: metricConfig.unit ? `${metricConfig.label} [${metricConfig.unit}]` : metricConfig.label,
-        orientation: 'h',
-        x: 0.5,
-        y: -0.08,
-        xanchor: 'center',
-        len: 0.65,
-        thickness: 18
-      }
-    }
-  };
-
-  const layout = {
-    margin: { l: 10, r: 10, t: 10, b: 70 },
-    paper_bgcolor: '#ffffff',
-    geo: getBaseGeoLayout()
-  };
-
-  Plotly.react(plotId, [trace], layout, {
-    responsive: true,
-    scrollZoom: true,
-    displaylogo: false
-  });
-
-  updateStats(statsId, data, metricName, metricConfig);
-}
-
-// =============================
-// Figure 4
-// =============================
-
-let FIG4_DATA = [];
-
-function buildFig4Hover(d) {
+function buildFig6Hover(d) {
   return (
     `<b>${d.station}</b><br>` +
     `Lon: ${d.lon.toFixed(3)}°<br>` +
@@ -528,8 +520,8 @@ function buildFig4Hover(d) {
   );
 }
 
-function initFigure4(rows) {
-  FIG4_DATA = rows.map(r => ({
+function initFigure6(rows) {
+  FIG6_DATA = rows.map(r => ({
     station: r.station,
     lon: parseNumber(r.lon),
     lat: parseNumber(r.lat),
@@ -549,21 +541,21 @@ function initFigure4(rows) {
     Number.isFinite(d.NBias)
   );
 
-  if (!FIG4_DATA.length) {
-    throw new Error('fig_4.csv has no valid rows.');
+  if (!FIG6_DATA.length) {
+    throw new Error('fig_6.csv has no valid rows.');
   }
 
-  const selector = document.getElementById('fig4-select');
+  const selector = document.getElementById('fig6-select');
 
   function render() {
     const metric = selector.value;
     plotStationMap({
-      plotId: 'fig4-map',
-      statsId: 'fig4-stats',
-      data: FIG4_DATA,
+      plotId: 'fig6-map',
+      statsId: 'fig6-stats',
+      data: FIG6_DATA,
       metricName: metric,
-      metricConfig: FIG4_METRICS[metric],
-      hoverBuilder: buildFig4Hover
+      metricConfig: FIG6_METRICS[metric],
+      hoverBuilder: buildFig6Hover
     });
   }
 
@@ -571,66 +563,13 @@ function initFigure4(rows) {
   render();
 }
 
+// Codigo de la antigua "Figure 6" -> movido a js/supplementary.js
+// (Supplementary Figure 1)
 // =============================
-// Figure 5
-// =============================
-
-let FIG5_DATA = [];
-
-function buildFig5Hover(d) {
-  return (
-    `<b>${d.station}</b><br>` +
-    `Lon: ${d.lon.toFixed(3)}°<br>` +
-    `Lat: ${d.lat.toFixed(3)}°<br>` +
-    `Dif_Pearson: ${d.Dif_Pearson.toFixed(3)}<br>` +
-    `Dif_RMSE: ${d.Dif_RMSE.toFixed(2)} cm<br>` +
-    `NBias_Unfiltered: ${d.NBias_Unfiltered.toFixed(2)}`
-  );
-}
-
-function initFigure5(rows) {
-  FIG5_DATA = rows.map(r => ({
-    station: r.station,
-    lon: parseNumber(r.lon),
-    lat: parseNumber(r.lat),
-    Dif_Pearson: parseNumber(r.Dif_Pearson),
-    Dif_RMSE: parseNumber(r.Dif_RMSE ?? r.Dif_Rmse),
-    NBias_Unfiltered: parseNumber(r.NBias_Unfiltered ?? r.NBias_unfiltered)
-  })).filter(d =>
-    d.station &&
-    Number.isFinite(d.lon) &&
-    Number.isFinite(d.lat) &&
-    Number.isFinite(d.Dif_Pearson) &&
-    Number.isFinite(d.Dif_RMSE) &&
-    Number.isFinite(d.NBias_Unfiltered)
-  );
-
-  if (!FIG5_DATA.length) {
-    throw new Error('fig_5.csv has no valid rows.');
-  }
-
-  const selector = document.getElementById('fig5-select');
-
-  function render() {
-    const metric = selector.value;
-    plotStationMap({
-      plotId: 'fig5-map',
-      statsId: 'fig5-stats',
-      data: FIG5_DATA,
-      metricName: metric,
-      metricConfig: FIG5_METRICS[metric],
-      hoverBuilder: buildFig5Hover
-    });
-  }
-
-  selector.addEventListener('change', render);
-  render();
-}
-// =============================
-// Figure 6 configuration
+// Figure 7 configuration
 // =============================
 
-const fig6MomPalette = rgb01ToPlotlyScale([
+const fig7MomPalette = rgb01ToPlotlyScale([
   [0.7545,0.8814,0.9310],
   [0.6317,0.8221,0.8966],
   [0.5090,0.7628,0.8621],
@@ -661,7 +600,7 @@ const fig6MomPalette = rgb01ToPlotlyScale([
   [0.7000,0.0000,0.0000]
 ]);
 
-const fig6MaePalette = rgb01ToPlotlyScale([
+const fig7MaePalette = rgb01ToPlotlyScale([
   [0.3020,0.7451,0.9333],
   [0.3780,0.7544,0.9086],
   [0.5024,0.8035,0.9269],
@@ -694,14 +633,14 @@ const fig6MaePalette = rgb01ToPlotlyScale([
   [0.4941,0.1843,0.5569]
 ]);
 
-const FIG6_METRICS = {
+const FIG7_METRICS = {
   MOM: {
     label: 'MOM',
     unit: 'm',
     cmin: 0,
     cmax: 3,
     decimals: 2,
-    colorscale: fig6MomPalette
+    colorscale: fig7MomPalette
   },
   MAE: {
     label: 'MAE',
@@ -709,14 +648,14 @@ const FIG6_METRICS = {
     cmin: -14,
     cmax: 53,
     decimals: 2,
-    colorscale: fig6MaePalette
+    colorscale: fig7MaePalette
   }
 };
 
-let FIG6A_DATA = [];
-let FIG6B_DATA = [];
+let FIG7A_DATA = [];
+let FIG7B_DATA = [];
 
-function buildFig6aHover(d) {
+function buildFig7aHover(d) {
   return (
     `Lon: ${d.lon.toFixed(3)}°<br>` +
     `Lat: ${d.lat.toFixed(3)}°<br>` +
@@ -724,7 +663,7 @@ function buildFig6aHover(d) {
   );
 }
 
-function buildFig6bHover(d) {
+function buildFig7bHover(d) {
   return (
     `<b>${d.station}</b><br>` +
     `Lon: ${d.lon.toFixed(3)}°<br>` +
@@ -733,7 +672,7 @@ function buildFig6bHover(d) {
   );
 }
 
-function getFig6Colorbar(metricName, cfg) {
+function getFig7Colorbar(metricName, cfg) {
   if (metricName === 'MOM') {
     return {
       title: `${cfg.label} [${cfg.unit}]`,
@@ -765,8 +704,8 @@ function getFig6Colorbar(metricName, cfg) {
   };
 }
 
-function plotFig6Map({ data, metricName, hoverBuilder, pointSize, lineWidth }) {
-  const cfg = FIG6_METRICS[metricName];
+function plotFig7Map({ data, metricName, hoverBuilder, pointSize, lineWidth }) {
+  const cfg = FIG7_METRICS[metricName];
 
   const trace = {
     type: 'scattergeo',
@@ -783,7 +722,7 @@ function plotFig6Map({ data, metricName, hoverBuilder, pointSize, lineWidth }) {
       colorscale: cfg.colorscale,
       line: { color: 'black', width: lineWidth },
       opacity: 0.88,
-      colorbar: getFig6Colorbar(metricName, cfg)
+      colorbar: getFig7Colorbar(metricName, cfg)
     }
   };
 
@@ -793,33 +732,33 @@ function plotFig6Map({ data, metricName, hoverBuilder, pointSize, lineWidth }) {
     geo: getBaseGeoLayout()
   };
 
-  Plotly.react('fig6-map', [trace], layout, {
+  Plotly.react('fig7-map', [trace], layout, {
     responsive: true,
     scrollZoom: true,
     displaylogo: false
   });
 
-  updateFig6Stats(metricName, data);
+  updateFig7Stats(metricName, data);
 }
 
-function updateFig6Stats(metricName, data) {
+function updateFig7Stats(metricName, data) {
   const n = data.length;
 
   if (metricName === 'MOM') {
-    document.getElementById('fig6-stats').innerHTML = `
+    document.getElementById('fig7-stats').innerHTML = `
       <span class="pill">N = ${n} coastal points</span>
       <span class="pill">MOM range = [0, >3] m</span>
     `;
     return;
   }
 
-  document.getElementById('fig6-stats').innerHTML = `
+  document.getElementById('fig7-stats').innerHTML = `
     <span class="pill">N = ${n} stations</span>
     <span class="pill">MAE range = [-14, 53] cm</span>
   `;
 }
 
-function parseFig6aRows(rows) {
+function parseFig7aRows(rows) {
   return rows.map((r, i) => ({
     station: `Coastal point ${i + 1}`,
     lon: parseNumber(r.lon),
@@ -832,7 +771,7 @@ function parseFig6aRows(rows) {
   );
 }
 
-function parseFig6bRows(rows) {
+function parseFig7bRows(rows) {
   return rows.map(r => ({
     station: r.station,
     lon: parseNumber(r.lon),
@@ -846,40 +785,158 @@ function parseFig6bRows(rows) {
   );
 }
 
-function renderFigure6() {
-  const selector = document.getElementById('fig6-select');
+function renderFigure7() {
+  const selector = document.getElementById('fig7-select');
 
-  if (selector.value === '6a') {
-    plotFig6Map({
-      data: FIG6A_DATA,
+  if (selector.value === '7a') {
+    plotFig7Map({
+      data: FIG7A_DATA,
       metricName: 'MOM',
-      hoverBuilder: buildFig6aHover,
+      hoverBuilder: buildFig7aHover,
       pointSize: 3,
       lineWidth: 0
     });
   } else {
-    plotFig6Map({
-      data: FIG6B_DATA,
+    plotFig7Map({
+      data: FIG7B_DATA,
       metricName: 'MAE',
-      hoverBuilder: buildFig6bHover,
+      hoverBuilder: buildFig7bHover,
       pointSize: 8,
       lineWidth: 0.5
     });
   }
 }
 
-function initFigure6Selector() {
-  const selector = document.getElementById('fig6-select');
+function initFigure7Selector() {
+  const selector = document.getElementById('fig7-select');
 
-  selector.addEventListener('change', renderFigure6);
+  selector.addEventListener('change', renderFigure7);
 
-  renderFigure6();
+  renderFigure7();
 }
 // =============================
-// Figure 7 configuration
+// Figure 8 configuration
+// =============================
+// Parametro de forma phi0 de la GEV en los puntos costeros. Equivale a
+// codigos_GEV_ESTACIONARIO/fig8_parametro_forma_phi0.m
+// Datos: fig_8.csv
+
+// boonlib('bjetmap',30): interpolacion lineal de los 7 puntos de control
+// de bjetmap() sobre 30 niveles, tal como hace fleximap() en boonlib.m
+const fig8BjetPalette = rgb01ToPlotlyScale([
+  [0.0000,0.0000,0.5000],[0.0000,0.0265,0.6326],[0.0000,0.0531,0.7653],[0.0000,0.0796,0.8979],
+  [0.0000,0.1297,1.0000],[0.0000,0.2591,1.0000],[0.0000,0.3884,1.0000],[0.0000,0.5177,1.0000],
+  [0.0000,0.6470,1.0000],[0.0000,0.7763,1.0000],[0.0000,0.9056,1.0000],[0.0716,1.0000,1.0000],
+  [0.3369,1.0000,1.0000],[0.6021,1.0000,1.0000],[0.8674,1.0000,1.0000],[1.0000,1.0000,0.7537],
+  [1.0000,1.0000,0.2611],[1.0000,0.9477,0.0000],[1.0000,0.8365,0.0000],[1.0000,0.7253,0.0000],
+  [1.0000,0.6140,0.0000],[1.0000,0.5028,0.0000],[1.0000,0.3915,0.0000],[1.0000,0.2803,0.0000],
+  [1.0000,0.1691,0.0000],[1.0000,0.0578,0.0000],[0.9310,0.0000,0.0000],[0.7874,0.0000,0.0000],
+  [0.6437,0.0000,0.0000],[0.5000,0.0000,0.0000]
+]);
+
+const FIG8_METRICS = {
+  phi0: {
+    // phi0 es el parametro de FORMA de la GEV: es adimensional, no va en metros
+    label: 'φ<sub>0</sub>',
+    unit: '',
+    cmin: -0.31,
+    cmax: 0.31,
+    decimals: 4,
+    colorscale: fig8BjetPalette
+  }
+};
+
+let FIG8_DATA = [];
+
+function buildFig8Hover(d) {
+  return (
+    `<b>${d.station}</b><br>` +
+    `Lon: ${d.lon.toFixed(3)}°<br>` +
+    `Lat: ${d.lat.toFixed(3)}°<br>` +
+    `φ<sub>0</sub>: ${d.phi0.toFixed(4)}`
+  );
+}
+
+function plotFig8Map(data) {
+  const cfg = FIG8_METRICS.phi0;
+
+  const trace = {
+    type: 'scattergeo',
+    mode: 'markers',
+    lon: data.map(d => d.lon),
+    lat: data.map(d => d.lat),
+    text: data.map(buildFig8Hover),
+    hovertemplate: '%{text}<extra></extra>',
+    marker: {
+      size: 3,
+      color: data.map(d => d.phi0),
+      cmin: cfg.cmin,
+      cmax: cfg.cmax,
+      colorscale: cfg.colorscale,
+      line: { width: 0 },
+      opacity: 0.88,
+      colorbar: {
+        title: cfg.label,
+        orientation: 'h',
+        x: 0.5,
+        y: -0.08,
+        xanchor: 'center',
+        len: 0.75,
+        thickness: 18,
+        tickmode: 'array',
+        tickvals: [-0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3],
+        ticktext: ['-0.3', '-0.2', '-0.1', '0', '0.1', '0.2', '0.3'],
+        tickfont: { size: 13 }
+      }
+    }
+  };
+
+  const layout = {
+    margin: { l: 10, r: 10, t: 10, b: 70 },
+    paper_bgcolor: '#ffffff',
+    geo: getBaseGeoLayout()
+  };
+
+  Plotly.react('fig8-map', [trace], layout, {
+    responsive: true,
+    scrollZoom: true,
+    displaylogo: false
+  });
+
+  updateFig8Stats(data);
+}
+
+function updateFig8Stats(data) {
+  const values = data.map(d => d.phi0).filter(Number.isFinite);
+  const n = data.length;
+  const vmin = Math.min(...values);
+  const vmax = Math.max(...values);
+
+  document.getElementById('fig8-stats').innerHTML = `
+    <span class="pill">N = ${n} coastal points</span>
+    <span class="pill">min = ${vmin.toFixed(4)}</span>
+    <span class="pill">max = ${vmax.toFixed(4)}</span>
+    <span class="pill">colour range = [-0.31, 0.31]</span>
+  `;
+}
+
+function parseFig8Rows(rows) {
+  return rows.map((r, i) => ({
+    station: `Coastal point ${i + 1}`,
+    lon: parseNumber(r.lon),
+    lat: parseNumber(r.lat),
+    phi0: parseNumber(r.phi0)
+  })).filter(d =>
+    Number.isFinite(d.lon) &&
+    Number.isFinite(d.lat) &&
+    Number.isFinite(d.phi0)
+  );
+}
+// =============================
+// Figure 9 configuration
 // =============================
 
-const fig7RpPalette = rgb01ToPlotlyScale([
+const fig9RpPalette = rgb01ToPlotlyScale([
   [0.1000,1.0000,1.0000],
   [0.0800,0.8000,0.9500],
   [0.0600,0.6000,0.9000],
@@ -910,7 +967,7 @@ const fig7RpPalette = rgb01ToPlotlyScale([
   [0.6000,0.2000,0.8000]
 ]);
 
-const fig7MonthPalette = rgb01ToPlotlyScale([
+const fig9MonthPalette = rgb01ToPlotlyScale([
   [0.0000,0.2000,0.5000],
   [0.4000,0.3000,0.8000],
   [0.0000,0.5000,0.1000],
@@ -925,14 +982,14 @@ const fig7MonthPalette = rgb01ToPlotlyScale([
   [0.0000,0.4000,0.8000]
 ]);
 
-const FIG7_METRICS = {
+const FIG9_METRICS = {
   RP50: {
     label: 'RP-50yr',
     unit: 'm',
     cmin: 0,
     cmax: 4.5,
     decimals: 2,
-    colorscale: fig7RpPalette
+    colorscale: fig9RpPalette
   },
   Month: {
     label: 'Month',
@@ -940,19 +997,19 @@ const FIG7_METRICS = {
     cmin: 1,
     cmax: 12,
     decimals: 0,
-    colorscale: fig7MonthPalette
+    colorscale: fig9MonthPalette
   }
 };
 
-let FIG7A_DATA = [];
-let FIG7B_DATA = [];
+let FIG9A_DATA = [];
+let FIG9B_DATA = [];
 
-const FIG7_MONTH_NAMES = [
+const FIG9_MONTH_NAMES = [
   'Jan','Feb','Mar','Apr','May','Jun',
   'Jul','Aug','Sep','Oct','Nov','Dec'
 ];
 
-function buildFig7aHover(d) {
+function buildFig9aHover(d) {
   return (
     `<b>${d.station}</b><br>` +
     `Lon: ${d.lon.toFixed(3)}°<br>` +
@@ -961,8 +1018,8 @@ function buildFig7aHover(d) {
   );
 }
 
-function buildFig7bHover(d) {
-  const monthName = FIG7_MONTH_NAMES[d.time - 1] ?? `${d.time}`;
+function buildFig9bHover(d) {
+  const monthName = FIG9_MONTH_NAMES[d.time - 1] ?? `${d.time}`;
   return (
     `<b>${d.station}</b><br>` +
     `Lon: ${d.lon.toFixed(3)}°<br>` +
@@ -972,15 +1029,15 @@ function buildFig7bHover(d) {
   );
 }
 
-function plotFig7aMap(data) {
-  const cfg = FIG7_METRICS.RP50;
+function plotFig9aMap(data) {
+  const cfg = FIG9_METRICS.RP50;
 
   const trace = {
     type: 'scattergeo',
     mode: 'markers',
     lon: data.map(d => d.lon),
     lat: data.map(d => d.lat),
-    text: data.map(buildFig7aHover),
+    text: data.map(buildFig9aHover),
     hovertemplate: '%{text}<extra></extra>',
     marker: {
       size: 3,
@@ -1012,17 +1069,17 @@ function plotFig7aMap(data) {
     geo: getBaseGeoLayout()
   };
 
-  Plotly.react('fig7-map', [trace], layout, {
+  Plotly.react('fig9-map', [trace], layout, {
     responsive: true,
     scrollZoom: true,
     displaylogo: false
   });
 
-  updateFig7Stats('7a', data);
+  updateFig9Stats('9a', data);
 }
 
-function plotFig7bMap(data) {
-  const cfg = FIG7_METRICS.Month;
+function plotFig9bMap(data) {
+  const cfg = FIG9_METRICS.Month;
   const markerSizes = normalisedMarkerSizes(data.map(d => d.Ampl), 1.5, 12);
 
   const trace = {
@@ -1030,7 +1087,7 @@ function plotFig7bMap(data) {
     mode: 'markers',
     lon: data.map(d => d.lon),
     lat: data.map(d => d.lat),
-    text: data.map(buildFig7bHover),
+    text: data.map(buildFig9bHover),
     hovertemplate: '%{text}<extra></extra>',
     marker: {
       size: markerSizes,
@@ -1062,19 +1119,19 @@ function plotFig7bMap(data) {
     geo: getBaseGeoLayout()
   };
 
-  Plotly.react('fig7-map', [trace], layout, {
+  Plotly.react('fig9-map', [trace], layout, {
     responsive: true,
     scrollZoom: true,
     displaylogo: false
   });
 
-  updateFig7Stats('7b', data);
+  updateFig9Stats('9b', data);
 }
 
-function updateFig7Stats(panel, data) {
-  if (panel === '7a') {
+function updateFig9Stats(panel, data) {
+  if (panel === '9a') {
     const n = data.length;
-    document.getElementById('fig7-stats').innerHTML = `
+    document.getElementById('fig9-stats').innerHTML = `
       <span class="pill">N = ${n} coastal points</span>
       <span class="pill">RP-50yr range = [0, 4.2] m</span>
     `;
@@ -1086,14 +1143,14 @@ function updateFig7Stats(panel, data) {
   const amin = Math.min(...amps);
   const amax = Math.max(...amps);
 
-  document.getElementById('fig7-stats').innerHTML = `
+  document.getElementById('fig9-stats').innerHTML = `
     <span class="pill">N = ${n} coastal points</span>
     <span class="pill">Month colours = 1–12</span>
     <span class="pill">Amplitude (size) = ${amin.toFixed(2)}–${amax.toFixed(2)} m</span>
   `;
 }
 
-function parseFig7aRows(rows) {
+function parseFig9aRows(rows) {
   return rows.map((r, i) => ({
     station: `Coastal point ${i + 1}`,
     lon: parseNumber(r.lon),
@@ -1106,7 +1163,7 @@ function parseFig7aRows(rows) {
   );
 }
 
-function parseFig7bRows(rows) {
+function parseFig9bRows(rows) {
   return rows.map((r, i) => ({
     station: `Coastal point ${i + 1}`,
     lon: parseNumber(r.lon),
@@ -1122,34 +1179,34 @@ function parseFig7bRows(rows) {
   );
 }
 
-function renderFigure7() {
-  const selector = document.getElementById('fig7-select');
+function renderFigure9() {
+  const selector = document.getElementById('fig9-select');
 
-  if (selector.value === '7a') {
-    plotFig7aMap(FIG7A_DATA);
+  if (selector.value === '9a') {
+    plotFig9aMap(FIG9A_DATA);
   } else {
-    plotFig7bMap(FIG7B_DATA);
+    plotFig9bMap(FIG9B_DATA);
   }
 }
 
-function initFigure7Selector() {
-  const selector = document.getElementById('fig7-select');
+function initFigure9Selector() {
+  const selector = document.getElementById('fig9-select');
 
-  selector.addEventListener('change', renderFigure7);
+  selector.addEventListener('change', renderFigure9);
 
-  renderFigure7();
+  renderFigure9();
 }
 // =============================
-// Figure 1 configuration
+// Figure 2 configuration
 // =============================
 
-let FIG1A_POINTS = [];
-let FIG1B_SERIES = [];
-let FIG1B_NPOINTS = 0;
+let FIG2A_POINTS = [];
+let FIG2B_SERIES = [];
+let FIG2B_NPOINTS = 0;
 
-const FIG1_BIN_WIDTH = 13.1606 / 60.0; // hr/c
+const FIG2_BIN_WIDTH = 13.1606 / 60.0; // hr/c
 
-const FIG1B_HIST_RGB = [
+const FIG2B_HIST_RGB = [
   [0.4796,0.0158,0.0106],
   [0.7941,0.1660,0.0143],
   [0.9643,0.4186,0.0964],
@@ -1162,11 +1219,11 @@ const FIG1B_HIST_RGB = [
   [0.1900,0.0718,0.2322]
 ];
 
-const FIG1B_HIST_COLOURS = FIG1B_HIST_RGB.map(([r, g, b]) =>
+const FIG2B_HIST_COLOURS = FIG2B_HIST_RGB.map(([r, g, b]) =>
   `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`
 );
 
-function buildFig1Hover(d) {
+function buildFig2Hover(d) {
   return (
     `<b>${d.station}</b><br>` +
     `Lon: ${d.lon.toFixed(3)}°<br>` +
@@ -1175,7 +1232,7 @@ function buildFig1Hover(d) {
   );
 }
 
-function parseFig1aRows(rows) {
+function parseFig2aRows(rows) {
   const nTotal = rows.length;
   const nStations = 216;
   const firstStationIndex = nTotal - nStations;
@@ -1196,7 +1253,7 @@ function parseFig1aRows(rows) {
   );
 }
 
-function plotFig1aMap(data) {
+function plotFig2aMap(data) {
   const coastalPoints = data.filter(d => !d.isStation);
   const stationPoints = data.filter(d => d.isStation);
 
@@ -1206,7 +1263,7 @@ function plotFig1aMap(data) {
     name: 'Coastal points',
     lon: coastalPoints.map(d => d.lon),
     lat: coastalPoints.map(d => d.lat),
-    text: coastalPoints.map(buildFig1Hover),
+    text: coastalPoints.map(buildFig2Hover),
     hovertemplate: '%{text}<extra></extra>',
     marker: {
       symbol: 'circle',
@@ -1223,7 +1280,7 @@ function plotFig1aMap(data) {
     name: 'Validation stations',
     lon: stationPoints.map(d => d.lon),
     lat: stationPoints.map(d => d.lat),
-    text: stationPoints.map(buildFig1Hover),
+    text: stationPoints.map(buildFig2Hover),
     hovertemplate: '%{text}<extra></extra>',
     marker: {
       symbol: 'triangle-up',
@@ -1247,25 +1304,25 @@ function plotFig1aMap(data) {
     geo: getBaseGeoLayout()
   };
 
-  Plotly.react('fig1-map', [coastalTrace, stationTrace], layout, {
+  Plotly.react('fig2-map', [coastalTrace, stationTrace], layout, {
     responsive: true,
     scrollZoom: true,
     displaylogo: false
   });
 
-  updateFig1Stats(coastalPoints.length, stationPoints.length);
+  updateFig2Stats(coastalPoints.length, stationPoints.length);
 }
 
-function updateFig1Stats(nCoastal, nStations) {
-  document.getElementById('fig1-stats').innerHTML = `
+function updateFig2Stats(nCoastal, nStations) {
+  document.getElementById('fig2-stats').innerHTML = `
     <span class="pill">N = ${nCoastal + nStations} points</span>
     <span class="pill">Coastal points = ${nCoastal}</span>
     <span class="pill">Stations = ${nStations}</span>
   `;
 }
 
-function parseFig1bRows(rows) {
-  FIG1B_NPOINTS = rows.length;
+function parseFig2bRows(rows) {
+  FIG2B_NPOINTS = rows.length;
 
   const series = Array.from({ length: 10 }, () => []);
 
@@ -1281,18 +1338,18 @@ function parseFig1bRows(rows) {
   return series;
 }
 
-function plotFig1bHistogram(series) {
+function plotFig2bHistogram(series) {
   const traces = series.map((values, idx) => ({
     type: 'histogram',
     name: `peak_${idx + 1}`,
     x: values,
     opacity: 0.30,
     marker: {
-      color: FIG1B_HIST_COLOURS[idx]
+      color: FIG2B_HIST_COLOURS[idx]
     },
     xbins: {
       start: 0,
-      size: FIG1_BIN_WIDTH
+      size: FIG2_BIN_WIDTH
     },
     hovertemplate:
       `<b>peak_${idx + 1}</b><br>` +
@@ -1331,40 +1388,40 @@ function plotFig1bHistogram(series) {
 };
   
 
-  Plotly.react('fig1b-hist', traces, layout, {
+  Plotly.react('fig2b-hist', traces, layout, {
     responsive: true,
     scrollZoom: true,
     displaylogo: false
   });
 
-  updateFig1bStats(series);
+  updateFig2bStats(series);
 }
 
-function updateFig1bStats(series) {
+function updateFig2bStats(series) {
   const totalValues = series.reduce((acc, arr) => acc + arr.length, 0);
 
-  document.getElementById('fig1b-stats').innerHTML = `
-    <span class="pill">N = ${FIG1B_NPOINTS} points</span>
+  document.getElementById('fig2b-stats').innerHTML = `
+    <span class="pill">N = ${FIG2B_NPOINTS} points</span>
     <span class="pill">Top periods per point = 10</span>
     <span class="pill">Total values plotted = ${totalValues}</span>
     <span class="pill">Bin width = 13.1606 min</span>
   `;
 }
 
-function renderFigure1() {
-  const selector = document.getElementById('fig1-select');
-  const panel1a = document.getElementById('fig1a-panel');
-  const panel1b = document.getElementById('fig1b-panel');
-  const note = document.getElementById('fig1-note');
+function renderFigure2() {
+  const selector = document.getElementById('fig2-select');
+  const panel1a = document.getElementById('fig2a-panel');
+  const panel1b = document.getElementById('fig2b-panel');
+  const note = document.getElementById('fig2-note');
 
-  if (selector.value === '1a') {
+  if (selector.value === '2a') {
     panel1a.classList.remove('hidden');
     panel1b.classList.add('hidden');
 
     note.innerHTML =
       'Propiedad de Elsy Ticse - IHCANTABRIA';
 
-    plotFig1aMap(FIG1A_POINTS);
+    plotFig2aMap(FIG2A_POINTS);
   } else {
     panel1a.classList.add('hidden');
     panel1b.classList.remove('hidden');
@@ -1372,25 +1429,25 @@ function renderFigure1() {
     note.innerHTML =
       'Propiedad de Elsy Ticse - IHCANTABRIA';
 
-    plotFig1bHistogram(FIG1B_SERIES);
+    plotFig2bHistogram(FIG2B_SERIES);
   }
 }
 
-function initFigure1Selector() {
-  const selector = document.getElementById('fig1-select');
-  selector.addEventListener('change', renderFigure1);
-  renderFigure1();
+function initFigure2Selector() {
+  const selector = document.getElementById('fig2-select');
+  selector.addEventListener('change', renderFigure2);
+  renderFigure2();
 }
 
 // =============================
-// Figure 2 configuration
+// Figure 3 configuration
 // =============================
 
-const FIG2_CONFIG = {
-  '2a': {
-    tsFile: 'data/fig_2a_ts.csv',
-    locFile: 'data/fig_2a_locations.csv',
-    psdImage: 'images/fig_2a_psd.png',
+const FIG3_CONFIG = {
+  '3a': {
+    tsFile: 'data/fig_3a_ts.csv',
+    locFile: 'data/fig_3a_locations.csv',
+    psdImage: 'images/fig_3a_psd.png',
     label: 'Figure 3a',
     xRange: ['2023-08-18 00:00:00', '2023-09-15 23:00:00'],
     series: ['serie_1', 'serie_2', 'serie_3', 'serie_4'],
@@ -1402,10 +1459,10 @@ const FIG2_CONFIG = {
     }
   },
 
-  '2b': {
-    tsFile: 'data/fig_2b_ts.csv',
-    locFile: 'data/fig_2b_locations.csv',
-    psdImage: 'images/fig_2b_psd.png',
+  '3b': {
+    tsFile: 'data/fig_3b_ts.csv',
+    locFile: 'data/fig_3b_locations.csv',
+    psdImage: 'images/fig_3b_psd.png',
     label: 'Figure 3b',
     xRange: ['2013-11-15 00:00:00', '2013-12-20 23:00:00'],
     series: ['serie_1', 'serie_2', 'serie_3', 'serie_4', 'serie_5'],
@@ -1418,10 +1475,10 @@ const FIG2_CONFIG = {
     }
   },
 
-  '2c': {
-    tsFile: 'data/fig_2c_ts.csv',
-    locFile: 'data/fig_2c_locations.csv',
-    psdImage: 'images/fig_2c_psd.png',
+  '3c': {
+    tsFile: 'data/fig_3c_ts.csv',
+    locFile: 'data/fig_3c_locations.csv',
+    psdImage: 'images/fig_3c_psd.png',
     label: 'Figure 3c',
     xRange: ['2018-07-24 00:00:00', '2018-09-25 23:00:00'],
     series: ['serie_1', 'serie_2', 'serie_3', 'serie_4'],
@@ -1433,10 +1490,10 @@ const FIG2_CONFIG = {
     }
   },
 
-  '2d': {
-    tsFile: 'data/fig_2d_ts.csv',
-    locFile: 'data/fig_2d_locations.csv',
-    psdImage: 'images/fig_2d_psd.png',
+  '3d': {
+    tsFile: 'data/fig_3d_ts.csv',
+    locFile: 'data/fig_3d_locations.csv',
+    psdImage: 'images/fig_3d_psd.png',
     label: 'Figure 3d',
     xRange: ['2023-02-15 00:00:00', '2023-03-10 23:00:00'],
     series: ['serie_1', 'serie_2', 'serie_3', 'serie_4', 'serie_5'],
@@ -1449,10 +1506,10 @@ const FIG2_CONFIG = {
     }
   }
 };
-let FIG2_DATA = {};
+let FIG3_DATA = {};
 
-function parseFig2TimeSeriesRows(rows, panelKey) {
-  const cfg = FIG2_CONFIG[panelKey];
+function parseFig3TimeSeriesRows(rows, panelKey) {
+  const cfg = FIG3_CONFIG[panelKey];
 
   return cfg.series.map(seriesId => {
     const values = rows.map(r => parseNumber(r[seriesId]));
@@ -1467,7 +1524,7 @@ function parseFig2TimeSeriesRows(rows, panelKey) {
   });
 }
 
-function parseFig2LocationRows(rows) {
+function parseFig3LocationRows(rows) {
   return rows.map(r => ({
     station: r.station,
     lon: parseNumber(r.lon),
@@ -1482,9 +1539,9 @@ function parseFig2LocationRows(rows) {
   );
 }
 
-function plotFig2TimeSeries(panelKey) {
-  const cfg = FIG2_CONFIG[panelKey];
-  const seriesData = FIG2_DATA[panelKey].ts;
+function plotFig3TimeSeries(panelKey) {
+  const cfg = FIG3_CONFIG[panelKey];
+  const seriesData = FIG3_DATA[panelKey].ts;
 
   const traces = seriesData.map(s => ({
     type: 'scatter',
@@ -1531,16 +1588,16 @@ function plotFig2TimeSeries(panelKey) {
     }
   };
 
-  Plotly.react('fig2-ts', traces, layout, {
+  Plotly.react('fig3-ts', traces, layout, {
     responsive: true,
     scrollZoom: true,
     displaylogo: false
   });
 }
 
-function plotFig2LocationMap(panelKey) {
-  const cfg = FIG2_CONFIG[panelKey];
-  const locData = FIG2_DATA[panelKey].locations;
+function plotFig3LocationMap(panelKey) {
+  const cfg = FIG3_CONFIG[panelKey];
+  const locData = FIG3_DATA[panelKey].locations;
 
   const traces = locData.map(d => ({
     type: 'scattergeo',
@@ -1580,84 +1637,84 @@ function plotFig2LocationMap(panelKey) {
     geo: getBaseGeoLayout()
   };
 
-  Plotly.react('fig2-map', traces, layout, {
+  Plotly.react('fig3-map', traces, layout, {
     responsive: true,
     scrollZoom: true,
     displaylogo: false
   });
 
-  document.getElementById('fig2-stats').innerHTML = `
+  document.getElementById('fig3-stats').innerHTML = `
     <span class="pill">N = ${locData.length} stations</span>
     <span class="pill">Panel = ${cfg.label}</span>
   `;
 }
 
-function updateFig2PsdImage(panelKey) {
-  const cfg = FIG2_CONFIG[panelKey];
+function updateFig3PsdImage(panelKey) {
+  const cfg = FIG3_CONFIG[panelKey];
 
-  const img = document.getElementById('fig2-psd-img');
-  const link = document.querySelector('.fig2-image-link');
+  const img = document.getElementById('fig3-psd-img');
+  const link = document.querySelector('.fig3-image-link');
 
   img.src = cfg.psdImage;
   img.alt = `Power spectral density for ${cfg.label}`;
   link.href = cfg.psdImage;
 }
 
-function renderFigure2() {
-  const selector = document.getElementById('fig2-select');
+function renderFigure3() {
+  const selector = document.getElementById('fig3-select');
   const panelKey = selector.value;
 
-  if (!FIG2_DATA[panelKey]) return;
+  if (!FIG3_DATA[panelKey]) return;
 
-  plotFig2TimeSeries(panelKey);
-  plotFig2LocationMap(panelKey);
-  updateFig2PsdImage(panelKey);
+  plotFig3TimeSeries(panelKey);
+  plotFig3LocationMap(panelKey);
+  updateFig3PsdImage(panelKey);
 }
 
-function initFigure2Selector() {
-  const selector = document.getElementById('fig2-select');
-  selector.addEventListener('change', renderFigure2);
-  renderFigure2();
+function initFigure3Selector() {
+  const selector = document.getElementById('fig3-select');
+  selector.addEventListener('change', renderFigure3);
+  renderFigure3();
 }
 
 // =============================
 // Load files
 // =============================
-// Figure 1
+// Figure 2
 Promise.all([
   fetch('data/fig_2a.csv?cache=' + Date.now()).then(response => {
     if (!response.ok) throw new Error('Could not read data/fig_2a.csv');
     return response.text();
   }),
-  fetch('data/fig_1b.csv?cache=' + Date.now()).then(response => {
-    if (!response.ok) throw new Error('Could not read data/fig_1b.csv');
+  fetch('data/fig_2b.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_2b.csv');
     return response.text();
   })
 ])
   .then(([text1a, text1b]) => {
-    hideError('fig1-error');
-    hideError('fig1b-error');
+    hideError('fig2-error');
+    hideError('fig2b-error');
 
-    FIG1A_POINTS = parseFig1aRows(parseCSV(text1a));
-    FIG1B_SERIES = parseFig1bRows(parseCSV(text1b));
+    FIG2A_POINTS = parseFig2aRows(parseCSV(text1a));
+    FIG2B_SERIES = parseFig2bRows(parseCSV(text1b));
 
-    if (!FIG1A_POINTS.length) {
+    if (!FIG2A_POINTS.length) {
       throw new Error('fig_2a.csv has no valid rows.');
     }
 
-    if (!FIG1B_SERIES.length) {
-      throw new Error('fig_1b.csv has no valid rows.');
+    if (!FIG2B_SERIES.length) {
+      throw new Error('fig_2b.csv has no valid rows.');
     }
 
-    initFigure1Selector();
+    initFigure2Selector();
   })
   .catch(err => {
-    showError('fig1-error', err.message);
-    showError('fig1b-error', err.message);
+    showError('fig2-error', err.message);
+    showError('fig2b-error', err.message);
   });
-// Figure 2
-function loadFigure2Panel(panelKey) {
-  const cfg = FIG2_CONFIG[panelKey];
+// Figure 3
+function loadFigure3Panel(panelKey) {
+  const cfg = FIG3_CONFIG[panelKey];
 
   return Promise.all([
     fetch(cfg.tsFile + '?cache=' + Date.now()).then(response => {
@@ -1670,8 +1727,8 @@ function loadFigure2Panel(panelKey) {
     })
   ])
     .then(([textTs, textLoc]) => {
-      const locations = parseFig2LocationRows(parseCSV(textLoc));
-      const ts = parseFig2TimeSeriesRows(parseCSV(textTs), panelKey);
+      const locations = parseFig3LocationRows(parseCSV(textLoc));
+      const ts = parseFig3TimeSeriesRows(parseCSV(textTs), panelKey);
 
       const nameMap = Object.fromEntries(
         locations.map(d => [d.series_id, d.series_name])
@@ -1683,111 +1740,53 @@ function loadFigure2Panel(panelKey) {
         }
       });
 
-      FIG2_DATA[panelKey] = {
+      FIG3_DATA[panelKey] = {
         ts,
         locations
       };
 
-      if (!FIG2_DATA[panelKey].ts.length) {
+      if (!FIG3_DATA[panelKey].ts.length) {
         throw new Error(`${cfg.tsFile} has no valid rows.`);
       }
 
-      if (!FIG2_DATA[panelKey].locations.length) {
+      if (!FIG3_DATA[panelKey].locations.length) {
         throw new Error(`${cfg.locFile} has no valid rows.`);
       }
     });
 }
 
-Promise.all(Object.keys(FIG2_CONFIG).map(panelKey => loadFigure2Panel(panelKey)))
+Promise.all(Object.keys(FIG3_CONFIG).map(panelKey => loadFigure3Panel(panelKey)))
   .then(() => {
-    hideError('fig2-error');
-    initFigure2Selector();
-  })
-  .catch(err => {
-    showError('fig2-error', err.message);
-  });
-// Figure 3
-Promise.all([
-  fetch('data/fig_3a.csv?cache=' + Date.now()).then(response => {
-    if (!response.ok) throw new Error('Could not read data/fig_3a.csv');
-    return response.text();
-  }),
-  fetch('data/fig_3b.csv?cache=' + Date.now()).then(response => {
-    if (!response.ok) throw new Error('Could not read data/fig_3b.csv');
-    return response.text();
-  })
-])
-  .then(([text3a, text3b]) => {
     hideError('fig3-error');
-
-    FIG3A_DATA = parseFig3Rows(parseCSV(text3a), true);
-    FIG3B_DATA = parseFig3Rows(parseCSV(text3b), false);
-
-    if (!FIG3A_DATA.length) {
-      throw new Error('fig_3a.csv has no valid rows.');
-    }
-
-    if (!FIG3B_DATA.length) {
-      throw new Error('fig_3b.csv has no valid rows.');
-    }
-
     initFigure3Selector();
   })
   .catch(err => {
     showError('fig3-error', err.message);
   });
-// Figure 6
+// Figure 5
 Promise.all([
-  fetch('data/fig_6a.csv?cache=' + Date.now()).then(response => {
-    if (!response.ok) throw new Error('Could not read data/fig_6a.csv');
-    return response.text();
-  }),
-  fetch('data/fig_6b.csv?cache=' + Date.now()).then(response => {
-    if (!response.ok) throw new Error('Could not read data/fig_6b.csv');
+  // El panel (b) es ahora una imagen; ya no se descarga su CSV:
+  // fetch('data/fig_5b.csv?cache=' + Date.now()).then(response => {
+  //   if (!response.ok) throw new Error('Could not read data/fig_5b.csv');
+  //   return response.text();
+  // }),
+  fetch('data/fig_5a.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_5a.csv');
     return response.text();
   })
 ])
-  .then(([text6a, text6b]) => {
-    hideError('fig6-error');
-
-    FIG6A_DATA = parseFig6aRows(parseCSV(text6a));
-    FIG6B_DATA = parseFig6bRows(parseCSV(text6b));
-
-    if (!FIG6A_DATA.length) {
-      throw new Error('fig_6a.csv has no valid rows.');
-    }
-
-    if (!FIG6B_DATA.length) {
-      throw new Error('fig_6b.csv has no valid rows.');
-    }
-
-    initFigure6Selector();
-  })
-  .catch(err => {
-    showError('fig6-error', err.message);
-  });
-// Figure 4
-fetch('data/fig_4.csv?cache=' + Date.now())
-  .then(response => {
-    if (!response.ok) throw new Error('Could not read data/fig_4.csv');
-    return response.text();
-  })
-  .then(text => {
-    hideError('fig4-error');
-    initFigure4(parseCSV(text));
-  })
-  .catch(err => {
-    showError('fig4-error', err.message);
-  });
-// Figure 5
-fetch('data/fig_5.csv?cache=' + Date.now())
-  .then(response => {
-    if (!response.ok) throw new Error('Could not read data/fig_5.csv');
-    return response.text();
-  })
-  .then(text => {
+  .then(([text5a]) => {
     hideError('fig5-error');
-    initFigure5(parseCSV(text));
+
+    // El panel (b) ahora es una imagen, por eso ya no se parsea data/fig_5b.csv:
+    // FIG5B_DATA = parseFig5Rows(parseCSV(text5b), true);
+    FIG5A_DATA = parseFig5Rows(parseCSV(text5a), false);
+
+    if (!FIG5A_DATA.length) {
+      throw new Error('fig_5a.csv has no valid rows.');
+    }
+
+    initFigure5Selector();
   })
   .catch(err => {
     showError('fig5-error', err.message);
@@ -1803,11 +1802,11 @@ Promise.all([
     return response.text();
   })
 ])
-  .then(([text7a, text7b]) => {
+  .then(([text6a, text6b]) => {
     hideError('fig7-error');
 
-    FIG7A_DATA = parseFig7aRows(parseCSV(text7a));
-    FIG7B_DATA = parseFig7bRows(parseCSV(text7b));
+    FIG7A_DATA = parseFig7aRows(parseCSV(text6a));
+    FIG7B_DATA = parseFig7bRows(parseCSV(text6b));
 
     if (!FIG7A_DATA.length) {
       throw new Error('fig_7a.csv has no valid rows.');
@@ -1821,4 +1820,103 @@ Promise.all([
   })
   .catch(err => {
     showError('fig7-error', err.message);
+  });
+// Figure 6
+fetch('data/fig_6.csv?cache=' + Date.now())
+  .then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_6.csv');
+    return response.text();
+  })
+  .then(text => {
+    hideError('fig6-error');
+    initFigure6(parseCSV(text));
+  })
+  .catch(err => {
+    showError('fig6-error', err.message);
+  });
+// Carga de la antigua "Figure 6" -> movida a js/supplementary.js
+// Figure 4
+Promise.all([
+  fetch('data/fig_4_mm.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_4_mm.csv');
+    return response.text();
+  }),
+  fetch('data/fig_4_rl.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_4_rl.csv');
+    return response.text();
+  }),
+  fetch('data/fig_4_panels.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_4_panels.csv');
+    return response.text();
+  })
+])
+  .then(([textMm, textRl, textPanels]) => {
+    hideError('fig4-error');
+
+    FIG4_MM = parseFig4MmRows(parseCSV(textMm));
+    FIG4_RL = parseFig4RlRows(parseCSV(textRl));
+    FIG4_PANELS = parseFig4PanelRows(parseCSV(textPanels));
+
+    if (!Object.keys(FIG4_MM).length) {
+      throw new Error('fig_4_mm.csv has no valid rows.');
+    }
+
+    if (!Object.keys(FIG4_PANELS).length) {
+      throw new Error('fig_4_panels.csv has no valid rows.');
+    }
+
+    initFigure4Selector();
+  })
+  .catch(err => {
+    showError('fig4-error', err.message);
+  });
+// Figure 8
+fetch('data/fig_8.csv?cache=' + Date.now())
+  .then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_8.csv');
+    return response.text();
+  })
+  .then(text => {
+    hideError('fig8-error');
+
+    FIG8_DATA = parseFig8Rows(parseCSV(text));
+
+    if (!FIG8_DATA.length) {
+      throw new Error('fig_8.csv has no valid rows.');
+    }
+
+    plotFig8Map(FIG8_DATA);
+  })
+  .catch(err => {
+    showError('fig8-error', err.message);
+  });
+// Figure 9
+Promise.all([
+  fetch('data/fig_9a.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_9a.csv');
+    return response.text();
+  }),
+  fetch('data/fig_9b.csv?cache=' + Date.now()).then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_9b.csv');
+    return response.text();
+  })
+])
+  .then(([text7a, text7b]) => {
+    hideError('fig9-error');
+
+    FIG9A_DATA = parseFig9aRows(parseCSV(text7a));
+    FIG9B_DATA = parseFig9bRows(parseCSV(text7b));
+
+    if (!FIG9A_DATA.length) {
+      throw new Error('fig_9a.csv has no valid rows.');
+    }
+
+    if (!FIG9B_DATA.length) {
+      throw new Error('fig_9b.csv has no valid rows.');
+    }
+
+    initFigure9Selector();
+  })
+  .catch(err => {
+    showError('fig9-error', err.message);
   });
