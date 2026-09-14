@@ -304,9 +304,6 @@ function renderFigureS2() {
 
   document.getElementById('figs2-stats').innerHTML = `
     <span class="pill">${cfg.label}</span>
-    <span class="pill">TG = ${tg.n} stations</span>
-    <span class="pill">GOS = ${gos.n} stations</span>
-    <span class="pill">colour range = [${FIGS2_CLIM[0]}, ${FIGS2_CLIM[1]}] m</span>
   `;
 }
 
@@ -420,8 +417,6 @@ function updateFigS3Stats(data) {
   document.getElementById('figs3-stats').innerHTML = `
     <span class="pill">N = ${n} stations</span>
     <span class="pill">mean = ${mean.toFixed(2)} %</span>
-    <span class="pill">GOS under TG = ${pctUnder.toFixed(0)}% of stations</span>
-    <span class="pill">colour range = [${FIGS3_CLIM[0]}, ${FIGS3_CLIM[1]}] %</span>
   `;
 }
 
