@@ -1464,7 +1464,7 @@ function plotFig2bHistogram(series) {
   },
   xaxis: {
   title: {
-    text: 'period [hr/c]',
+    text: 'Period [hr c^-^1]',
     font: { size: 18 }
   },
   range: [5, 25],
@@ -1473,7 +1473,7 @@ function plotFig2bHistogram(series) {
   },
   yaxis: {
     title: {
-      text: 'ocurrence',
+      text: 'Ocurrence',
       font: { size: 22 }
     },
     tickfont: { size: 16 }
@@ -1496,7 +1496,6 @@ function updateFig2bStats(series) {
   document.getElementById('fig2b-stats').innerHTML = `
     <span class="pill">N = ${FIG2B_NPOINTS} points</span>
     <span class="pill">Top periods per point = 10</span>
-    <span class="pill">Total values plotted = ${totalValues}</span>
     <span class="pill">Bin width = ${(FIG2_BIN_WIDTH * 60).toFixed(2)} min</span>
   `;
 }
