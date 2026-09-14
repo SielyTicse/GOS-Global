@@ -136,6 +136,17 @@ body {
   margin-top: 18px;
 }
 
+/* Supp. 2: TG y GOS son dos subplots de una misma figura de Plotly, no dos
+   graficos en una rejilla CSS, asi que solo hace falta el scroll horizontal
+   para que no se compriman en pantalla estrecha. */
+.figs2-scroll {
+  overflow-x: auto;
+}
+
+.figs2-plot {
+  min-width: 860px;
+}
+
 /* Figura 4: tres paneles en una fila. Por debajo de ~820 px el grafico
    desborda su caja con scroll propio en lugar de comprimirse. */
 .fig4-scroll {
@@ -221,6 +232,14 @@ body {
 
 .page-nav {
   margin-top: 16px;
+}
+
+/* Enlace al pie de una figura hacia su suplementaria (6->S1, 8->S2, 9->S3).
+   Separado del pie por una linea, para que no se lea como parte de la nota. */
+.figure-nav {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #e6eaf2;
 }
 
 .nav-button {

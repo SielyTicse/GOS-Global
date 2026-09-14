@@ -55,69 +55,80 @@
       <div class="figure-note">
         Propiedad de Elsy Ticse - IHCANTABRIA
       </div>
+
+      <nav class="figure-nav">
+        <a class="nav-button" href="index.html#figure-6">&larr; Back to Figure 6</a>
+      </nav>
     </section>
 
     <!-- ===================================================================
-         SUPPLEMENTARY FIGURE 2 - PENDIENTE.
-         Si es imagen: colocar images/fig_s2.png y borrar este comentario.
-         Si es interactiva: hace falta data/fig_s2.csv y un bloque en
-         js/supplementary.js equivalente al de la Supp 1.
+         SUPPLEMENTARY FIGURE 2 - Interactiva.
+         Origen: codigos_GEV_ESTACIONARIO/figS2_amplitudes_ciclos.m
+         Datos:  data/fig_s2.csv + data/fig_s2_palette.csv
+         En el paper son 8 mapas (4 filas x 2 columnas); aqui se elige la
+         fila con el selector y se ven sus dos mapas, TG y GOS.
          =================================================================== -->
     <section class="figure-card" id="figure-s2">
       <h2>Supplementary Figure 2</h2>
 
       <p class="figure-caption">
-        Supplementary Figure 2. <em>[pendiente: pie de figura]</em>
+        Supplementary Figure 2. Amplitude of the annual and semi-annual cycles of the GEV location (&mu;) and scale (&psi;) parameters at the 216 tide-gauge stations, comparing the tide-gauge records (TG) with the GOS dataset. All panels share the same colour range.
       </p>
 
-      <div class="figure-image-panel">
-        <a href="images/fig_s2.png" target="_blank" class="figure-image-link">
-          <img
-            src="images/fig_s2.png"
-            alt="Supplementary Figure 2"
-            class="figure-image"
-            onerror="this.parentNode.outerHTML='&lt;div class=&quot;placeholder&quot;&gt;Falta images/fig_s2.png&lt;/div&gt;'"
-          >
-        </a>
-
-        <p class="image-note">
-          Click the image to open it in a new tab and zoom in.
-        </p>
+      <div class="controls">
+        <label for="figs2-select"><b>Parameter and cycle:</b></label>
+        <select id="figs2-select">
+          <option value="mu_ann">&mu; annual</option>
+          <option value="mu_semi">&mu; semi-annual</option>
+          <option value="psi_ann">&psi; annual</option>
+          <option value="psi_semi">&psi; semi-annual</option>
+        </select>
       </div>
+
+      <div class="stats" id="figs2-stats"></div>
+
+      <!-- (a) TG y (b) GOS son dos subplots de UNA misma figura y comparten
+           la barra de color de la derecha. Como Plotly no puede reordenarlos
+           con CSS, en pantalla estrecha el grafico lleva scroll propio en
+           lugar de comprimirse, igual que la Figura 4. -->
+      <div class="figs2-scroll">
+        <div id="figs2-map" class="plot-container-medium figs2-plot"></div>
+      </div>
+
+      <div id="figs2-error" class="error"></div>
 
       <div class="figure-note">
         Propiedad de Elsy Ticse - IHCANTABRIA
       </div>
+
+      <nav class="figure-nav">
+        <a class="nav-button" href="index.html#figure-8">&larr; Back to Figure 8</a>
+      </nav>
     </section>
 
     <!-- ===================================================================
-         SUPPLEMENTARY FIGURE 3 - PENDIENTE. Mismo criterio que la Supp 2.
+         SUPPLEMENTARY FIGURE 3 - Interactiva.
+         Origen: codigos_GEV_ESTACIONARIO/figS3_dif_retorno50_GOSvsTG.m
+         Datos:  data/fig_s3.csv + data/fig_s3_palette.csv
          =================================================================== -->
     <section class="figure-card" id="figure-s3">
       <h2>Supplementary Figure 3</h2>
 
       <p class="figure-caption">
-        Supplementary Figure 3. <em>[pendiente: pie de figura]</em>
+        Supplementary Figure 3. Relative difference of the 50-year storm-surge return level between the tide-gauge records and the GOS dataset, computed as (TG &minus; GOS) / TG. Positive values indicate stations where GOS underestimates the return level.
       </p>
 
-      <div class="figure-image-panel">
-        <a href="images/fig_s3.png" target="_blank" class="figure-image-link">
-          <img
-            src="images/fig_s3.png"
-            alt="Supplementary Figure 3"
-            class="figure-image"
-            onerror="this.parentNode.outerHTML='&lt;div class=&quot;placeholder&quot;&gt;Falta images/fig_s3.png&lt;/div&gt;'"
-          >
-        </a>
-
-        <p class="image-note">
-          Click the image to open it in a new tab and zoom in.
-        </p>
-      </div>
+      <div class="stats" id="figs3-stats"></div>
+      <div id="figs3-map" class="plot-container"></div>
+      <div id="figs3-error" class="error"></div>
 
       <div class="figure-note">
         Propiedad de Elsy Ticse - IHCANTABRIA
       </div>
+
+      <nav class="figure-nav">
+        <a class="nav-button" href="index.html#figure-9">&larr; Back to Figure 9</a>
+      </nav>
     </section>
 
   </main>

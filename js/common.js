@@ -19,6 +19,24 @@ function rgb01ToPlotlyScale(rgbArray) {
   });
 }
 
+// Construye una escala de Plotly a partir de un CSV de paleta con columnas
+// r,g,b en 0-1. Se usa para las paletas que no se pueden reproducir con una
+// formula y hay que exportar desde MATLAB (turbo recortada de la S2, y la
+// PALETA_dif_prctl_yr50 de la S3, que vive en un .mat).
+function paletteFromRows(rows, sourceName) {
+  const rgb = rows.map(r => [
+    parseNumber(r.r),
+    parseNumber(r.g),
+    parseNumber(r.b)
+  ]).filter(c => c.every(Number.isFinite));
+
+  if (rgb.length < 2) {
+    throw new Error(`${sourceName}: needs at least 2 valid r,g,b rows.`);
+  }
+
+  return rgb01ToPlotlyScale(rgb);
+}
+
 function parseCSV(text) {
   const rows = [];
   let row = [];
