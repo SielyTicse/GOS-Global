@@ -239,7 +239,7 @@ function updateFig4Stats() {
     const station = meta.station ?? '—';
     const z50 = Number.isFinite(meta.z50_int) ? meta.z50_int.toFixed(3) : '—';
 
-    return `<span class="pill">${FIG4_PANEL_LETTERS[i]} ${station} &middot; ` +
+    return `<span class="pill"> ${station} &middot; ` +
            `Z&#773;<sub>50</sub> = ${z50} m</span>`;
   });
 
