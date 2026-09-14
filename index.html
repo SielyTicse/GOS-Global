@@ -119,6 +119,7 @@
 
       <p class="figure-caption">
         Figure 3. Time series of the raw simulated data from 18 tide-gauges locations in four regions historically identified as storm surge hotspots (Bernier et al., 2024). (a)USA Group, (b)EU Group, (c)ASIA Group, (d)AUSTR Group. The locations are shown in colours in Figure 1. Panels at the right of time series display their corresponding power spectra for both the observational data (tide gauges, shown in grey) and the raw simulated data (colored lines).
+      </p>
 
       <div class="controls">
         <label for="fig3-select"><b>Panel:</b></label>
@@ -183,7 +184,14 @@
            grafico, como el tiledlayout(1,3) del script MATLAB.
            Antes habia un selector que mostraba un panel cada vez. -->
       <div class="stats" id="fig4-stats"></div>
-      <div id="fig4-plot" class="plot-container-medium"></div>
+
+      <!-- Los tres paneles no caben en pantallas estrechas y Plotly no puede
+           reordenarlos con CSS, asi que el grafico tiene su propio scroll
+           horizontal en vez de encogerse hasta ser ilegible. -->
+      <div class="fig4-scroll">
+        <div id="fig4-plot" class="plot-container-medium fig4-plot"></div>
+      </div>
+
       <div id="fig4-error" class="error"></div>
 
       <div class="figure-note">

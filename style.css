@@ -136,6 +136,16 @@ body {
   margin-top: 18px;
 }
 
+/* Figura 4: tres paneles en una fila. Por debajo de ~820 px el grafico
+   desborda su caja con scroll propio en lugar de comprimirse. */
+.fig4-scroll {
+  overflow-x: auto;
+}
+
+.fig4-plot {
+  min-width: 820px;
+}
+
 .fig2-panel h3,
 .fig2-hist-panel h3 {
   margin: 0 0 10px 0;
