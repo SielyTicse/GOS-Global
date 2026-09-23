@@ -11,7 +11,7 @@
 const FIG1_MARKERS = {
   req:  {symbol: 'circle', size: 3, color: '#ff0000', opacity: 0.95, line: {width: 0}},
   near: {symbol: 'diamond-open', size: 4.5, color: '#ae00ff', opacity: 0.95, line: {width: 1.5}},
-  nan:  {symbol: 'circle', size: 4, color: 'rgba(186,180,180,0.12549)', opacity: 1.0}
+  nan:  {symbol: 'circle', size: 4, color: 'rgba(186,180,180,0.5)', opacity: 1.0}
 };
 let FIG1_DATA = [];
 
@@ -26,7 +26,7 @@ function plotFig1Map() {
 const FIG2_MARKERS = {
   req:  {symbol: 'circle', size: 3, color: '#ff0000', opacity: 0.95, line: {width: 0}},
   near: {symbol: 'diamond-open', size: 6, color: '#ae00ff', opacity: 0.95, line: {width: 1.5}},
-  nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.7}
+  nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.5)', opacity: 1.0}
 };
 let FIG2_DATA = [];
 
