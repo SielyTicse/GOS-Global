@@ -10,8 +10,8 @@
 // =============================
 const FIG1_MARKERS = {
   req:  {symbol: 'circle', size: 3, color: '#ff0000', opacity: 0.95, line: {width: 0}},
-  near: {symbol: 'diamond-open', size: 6, color: '#ae00ff', opacity: 0.95, line: {width: 1.5}},
-  nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.6}
+  near: {symbol: 'diamond-open', size: 4.5, color: '#ae00ff', opacity: 0.95, line: {width: 1.5}},
+  nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.7}
 };
 let FIG1_DATA = [];
 
@@ -26,7 +26,7 @@ function plotFig1Map() {
 const FIG2_MARKERS = {
   req:  {symbol: 'circle', size: 3, color: '#ff0000', opacity: 0.95, line: {width: 0}},
   near: {symbol: 'diamond-open', size: 6, color: '#ae00ff', opacity: 0.95, line: {width: 1.5}},
-  nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.6}
+  nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.7}
 };
 let FIG2_DATA = [];
 
@@ -84,7 +84,7 @@ function getPointMapLayout(plotId) {
     margin: {l: 10, r: 10, t: 60, b: 10},
     paper_bgcolor: '#ffffff',
     font: {family: 'Arial, Helvetica, sans-serif', color: '#222'},
-    legend: {orientation: 'h', x: 0.5, xanchor: 'center', y: 1.06, font: {family: 'Arial, Helvetica, sans-serif', size: 13, color: '#222'}, itemsizing: 'constant', itemdoubleclick: false},
+    legend: {orientation: 'h', x: 0.5, xanchor: 'center', y: 1.06, font: {family: 'Arial, Helvetica, sans-serif', size: 15, color: '#222'}, itemsizing: 'constant', itemdoubleclick: false},
     geo: getBaseGeoLayout(),
     uirevision: plotId
   };
