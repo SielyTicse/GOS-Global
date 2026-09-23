@@ -1,15 +1,154 @@
-'use strict';
-const sets = [
-  {id: '35278', title: 'Figura 1 · 35.278 puntos · 20 km', period: 'Ubicaciones y máximos de máximos · 1993–2024 · independencia de 24 h'},
-  {id: '3291', title: 'Figura 2 · 3.291 puntos · 200 km', period: 'Ubicaciones y máximos de máximos · 1993–2024 · independencia de 24 h'},
-  {id: '550', title: 'Figura 3 · 550 puntos · GESLA', period: 'Ubicaciones y máximos de máximos · 1993–2024 · independencia de 24 h'}
-];
-const fmt = (value, digits = 5) => value === null ? 'NaN' : value.toLocaleString('es-ES', {maximumFractionDigits: digits});
-const wrapLon = value => value === null ? null : ((value + 180) % 360 + 360) % 360 - 180;
-const valid = (row, offset) => Number.isFinite(row[offset]) && Number.isFinite(row[offset + 1]);
-const missingModel = row => !valid(row, 3);
-const hover = row => `<b>Punto ${row[0]}</b><br>Solicitado: lat ${fmt(row[1])}°, lon ${fmt(row[2])}°<br>Modelo: lat ${fmt(row[3])}°, lon ${fmt(row[4])}°<br>dist_km: ${fmt(row[5], 3)} km<br>depth: ${fmt(row[6], 2)} m<br>max_max: ${fmt(row[7], 3)} m<br>ti_max_max: ${row[8] === null ? 'NaT' : row[8].replace('T', ' ')}`;
+// Utilidades compartidas: getBaseGeoLayout, showError y hideError
+// se cargan desde ../js/common.js, igual que en la pagina principal.
+// Titulos y pies de figura: index.html. Fuentes y tamanos: ../style.css.
 
+// =============================
+// Figure 1 configuration - 35278 puntos
+// EDITAR AQUI los marcadores de la figura 1.
+// symbol: 'circle' (punto), 'x', 'cross', 'square', 'diamond'.
+// size: diametro en pixeles; opacity: 0 (invisible) a 1 (opaco).
+// =============================
+const FIG1_MARKERS = {
+  req:  {symbol: 'circle', size: 3, color: '#ff0000', opacity: 0.88, line: {width: 0}},
+  near: {symbol: 'circle', size: 3, color: '#ff00ff', opacity: 0.88, line: {width: 0}},
+  nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.4}
+};
+let FIG1_DATA = [];
+
+function plotFig1Map() {
+  return plotPointMap('fig1-map', FIG1_DATA, FIG1_MARKERS, buildFig1Hover);
+}
+
+// =============================
+// Figure 2 configuration - 3291 puntos
+// EDITAR AQUI los marcadores de la figura 2.
+// =============================
+const FIG2_MARKERS = {
+  req:  {symbol: 'circle', size: 3, color: '#ff0000', opacity: 0.88, line: {width: 0}},
+  near: {symbol: 'circle', size: 3, color: '#ff00ff', opacity: 0.88, line: {width: 0}},
+  nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.4}
+};
+let FIG2_DATA = [];
+
+function plotFig2Map() {
+  return plotPointMap('fig2-map', FIG2_DATA, FIG2_MARKERS, buildFig2Hover);
+}
+
+// =============================
+// Figure 3 configuration - 550 puntos GESLA
+// EDITAR AQUI los marcadores de la figura 3.
+// =============================
+const FIG3_MARKERS = {
+  req:  {symbol: 'circle', size: 3, color: '#ff0000', opacity: 0.88, line: {width: 0}},
+  near: {symbol: 'circle', size: 3, color: '#ff00ff', opacity: 0.88, line: {width: 0}},
+  nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.4}
+};
+let FIG3_DATA = [];
+
+function plotFig3Map() {
+  return plotPointMap('fig3-map', FIG3_DATA, FIG3_MARKERS, buildFig3Hover);
+}
+
+// =============================
+// Hover builders - texto al pasar el cursor
+// EDITAR buildPointHover para cambiar las tres figuras.
+// Para cambiar solo una, editar su buildFigNHover.
+// =============================
+function formatValue(value, decimals = 5) {
+  return value === null ? 'NaN' : value.toLocaleString('es-ES', {maximumFractionDigits: decimals});
+}
+
+function buildPointHover(d) {
+  return (
+    `<b>Punto ${d.id}</b><br>` +
+    `Solicitado: lat ${formatValue(d.lat_req)}°, lon ${formatValue(d.lon_req)}°<br>` +
+    `Modelo: lat ${formatValue(d.lat_near)}°, lon ${formatValue(d.lon_near)}°<br>` +
+    `dist_km: ${formatValue(d.dist_km, 3)} km<br>` +
+    `depth: ${formatValue(d.depth, 2)} m<br>` +
+    `max_max: ${formatValue(d.max_max, 3)} m<br>` +
+    `ti_max_max: ${d.ti_max_max === null ? 'NaT' : d.ti_max_max.replace('T', ' ')}`
+  );
+}
+
+function buildFig1Hover(d) { return buildPointHover(d); }
+function buildFig2Hover(d) { return buildPointHover(d); }
+function buildFig3Hover(d) { return buildPointHover(d); }
+
+// =============================
+// Map layout - proyeccion, margenes, fuente y leyenda
+// EDITAR AQUI para las tres figuras de SurgeMIP.
+// getBaseGeoLayout reutiliza el mapa de la pagina principal.
+// =============================
+function getPointMapLayout(plotId) {
+  return {
+    margin: {l: 10, r: 10, t: 40, b: 10},
+    paper_bgcolor: '#ffffff',
+    font: {family: 'Arial, Helvetica, sans-serif', color: '#222'},
+    legend: {orientation: 'h', x: 0.5, xanchor: 'center', y: 1.06},
+    geo: getBaseGeoLayout(),
+    uirevision: plotId
+  };
+}
+
+// =============================
+// Map builder - tres grupos de puntos, sin paleta
+// Datos con nombres de columna: d.lat_req, d.depth, etc.
+// =============================
+function wrapLongitude(value) {
+  return ((value + 180) % 360 + 360) % 360 - 180;
+}
+
+function hasRequestedLocation(d) {
+  return Number.isFinite(d.lat_req) && Number.isFinite(d.lon_req);
+}
+
+function hasModelLocation(d) {
+  return Number.isFinite(d.lat_near) && Number.isFinite(d.lon_near);
+}
+
+function plotPointMap(plotId, data, markers, hoverBuilder) {
+  const requested = data.filter(d => hasRequestedLocation(d) && hasModelLocation(d));
+  const model = data.filter(hasModelLocation);
+  const missing = data.filter(d => hasRequestedLocation(d) && !hasModelLocation(d));
+
+  const requestedTrace = {
+    type: 'scattergeo', mode: 'markers', name: 'Solicitados (req)',
+    lat: requested.map(d => d.lat_req),
+    lon: requested.map(d => wrapLongitude(d.lon_req)),
+    text: requested.map(hoverBuilder),
+    hovertemplate: '%{text}<extra>%{fullData.name}</extra>',
+    marker: markers.req
+  };
+  const modelTrace = {
+    type: 'scattergeo', mode: 'markers', name: 'Modelo cercano (near)',
+    lat: model.map(d => d.lat_near),
+    lon: model.map(d => wrapLongitude(d.lon_near)),
+    text: model.map(hoverBuilder),
+    hovertemplate: '%{text}<extra>%{fullData.name}</extra>',
+    marker: markers.near
+  };
+  const missingTrace = {
+    type: 'scattergeo', mode: 'markers', name: `Sin datos del modelo (NaN): ${missing.length}`,
+    lat: missing.map(d => d.lat_req),
+    lon: missing.map(d => wrapLongitude(d.lon_req)),
+    text: missing.map(hoverBuilder),
+    hovertemplate: '%{text}<extra>%{fullData.name}</extra>',
+    marker: markers.nan,
+    showlegend: missing.length > 0
+  };
+
+  return Plotly.react(plotId, [requestedTrace, modelTrace, missingTrace], getPointMapLayout(plotId), {
+    responsive: true,
+    scrollZoom: true,
+    displaylogo: false,
+    toImageButtonOptions: {filename: `GOS_SurgeMIP_${plotId}`, scale: 2}
+  });
+}
+
+// =============================
+// CSV parsers - lectura y validacion de datos
+// No hace falta modificar esta seccion para cambiar el aspecto.
+// =============================
 // Eight numeric columns and one ISO date string; retain NaN/NaT as missing data.
 function readPointCSV(text, expectedCount) {
   const lines = text.replace(/^\uFEFF/, '').trim().split(/\r?\n/);
@@ -39,54 +178,59 @@ function readPointCSV(text, expectedCount) {
     // Keep source clock time as text, without browser timezone conversion.
     row.push(missingTime ? null : time);
     ids.add(row[0]);
-    return row;
+    return Object.fromEntries(fields.map((field, column) => [field, row[column]]));
   });
   if (rows.length !== expectedCount) throw new Error('El número de puntos no coincide con el conjunto.');
   return rows;
 }
 
-async function render(config, section) {
-  const status = section.querySelector('.status');
-  try {
-    if (!window.Plotly) throw new Error('No se pudo cargar Plotly. Comprueba la conexión a Internet y recarga la página.');
-    const response = await fetch(`data/${config.id}.csv`);
-    if (!response.ok) throw new Error(`No se pudieron cargar los datos (HTTP ${response.status}).`);
-    const rows = readPointCSV(await response.text(), Number(config.id));
-    const map = section.querySelector('.map');
-    const traces = [[1, 'Solicitados (req)', '#ff0000'], [3, 'Modelo cercano (near)', '#ff00ff']].map(([offset, name, color]) => {
-      const points = rows.filter(row => valid(row, offset) && !missingModel(row));
-      return {type: 'scattergeo', mode: 'markers', name,
-        lat: points.map(row => row[offset]), lon: points.map(row => wrapLon(row[offset + 1])),
-        customdata: points.map(row => row[0]), text: points.map(hover), hovertemplate: '%{text}<extra>%{fullData.name}</extra>',
-        marker: {size: 3, color, opacity: .88, line: {width: 0}}};
-    });
-    const missing = rows.filter(row => valid(row, 1) && missingModel(row));
-    traces.push({type: 'scattergeo', mode: 'markers', name: `Sin datos del modelo (NaN): ${missing.length}`,
-      lat: missing.map(row => row[1]), lon: missing.map(row => wrapLon(row[2])),
-      text: missing.map(hover), hovertemplate: '%{text}<extra>%{fullData.name}</extra>',
-      marker: {symbol: 'x', size: 6, color: '#000000', opacity: 1}, showlegend: missing.length > 0});
-    await Plotly.newPlot(map, traces, {
-      margin: {l: 10, r: 10, t: 40, b: 10}, paper_bgcolor: '#ffffff',
-      font: {family: 'Arial, Helvetica, sans-serif', color: '#222'},
-      legend: {orientation: 'h', x: 0.5, xanchor: 'center', y: 1.06},
-      geo: getBaseGeoLayout(),
-      uirevision: config.id
-    }, {responsive: true, scrollZoom: true, displaylogo: false, toImageButtonOptions: {filename: `GOS_SurgeMIP_${config.id}`, scale: 2}});
-    status.hidden = true;
-  } catch (error) {
-    status.textContent = error.message;
-    status.classList.add('failure');
+// =============================
+// Data loading - un bloque por figura, como en la pagina principal
+// La carga se retrasa hasta acercarse al mapa para no dibujar todo a la vez.
+// =============================
+function loadFigureWhenVisible(sectionId, statusId, errorId, load) {
+  async function start() {
+    const status = document.getElementById(statusId);
+    try {
+      if (!window.Plotly) throw new Error('No se pudo cargar Plotly. Comprueba la conexion a Internet.');
+      hideError(errorId);
+      await load();
+    } catch (error) {
+      showError(errorId, error.message);
+    } finally {
+      status.hidden = true;
+    }
   }
+  if (!('IntersectionObserver' in window)) { start(); return; }
+  const observer = new IntersectionObserver(entries => {
+    if (entries.some(entry => entry.isIntersecting)) {
+      observer.disconnect();
+      start();
+    }
+  }, {rootMargin: '150px'});
+  observer.observe(document.getElementById(sectionId));
 }
 
-for (const config of sets) {
-  const section = document.createElement('section');
-  section.className = 'figure-card'; section.id = `set-${config.id}`;
-  section.innerHTML = `<h2>${config.title}</h2><p class="figure-caption">${config.period}</p><p class="status figure-caption" role="status">Cargando mapa y metadatos…</p><div class="map plot-container" aria-label="${config.title}"></div>`;
-  document.getElementById('figures').append(section);
-  // Delay the larger SVG maps until they approach the viewport.
-  const observer = new IntersectionObserver(entries => {
-    if (entries.some(entry => entry.isIntersecting)) { observer.disconnect(); render(config, section); }
-  }, {rootMargin: '150px'});
-  observer.observe(section);
-}
+// Figure 1 - 35278 puntos
+loadFigureWhenVisible('set-35278', 'fig1-status', 'fig1-error', async () => {
+  const response = await fetch('data/35278.csv');
+  if (!response.ok) throw new Error('No se pudo leer data/35278.csv');
+  FIG1_DATA = readPointCSV(await response.text(), 35278);
+  await plotFig1Map();
+});
+
+// Figure 2 - 3291 puntos
+loadFigureWhenVisible('set-3291', 'fig2-status', 'fig2-error', async () => {
+  const response = await fetch('data/3291.csv');
+  if (!response.ok) throw new Error('No se pudo leer data/3291.csv');
+  FIG2_DATA = readPointCSV(await response.text(), 3291);
+  await plotFig2Map();
+});
+
+// Figure 3 - 550 puntos
+loadFigureWhenVisible('set-550', 'fig3-status', 'fig3-error', async () => {
+  const response = await fetch('data/550.csv');
+  if (!response.ok) throw new Error('No se pudo leer data/550.csv');
+  FIG3_DATA = readPointCSV(await response.text(), 550);
+  await plotFig3Map();
+});
