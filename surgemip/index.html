@@ -7,19 +7,19 @@
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="style.css">
   <script defer src="https://cdn.plot.ly/plotly-3.1.0.min.js"></script>
+  <script defer src="../js/common.js"></script>
   <script defer src="main.js"></script>
 </head>
 <body>
   <header class="page-header">
     <a href="../">← GOS Global</a>
-    <p class="eyebrow">GLOBAL OCEAN SURGE · SURGEMIP</p>
     <h1>Puntos solicitados y ubicaciones del modelo</h1>
     <p>Tres conjuntos de extracción. Compara las coordenadas solicitadas (<code>lat_req, lon_req</code>) con las del nodo cercano del modelo (<code>lat_near, lon_near</code>).</p>
     <nav aria-label="Figuras"><a href="#set-35278">35.278 · 20 km</a><a href="#set-3291">3.291 · 200 km</a><a href="#set-550">550 · GESLA</a></nav>
   </header>
   <main class="page-content" id="figures">
-    <p>Pasa el cursor sobre un punto para ver sus datos; haz clic para fijarlos en el panel. Usa la leyenda para mostrar u ocultar cada grupo y la rueda para ampliar. El selector permite consultar también puntos superpuestos. «Sin dato» indica un valor ausente en el archivo.</p>
-    <noscript>Activa JavaScript para cargar los mapas interactivos. Puedes descargar los datos: <a href="data/35278.csv">35.278 puntos</a>, <a href="data/3291.csv">3.291 puntos</a> y <a href="data/550.csv">550 puntos</a>.</noscript>
+    <p class="figure-caption">Pasa el cursor sobre un punto para consultar las coordenadas, dist_km y depth. Rojo: ubicación solicitada (req). Magenta: ubicación cercana del modelo (near). Usa la leyenda para mostrar u ocultar cada grupo y la rueda para ampliar. «Sin dato» indica un valor ausente en el archivo.</p>
+    <noscript>Activa JavaScript para cargar los mapas interactivos.</noscript>
   </main>
   <footer>Elsy Ticse · IHCantabria · GOS Global</footer>
 </body>

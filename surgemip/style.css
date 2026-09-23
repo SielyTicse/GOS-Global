@@ -1,19 +1,5 @@
-.eyebrow { margin-top: 24px !important; font-size: 12px; letter-spacing: .14em; color: #126b86 !important; }
-.page-header h1 { max-width: 850px; margin-top: 10px; }
-a { color: #096986; }
+/* Typography, cards and map dimensions come from ../style.css. */
 nav { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
-nav a, .download { padding: 9px 14px; border: 1px solid #cbdce3; border-radius: 8px; text-decoration: none; }
-.figure-card { scroll-margin-top: 15px; margin-top: 25px; }
-.map { height: 560px; width: 100%; }
-.toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
-button, input { font: inherit; padding: 8px; border: 1px solid #adc4cf; border-radius: 6px; }
-button { background: #edf5f8; cursor: pointer; }
-input { width: 90px; }
-.status { color: #526571; font-size: 14px; }
-.details { padding: 16px; background: #f3f8fa; border-radius: 8px; overflow-x: auto; min-height: 42px; }
-.details table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-th, td { text-align: left; padding: 8px; border-bottom: 1px solid #d5e2e8; }
-.source { font-size: 12px; color: #637680; overflow-wrap: anywhere; margin-top: 16px; }
-footer { text-align: center; padding: 24px; color: #637680; }
-.failure { color: #a32b2b; }
-@media(max-width: 650px) { .page-header h1 { font-size: 27px; } .page-content { padding: 12px; } .figure-card { padding: 12px; } .figure-card h2 { font-size: 22px; } .map { height: 420px; } }
+.figure-card { scroll-margin-top: 15px; }
+footer { text-align: center; padding: 24px; color: #555; }
+.failure { color: #9b1c1c; }
