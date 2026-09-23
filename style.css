@@ -273,6 +273,17 @@ body {
   background: #1b376f;
 }
 
+.nav-button-small {
+  padding: 6px 12px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.nav-button:focus-visible {
+  outline: 2px solid #244a9b;
+  outline-offset: 3px;
+}
+
 /* ---------------------------------------------------------------
    Paneles de figura que son imagen estatica (Fig 1, 4, 5b, 8, Supp)
    --------------------------------------------------------------- */

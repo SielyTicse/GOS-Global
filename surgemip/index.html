@@ -12,10 +12,14 @@
 </head>
 <body>
   <header class="page-header">
-    <a href="../">← GOS Global</a>
+    <a class="nav-button nav-button-small back-link" href="../">← GOS Global</a>
     <h1>Requested SurgeMIP Hindcast Data</h1>
-    <p>hindcast (a.k.a reanalysis) storm surge data from GOS-GLOBAL dataset. 
-    <nav aria-label="Figures"><a href="#set-35278">coastal_points_20km · 35,278 pts</a><a href="#set-3291">coastal_points_200km · 3,291 pts </a><a href="#set-550">GESLA-stnlist · 550 pts</a></nav>
+    <p>hindcast (a.k.a reanalysis) storm surge data from GOS-GLOBAL dataset.</p>
+    <nav class="page-nav" aria-label="Figures">
+      <a class="nav-button nav-button-small" href="#set-35278">coastal_points_20km · 35,278 pts</a>
+      <a class="nav-button nav-button-small" href="#set-3291">coastal_points_200km · 3,291 pts</a>
+      <a class="nav-button nav-button-small" href="#set-550">GESLA-stnlist · 550 pts</a>
+    </nav>
   </header>
   <main class="page-content" id="figures">
     <p class="figure-caption">Hover over a point to view point_lat, point_lon, node_lat, node_lon, dist_km, node_depth, node_max_max and time of mx_max. Grey points mark requested locations without GOS data (NaN). Use the legend to show or hide requested points and model nodes, and scroll to zoom. Times retain the original values without time zone conversion.</p>

@@ -9,8 +9,8 @@
 // size: diametro en pixeles; opacity: 0 (invisible) a 1 (opaco).
 // =============================
 const FIG1_MARKERS = {
-  req:  {symbol: 'circle', size: 3, color: '#0062ff', opacity: 0.88, line: {width: 0}},
-  near: {symbol: 'circle', size: 3, color: '#ae00ff', opacity: 0.88, line: {width: 0}},
+  req:  {symbol: 'circle', size: 5, color: '#ff0000', opacity: 0.95, line: {width: 0}},
+  near: {symbol: 'diamond', size: 6, color: '#ae00ff', opacity: 0.95, line: {width: 0}},
   nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.6}
 };
 let FIG1_DATA = [];
@@ -24,8 +24,8 @@ function plotFig1Map() {
 // EDITAR AQUI los marcadores de la figura 2.
 // =============================
 const FIG2_MARKERS = {
-  req:  {symbol: 'circle', size: 3, color: '#0062ff', opacity: 0.88, line: {width: 0}},
-  near: {symbol: 'circle', size: 3, color: '#ae00ff', opacity: 0.88, line: {width: 0}},
+  req:  {symbol: 'circle', size: 5, color: '#ff0000', opacity: 0.95, line: {width: 0}},
+  near: {symbol: 'diamond', size: 6, color: '#ae00ff', opacity: 0.95, line: {width: 0}},
   nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.6}
 };
 let FIG2_DATA = [];
@@ -39,8 +39,8 @@ function plotFig2Map() {
 // EDITAR AQUI los marcadores de la figura 3.
 // =============================
 const FIG3_MARKERS = {
-  req:  {symbol: 'circle', size: 3, color: '#0062ff', opacity: 0.88, line: {width: 0}},
-  near: {symbol: 'circle', size: 3, color: '#ae00ff', opacity: 0.88, line: {width: 0}},
+  req:  {symbol: 'circle', size: 5, color: '#ff0000', opacity: 0.95, line: {width: 0}},
+  near: {symbol: 'diamond', size: 6, color: '#ae00ff', opacity: 0.95, line: {width: 0}},
   nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.6}
 };
 let FIG3_DATA = [];
@@ -81,10 +81,10 @@ function buildFig3Hover(d) { return buildPointHover(d); }
 // =============================
 function getPointMapLayout(plotId) {
   return {
-    margin: {l: 10, r: 10, t: 40, b: 10},
+    margin: {l: 10, r: 10, t: 60, b: 10},
     paper_bgcolor: '#ffffff',
     font: {family: 'Arial, Helvetica, sans-serif', color: '#222'},
-    legend: {orientation: 'h', x: 0.5, xanchor: 'center', y: 1.06, itemdoubleclick: false},
+    legend: {orientation: 'h', x: 0.5, xanchor: 'center', y: 1.06, font: {family: 'Arial, Helvetica, sans-serif', size: 18, color: '#222'}, itemsizing: 'constant', itemdoubleclick: false},
     geo: getBaseGeoLayout(),
     uirevision: plotId
   };
@@ -121,7 +121,7 @@ function plotPointMap(plotId, data, markers, hoverBuilder) {
     marker: markers.req
   };
   const modelTrace = {
-    type: 'scattergeo', mode: 'markers', name: 'Model nodes',
+    type: 'scattergeo', mode: 'markers', name: 'GOS nodes',
     lat: model.map(d => d.lat_near),
     lon: model.map(d => wrapLongitude(d.lon_near)),
     text: model.map(hoverBuilder),

@@ -1,5 +1,6 @@
 /* Typography, cards and map dimensions come from ../style.css. */
-nav { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.page-nav { display: flex; flex-wrap: wrap; gap: 8px; }
+.back-link { margin-bottom: 12px; }
 .figure-card { scroll-margin-top: 15px; }
 footer { text-align: center; padding: 24px; color: #555; }
 .failure { color: #9b1c1c; }
