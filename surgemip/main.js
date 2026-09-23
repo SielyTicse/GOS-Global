@@ -9,9 +9,9 @@
 // size: diametro en pixeles; opacity: 0 (invisible) a 1 (opaco).
 // =============================
 const FIG1_MARKERS = {
-  req:  {symbol: 'circle', size: 3, color: '#ff0000', opacity: 0.88, line: {width: 0}},
-  near: {symbol: 'circle', size: 3, color: '#ff00ff', opacity: 0.88, line: {width: 0}},
-  nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.4}
+  req:  {symbol: 'circle', size: 3, color: '#0062ff', opacity: 0.88, line: {width: 0}},
+  near: {symbol: 'circle', size: 3, color: '#ae00ff', opacity: 0.88, line: {width: 0}},
+  nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.6}
 };
 let FIG1_DATA = [];
 
@@ -24,9 +24,9 @@ function plotFig1Map() {
 // EDITAR AQUI los marcadores de la figura 2.
 // =============================
 const FIG2_MARKERS = {
-  req:  {symbol: 'circle', size: 3, color: '#ff0000', opacity: 0.88, line: {width: 0}},
-  near: {symbol: 'circle', size: 3, color: '#ff00ff', opacity: 0.88, line: {width: 0}},
-  nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.4}
+  req:  {symbol: 'circle', size: 3, color: '#0062ff', opacity: 0.88, line: {width: 0}},
+  near: {symbol: 'circle', size: 3, color: '#ae00ff', opacity: 0.88, line: {width: 0}},
+  nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.6}
 };
 let FIG2_DATA = [];
 
@@ -39,9 +39,9 @@ function plotFig2Map() {
 // EDITAR AQUI los marcadores de la figura 3.
 // =============================
 const FIG3_MARKERS = {
-  req:  {symbol: 'circle', size: 3, color: '#ff0000', opacity: 0.88, line: {width: 0}},
-  near: {symbol: 'circle', size: 3, color: '#ff00ff', opacity: 0.88, line: {width: 0}},
-  nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.4}
+  req:  {symbol: 'circle', size: 3, color: '#0062ff', opacity: 0.88, line: {width: 0}},
+  near: {symbol: 'circle', size: 3, color: '#ae00ff', opacity: 0.88, line: {width: 0}},
+  nan:  {symbol: 'circle', size: 3, color: 'rgba(186,180,180,0.12549)', opacity: 0.6}
 };
 let FIG3_DATA = [];
 
@@ -55,18 +55,18 @@ function plotFig3Map() {
 // Para cambiar solo una, editar su buildFigNHover.
 // =============================
 function formatValue(value, decimals = 5) {
-  return value === null ? 'NaN' : value.toLocaleString('es-ES', {maximumFractionDigits: decimals});
+  return value === null ? 'NaN' : value.toLocaleString('en-GB', {maximumFractionDigits: decimals});
 }
 
 function buildPointHover(d) {
   return (
-    `<b>Punto ${d.id}</b><br>` +
-    `Solicitado: lat ${formatValue(d.lat_req)}°, lon ${formatValue(d.lon_req)}°<br>` +
-    `Modelo: lat ${formatValue(d.lat_near)}°, lon ${formatValue(d.lon_near)}°<br>` +
+    `<b>Point ${d.id}</b><br>` +
+    `point_lat: ${formatValue(d.lat_req)}°, point_lon: ${formatValue(d.lon_req)}°<br>` +
+    `node_lat: ${formatValue(d.lat_near)}°, node_lon: ${formatValue(d.lon_near)}°<br>` +
     `dist_km: ${formatValue(d.dist_km, 3)} km<br>` +
-    `depth: ${formatValue(d.depth, 2)} m<br>` +
-    `max_max: ${formatValue(d.max_max, 3)} m<br>` +
-    `ti_max_max: ${d.ti_max_max === null ? 'NaT' : d.ti_max_max.replace('T', ' ')}`
+    `node_depth: ${formatValue(d.depth, 2)} m<br>` +
+    `node_max_max: ${formatValue(d.max_max, 3)} m<br>` +
+    `time: ${d.ti_max_max === null ? 'NaT' : d.ti_max_max.replace('T', ' ')}`
   );
 }
 
@@ -84,7 +84,7 @@ function getPointMapLayout(plotId) {
     margin: {l: 10, r: 10, t: 40, b: 10},
     paper_bgcolor: '#ffffff',
     font: {family: 'Arial, Helvetica, sans-serif', color: '#222'},
-    legend: {orientation: 'h', x: 0.5, xanchor: 'center', y: 1.06},
+    legend: {orientation: 'h', x: 0.5, xanchor: 'center', y: 1.06, itemdoubleclick: false},
     geo: getBaseGeoLayout(),
     uirevision: plotId
   };
@@ -112,29 +112,32 @@ function plotPointMap(plotId, data, markers, hoverBuilder) {
   const missing = data.filter(d => hasRequestedLocation(d) && !hasModelLocation(d));
 
   const requestedTrace = {
-    type: 'scattergeo', mode: 'markers', name: 'Solicitados (req)',
+    type: 'scattergeo', mode: 'markers', name: 'Requested points',
     lat: requested.map(d => d.lat_req),
     lon: requested.map(d => wrapLongitude(d.lon_req)),
     text: requested.map(hoverBuilder),
-    hovertemplate: '%{text}<extra>%{fullData.name}</extra>',
+    hovertemplate: '%{text}<extra></extra>',
+    hoverlabel: {bgcolor: markers.req.color},
     marker: markers.req
   };
   const modelTrace = {
-    type: 'scattergeo', mode: 'markers', name: 'Modelo cercano (near)',
+    type: 'scattergeo', mode: 'markers', name: 'Model nodes',
     lat: model.map(d => d.lat_near),
     lon: model.map(d => wrapLongitude(d.lon_near)),
     text: model.map(hoverBuilder),
-    hovertemplate: '%{text}<extra>%{fullData.name}</extra>',
+    hovertemplate: '%{text}<extra></extra>',
+    hoverlabel: {bgcolor: markers.near.color},
     marker: markers.near
   };
   const missingTrace = {
-    type: 'scattergeo', mode: 'markers', name: `Sin datos del modelo (NaN): ${missing.length}`,
+    type: 'scattergeo', mode: 'markers', name: 'No model data',
     lat: missing.map(d => d.lat_req),
     lon: missing.map(d => wrapLongitude(d.lon_req)),
     text: missing.map(hoverBuilder),
-    hovertemplate: '%{text}<extra>%{fullData.name}</extra>',
+    hovertemplate: '%{text}<extra></extra>',
+    hoverlabel: {bgcolor: markers.nan.color},
     marker: markers.nan,
-    showlegend: missing.length > 0
+    showlegend: false
   };
 
   return Plotly.react(plotId, [requestedTrace, modelTrace, missingTrace], getPointMapLayout(plotId), {
@@ -154,33 +157,33 @@ function readPointCSV(text, expectedCount) {
   const lines = text.replace(/^\uFEFF/, '').trim().split(/\r?\n/);
   const fields = ['id', 'lat_req', 'lon_req', 'lat_near', 'lon_near', 'dist_km', 'depth', 'max_max', 'ti_max_max'];
   const header = lines.shift().split(',').map(value => value.trim());
-  if (header.join(',') !== fields.join(',')) throw new Error('Las columnas del CSV no coinciden con el formato esperado.');
+  if (header.join(',') !== fields.join(',')) throw new Error('The CSV columns do not match the expected format.');
   const ids = new Set();
   const rows = lines.filter(line => line.trim()).map((line, index) => {
     const cells = line.split(',');
-    if (cells.length !== fields.length) throw new Error(`Número de columnas incorrecto en la fila ${index + 2}.`);
+    if (cells.length !== fields.length) throw new Error(`Incorrect number of columns in row ${index + 2}.`);
     const row = cells.slice(0, 8).map(cell => /^(nan)?$/i.test(cell.trim()) ? null : Number(cell));
-    if (row.some(value => value !== null && !Number.isFinite(value))) throw new Error(`Valor no numérico en la fila ${index + 2}.`);
-    if (!Number.isSafeInteger(row[0]) || row[0] < 1 || ids.has(row[0])) throw new Error(`ID inválido o repetido en la fila ${index + 2}.`);
+    if (row.some(value => value !== null && !Number.isFinite(value))) throw new Error(`Non-numeric value in row ${index + 2}.`);
+    if (!Number.isSafeInteger(row[0]) || row[0] < 1 || ids.has(row[0])) throw new Error(`Invalid or duplicate ID in row ${index + 2}.`);
     for (const col of [1, 3]) {
-      if (row[col] !== null && Math.abs(row[col]) > 90) throw new Error(`Latitud fuera de rango en la fila ${index + 2}.`);
+      if (row[col] !== null && Math.abs(row[col]) > 90) throw new Error(`Latitude out of range in row ${index + 2}.`);
     }
     for (const col of [2, 4]) {
-      if (row[col] !== null && (row[col] < -180 || row[col] > 360)) throw new Error(`Longitud fuera de rango en la fila ${index + 2}.`);
+      if (row[col] !== null && (row[col] < -180 || row[col] > 360)) throw new Error(`Longitude out of range in row ${index + 2}.`);
     }
     const time = cells[8].trim();
     const missingTime = /^(nat|nan)?$/i.test(time);
     if (!missingTime && (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(time) ||
         !Number.isFinite(Date.parse(time + 'Z')) || new Date(time + 'Z').toISOString().slice(0, 19) !== time)) {
-      throw new Error(`Fecha inválida en la fila ${index + 2}.`);
+      throw new Error(`Invalid date in row ${index + 2}.`);
     }
-    if ((row[7] === null) !== missingTime) throw new Error(`Máximo y fecha no coinciden en la fila ${index + 2}.`);
+    if ((row[7] === null) !== missingTime) throw new Error(`Maximum and date do not match in row ${index + 2}.`);
     // Keep source clock time as text, without browser timezone conversion.
     row.push(missingTime ? null : time);
     ids.add(row[0]);
     return Object.fromEntries(fields.map((field, column) => [field, row[column]]));
   });
-  if (rows.length !== expectedCount) throw new Error('El número de puntos no coincide con el conjunto.');
+  if (rows.length !== expectedCount) throw new Error('The point count does not match the dataset.');
   return rows;
 }
 
@@ -192,7 +195,7 @@ function loadFigureWhenVisible(sectionId, statusId, errorId, load) {
   async function start() {
     const status = document.getElementById(statusId);
     try {
-      if (!window.Plotly) throw new Error('No se pudo cargar Plotly. Comprueba la conexion a Internet.');
+      if (!window.Plotly) throw new Error('Could not load Plotly. Please check your internet connection.');
       hideError(errorId);
       await load();
     } catch (error) {
@@ -214,7 +217,7 @@ function loadFigureWhenVisible(sectionId, statusId, errorId, load) {
 // Figure 1 - 35278 puntos
 loadFigureWhenVisible('set-35278', 'fig1-status', 'fig1-error', async () => {
   const response = await fetch('data/35278.csv');
-  if (!response.ok) throw new Error('No se pudo leer data/35278.csv');
+  if (!response.ok) throw new Error('Could not read data/35278.csv');
   FIG1_DATA = readPointCSV(await response.text(), 35278);
   await plotFig1Map();
 });
@@ -222,7 +225,7 @@ loadFigureWhenVisible('set-35278', 'fig1-status', 'fig1-error', async () => {
 // Figure 2 - 3291 puntos
 loadFigureWhenVisible('set-3291', 'fig2-status', 'fig2-error', async () => {
   const response = await fetch('data/3291.csv');
-  if (!response.ok) throw new Error('No se pudo leer data/3291.csv');
+  if (!response.ok) throw new Error('Could not read data/3291.csv');
   FIG2_DATA = readPointCSV(await response.text(), 3291);
   await plotFig2Map();
 });
@@ -230,7 +233,7 @@ loadFigureWhenVisible('set-3291', 'fig2-status', 'fig2-error', async () => {
 // Figure 3 - 550 puntos
 loadFigureWhenVisible('set-550', 'fig3-status', 'fig3-error', async () => {
   const response = await fetch('data/550.csv');
-  if (!response.ok) throw new Error('No se pudo leer data/550.csv');
+  if (!response.ok) throw new Error('Could not read data/550.csv');
   FIG3_DATA = readPointCSV(await response.text(), 550);
   await plotFig3Map();
 });

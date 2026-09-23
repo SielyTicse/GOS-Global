@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en-GB">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GOS · SurgeMIP | Puntos de extracción</title>
+  <title>GOS · SurgeMIP | Extraction points</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="style.css">
   <script defer src="https://cdn.plot.ly/plotly-3.1.0.min.js"></script>
@@ -13,41 +13,41 @@
 <body>
   <header class="page-header">
     <a href="../">← GOS Global</a>
-    <h1>Puntos solicitados y ubicaciones del modelo</h1>
-    <p>Tres conjuntos de extracción. Compara las coordenadas solicitadas (<code>lat_req, lon_req</code>) con las del nodo cercano del modelo (<code>lat_near, lon_near</code>).</p>
-    <nav aria-label="Figuras"><a href="#set-35278">35.278 · 20 km</a><a href="#set-3291">3.291 · 200 km</a><a href="#set-550">550 · GESLA</a></nav>
+    <h1>Requested SurgeMIP Hindcast Data</h1>
+    <p>hindcast (a.k.a reanalysis) storm surge data from GOS-GLOBAL dataset. 
+    <nav aria-label="Figures"><a href="#set-35278">coastal_points_20km · 35,278 pts</a><a href="#set-3291">coastal_points_200km · 3,291 pts </a><a href="#set-550">GESLA-stnlist · 550 pts</a></nav>
   </header>
   <main class="page-content" id="figures">
-    <p class="figure-caption">Pasa el cursor sobre un punto para consultar las coordenadas, dist_km, depth, max_max y ti_max_max. Rojo: ubicación solicitada (req). Magenta: ubicación cercana del modelo (near). Gris: ubicación solicitada sin datos del modelo (NaN). Usa la leyenda para mostrar u ocultar cada grupo y la rueda para ampliar. Las fechas conservan la hora del archivo original, sin conversión de zona horaria.</p>
-    <noscript>Activa JavaScript para cargar los mapas interactivos.</noscript>
+    <p class="figure-caption">Hover over a point to view point_lat, point_lon, node_lat, node_lon, dist_km, node_depth, node_max_max and time of mx_max. Grey points mark requested locations without GOS data (NaN). Use the legend to show or hide requested points and model nodes, and scroll to zoom. Times retain the original values without time zone conversion.</p>
+    <noscript>Enable JavaScript to load the interactive maps.</noscript>
 
     <!-- FIGURE 1: editar aqui el titulo y el pie de figura. -->
     <section class="figure-card" id="set-35278">
-      <h2>Figura 1 · 35.278 puntos · 20 km</h2>
-      <p class="figure-caption">Ubicaciones y máximos de máximos · 1993–2024 · independencia de 24 h</p>
-      <p class="figure-caption" id="fig1-status" role="status">Cargando mapa y metadatos…</p>
-      <div id="fig1-map" class="plot-container" aria-label="Figura 1 · 35.278 puntos"></div>
+      <h2>Coastal Points gsshs 20km</h2>
+      <p class="figure-caption">Locations and overall maxima · 1993–2024 · 24-hour independence criterion to maxima</p>
+      <p class="figure-caption" id="fig1-status" role="status">Loading map and metadata…</p>
+      <div id="fig1-map" class="plot-container" aria-label="Figure 1 · 35,278 points"></div>
       <div id="fig1-error" class="error" role="alert"></div>
     </section>
 
     <!-- FIGURE 2: editar aqui el titulo y el pie de figura. -->
     <section class="figure-card" id="set-3291">
-      <h2>Figura 2 · 3.291 puntos · 200 km</h2>
-      <p class="figure-caption">Ubicaciones y máximos de máximos · 1993–2024 · independencia de 24 h</p>
-      <p class="figure-caption" id="fig2-status" role="status">Cargando mapa y metadatos…</p>
-      <div id="fig2-map" class="plot-container" aria-label="Figura 2 · 3.291 puntos"></div>
+      <h2>Coastal Points gsshs 200 km</h2>
+      <p class="figure-caption">Locations and overall maxima · 1993–2024 · 24-hour independence criterion to maxima</p>
+      <p class="figure-caption" id="fig2-status" role="status">Loading map and metadata…</p>
+      <div id="fig2-map" class="plot-container" aria-label="Figure 2 · 3,291 points"></div>
       <div id="fig2-error" class="error" role="alert"></div>
     </section>
 
     <!-- FIGURE 3: editar aqui el titulo y el pie de figura. -->
     <section class="figure-card" id="set-550">
-      <h2>Figura 3 · 550 puntos · GESLA</h2>
-      <p class="figure-caption">Ubicaciones y máximos de máximos · 1993–2024 · independencia de 24 h</p>
-      <p class="figure-caption" id="fig3-status" role="status">Cargando mapa y metadatos…</p>
-      <div id="fig3-map" class="plot-container" aria-label="Figura 3 · 550 puntos"></div>
+      <h2>SurgeMIP GESLA stnlist 550 </h2>
+      <p class="figure-caption">Locations and overall maxima · 1993–2024 · 24-hour independence criterion to maxima</p>
+      <p class="figure-caption" id="fig3-status" role="status">Loading map and metadata…</p>
+      <div id="fig3-map" class="plot-container" aria-label="Figure 3 · 550 points"></div>
       <div id="fig3-error" class="error" role="alert"></div>
     </section>
   </main>
-  <footer>Elsy Ticse · IHCantabria · GOS Global</footer>
+  <footer>k. Elsy Ticse · IHCantabria · GOS Global </footer>
 </body>
 </html>
