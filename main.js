@@ -854,8 +854,11 @@ const fig8BjetPalette = rgb01ToPlotlyScale([
 
 const FIG8_METRICS = {
   phi0: {
-    // phi0 es el parametro de FORMA de la GEV: es adimensional, no va en metros
-    label: 'φ<sub>0</sub>',
+    // Parametro de FORMA de la GEV: adimensional, no va en metros.
+    // El pie definitivo de la figura lo llama xi, no phi0; la columna del CSV
+    // sigue llamandose phi0 porque asi la exporta el script MATLAB.
+    //   label: 'φ<sub>0</sub>',
+    label: 'ξ',
     unit: '',
     cmin: -0.31,
     cmax: 0.31,
@@ -871,7 +874,7 @@ function buildFig8Hover(d) {
     `<b>${d.station}</b><br>` +
     `Lon: ${d.lon.toFixed(3)}°<br>` +
     `Lat: ${d.lat.toFixed(3)}°<br>` +
-    `φ<sub>0</sub>: ${d.phi0.toFixed(4)}`
+    `ξ: ${d.phi0.toFixed(4)}`
   );
 }
 
