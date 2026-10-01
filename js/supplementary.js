@@ -299,26 +299,36 @@ fetch('data/fig_s2.csv?cache=' + Date.now())
 // un selector y se ven los dos mapas de esa fila, TG a la izquierda y GOS a
 // la derecha, que es la comparacion que interesa.
 
-// La barra es LA MISMA para los ocho paneles, como en el script.
-const FIGS3_CLIM = [0, 0.5];
-const FIGS3_TICKS = [0, 0.1, 0.2, 0.3, 0.4, 0.5];
-
+// En el script de MATLAB la barra era LA MISMA para los ocho paneles:
+//   const FIGS3_CLIM = [0, 0.5];
+//   const FIGS3_TICKS = [0, 0.1, 0.2, 0.3, 0.4, 0.5];
+// Ahora las dos filas de psi llevan su propia barra, de 0 a 0.2, asi que
+// cada fila declara la suya. Las dos columnas de una fila la comparten, que
+// es lo que permite comparar TG con GOS.
 const FIGS3_ROWS = {
   mu_ann: {
     label: 'μ annual Ampl.',
-    cols: { tg: 'mu_ann_tg', gos: 'mu_ann_gos' }
+    cols: { tg: 'mu_ann_tg', gos: 'mu_ann_gos' },
+    clim: [0, 0.5],
+    ticks: [0, 0.1, 0.2, 0.3, 0.4, 0.5]
   },
   mu_semi: {
     label: 'μ semi-annual Ampl.',
-    cols: { tg: 'mu_semi_tg', gos: 'mu_semi_gos' }
+    cols: { tg: 'mu_semi_tg', gos: 'mu_semi_gos' },
+    clim: [0, 0.5],
+    ticks: [0, 0.1, 0.2, 0.3, 0.4, 0.5]
   },
   psi_ann: {
     label: 'ψ annual Ampl.',
-    cols: { tg: 'psi_ann_tg', gos: 'psi_ann_gos' }
+    cols: { tg: 'psi_ann_tg', gos: 'psi_ann_gos' },
+    clim: [0, 0.2],
+    ticks: [0, 0.05, 0.1, 0.15, 0.2]
   },
   psi_semi: {
     label: 'ψ semi-annual Ampl.',
-    cols: { tg: 'psi_semi_tg', gos: 'psi_semi_gos' }
+    cols: { tg: 'psi_semi_tg', gos: 'psi_semi_gos' },
+    clim: [0, 0.2],
+    ticks: [0, 0.05, 0.1, 0.15, 0.2]
   }
 };
 
@@ -359,8 +369,12 @@ const FIGS3_DOMAINS = {
 const FIGS3_TXT_LAT = 60;
 const FIGS3_TXT_LON = 80;
 
-function buildFigS3Traces(data, column, sourceLabel, rowLabel, geoId, showColorbar) {
+function buildFigS3Traces(data, column, sourceLabel, rowCfg, geoId, showColorbar) {
   const points = data.filter(d => Number.isFinite(d[column]));
+  const rowLabel = rowCfg.label;
+  // los decimales de los ticks siguen al paso de la barra: 0.1 -> 1 decimal,
+  // 0.05 -> 2, para que no salga '0.05' redondeado a '0.1'
+  const dec = rowCfg.ticks.some(v => Math.round(v * 100) % 10 !== 0) ? 2 : 1;
 
   const markers = {
     type: 'scattergeo',
@@ -379,8 +393,8 @@ function buildFigS3Traces(data, column, sourceLabel, rowLabel, geoId, showColorb
     marker: {
       size: 7,
       color: points.map(d => d[column]),
-      cmin: FIGS3_CLIM[0],
-      cmax: FIGS3_CLIM[1],
+      cmin: rowCfg.clim[0],
+      cmax: rowCfg.clim[1],
       colorscale: FIGS3_PALETTE,
       line: { color: 'rgb(128,128,128)', width: 0.6 },
       showscale: showColorbar,
@@ -393,8 +407,8 @@ function buildFigS3Traces(data, column, sourceLabel, rowLabel, geoId, showColorb
         len: 0.9,
         thickness: 18,
         tickmode: 'array',
-        tickvals: FIGS3_TICKS,
-        ticktext: FIGS3_TICKS.map(v => v.toFixed(1)),
+        tickvals: rowCfg.ticks,
+        ticktext: rowCfg.ticks.map(v => v.toFixed(dec)),
         tickfont: { size: 12 }
       } : undefined
     }
@@ -421,9 +435,9 @@ function renderFigureS3() {
 
   // la barra de color la declara solo el mapa de GOS, igual que en el script,
   // donde el colorbar cuelga del panel de la columna derecha
-  const tg = buildFigS3Traces(FIGS3_DATA, cfg.cols.tg, 'TG', cfg.label,
+  const tg = buildFigS3Traces(FIGS3_DATA, cfg.cols.tg, 'TG', cfg,
     'geo', false);
-  const gos = buildFigS3Traces(FIGS3_DATA, cfg.cols.gos, 'GOS', cfg.label,
+  const gos = buildFigS3Traces(FIGS3_DATA, cfg.cols.gos, 'GOS', cfg,
     'geo2', true);
 
   const geoBase = getBaseGeoLayout();
@@ -450,6 +464,7 @@ function renderFigureS3() {
 
   document.getElementById('figs3-stats').innerHTML = `
     <span class="pill">${cfg.label}</span>
+    <span class="pill">colour range = [${cfg.clim[0]}, ${cfg.clim[1]}] m</span>
   `;
 }
 

@@ -527,24 +527,27 @@ const FIG6_METRICS = {
   Bias: {
     label: 'bias',
     unit: 'cm',
-    cmin: -2,
-    cmax: 2,
+    // barra de -2 a 2 antes:
+    cmin: -2.5,
+    cmax: 2.5,
     decimals: 2,
     colorscale: fig6RbPalette
   },
   RMSE: {
     label: 'RMSE',
     unit: 'cm',
+    // barra de 0 a 22 antes:
     cmin: 0,
-    cmax: 22,
+    cmax: 25,
     decimals: 2,
     colorscale: rmsePalette
   },
   NRMSE_prct: {
     label: 'NRMSE<sub>prct</sub>',
     unit: '%',
+    // barra de 0 a 24 antes:
     cmin: 0,
-    cmax: 24,
+    cmax: 25,
     decimals: 2,
     colorscale: nrmsePalette
   },
