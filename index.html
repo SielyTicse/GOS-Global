@@ -15,19 +15,22 @@
 <body>
 
   <header class="page-header">
-    <h1>The Global Ocean Surge (GOS) and derived Extreme Storm Sea Levels</h1>
+    <h1>The Global Ocean Surge (GOS) hindcast and derived Extreme Storm Sea Levels</h1>
     <p>
       Interactive visualisation of figures for the GOS dataset.
       We present GOS, a global ocean storm-surge dataset spanning more than 30 years (1993–2024), produced with a barotropic ocean model and evaluated against tide-gauge observations. GOS includes a dedicated treatment of periodic signals known as radiational tides and provides a consistent basis for analysing storm-surge variability and extreme sea levels worldwide. GOS is further applied in an extreme-value analysis to estimate storm-surge return levels worldwide.
     </p>
 
+    <!-- Boton de SurgeMIP retirado por ahora; para recuperarlo basta con
+         descomentar este bloque.
     <nav class="page-nav" aria-label="Related datasets">
       <a class="nav-button nav-button-small" href="surgemip/">SurgeMIP · Requested and model point locations &rarr;</a>
     </nav>
+    -->
 
     <!-- El boton general a las figuras suplementarias estaba aqui; ahora cada
          figura enlaza al pie con la suplementaria que le corresponde:
-         6 -> S1, 8 -> S2, 9 -> S3.
+         7 -> S1, 6 -> S2, 8 -> S3, 9 -> S4.
     <nav class="page-nav">
       <a class="nav-button" href="supplementary.html">Supplementary figures &rarr;</a>
     </nav>
@@ -289,8 +292,8 @@
       </div>
 
       <nav class="figure-nav">
-        <a class="nav-button" href="supplementary.html#figure-s1">
-          Supplementary Figure 1: unfiltered vs filtered &rarr;
+        <a class="nav-button" href="supplementary.html#figure-s2">
+          Supplementary Figure 2: unfiltered vs filtered &rarr;
         </a>
       </nav>
     </section>
@@ -301,17 +304,12 @@
     <section class="figure-card" id="figure-7">
       <h2>3. THE GOS DATASET EVALUATION</h2>
 
+      <!-- El panel (a) (MOM) paso a Supplementary Figure 1, asi que ya no hay
+           selector y del pie se quito su clausula. El texto que queda es el
+           original de la autora. -->
       <p class="figure-caption">
-        Figure 7. (a) Maximum storm surge level (maximum of maxima) calculated from the GOS dataset for the coastal zones and (b) Maximum Absolute Error (MAE, cm) between simulated and observed mean annual surge maxima at tide gauge stations, defined in Eq. (3)
+        Figure 7. Maximum Absolute Error (MAE, cm) between simulated and observed mean annual surge maxima at tide gauge stations, defined in Eq. (3)
       </p>
-
-      <div class="controls">
-        <label for="fig7-select"><b>Panel:</b></label>
-        <select id="fig7-select">
-          <option value="7a">Figure 7a</option>
-          <option value="7b">Figure 7b</option>
-        </select>
-      </div>
 
       <div class="stats" id="fig7-stats"></div>
       <div id="fig7-map" class="plot-container"></div>
@@ -320,6 +318,12 @@
       <div class="figure-note">
         Propiedad de Elsy Ticse - IHCANTABRIA.
       </div>
+
+      <nav class="figure-nav">
+        <a class="nav-button" href="supplementary.html#figure-s1">
+          Supplementary Figure 1: maximum of maxima &rarr;
+        </a>
+      </nav>
     </section>
 
     <!-- ===================================================================
@@ -344,8 +348,8 @@
       </div>
 
       <nav class="figure-nav">
-        <a class="nav-button" href="supplementary.html#figure-s2">
-          Supplementary Figure 2: GEV cycle amplitudes &rarr;
+        <a class="nav-button" href="supplementary.html#figure-s3">
+          Supplementary Figure 3: GEV cycle amplitudes &rarr;
         </a>
       </nav>
     </section>
@@ -377,8 +381,8 @@
       </div>
 
       <nav class="figure-nav">
-        <a class="nav-button" href="supplementary.html#figure-s3">
-          Supplementary Figure 3: 50-year return level, TG vs GOS &rarr;
+        <a class="nav-button" href="supplementary.html#figure-s4">
+          Supplementary Figure 4: 50-year return level, TG vs GOS &rarr;
         </a>
       </nav>
     </section>

@@ -151,14 +151,14 @@ body {
   margin-top: 18px;
 }
 
-/* Supp. 2: TG y GOS son dos subplots de una misma figura de Plotly, no dos
+/* Supp. 3: TG y GOS son dos subplots de una misma figura de Plotly, no dos
    graficos en una rejilla CSS, asi que solo hace falta el scroll horizontal
    para que no se compriman en pantalla estrecha. */
-.figs2-scroll {
+.figs3-scroll {
   overflow-x: auto;
 }
 
-.figs2-plot {
+.figs3-plot {
   min-width: 860px;
 }
 

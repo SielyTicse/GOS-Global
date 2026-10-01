@@ -673,36 +673,7 @@ function initFigure6(rows) {
 // Figure 7 configuration
 // =============================
 
-const fig7MomPalette = rgb01ToPlotlyScale([
-  [0.7545,0.8814,0.9310],
-  [0.6317,0.8221,0.8966],
-  [0.5090,0.7628,0.8621],
-  [0.3862,0.7034,0.8276],
-  [0.2634,0.6441,0.7931],
-  [0.1407,0.5848,0.7586],
-  [0.2021,0.6145,0.7138],
-  [0.3248,0.6738,0.6655],
-  [0.4476,0.7331,0.6172],
-  [0.5703,0.7924,0.5690],
-  [0.6931,0.8517,0.5207],
-  [0.8159,0.9110,0.4724],
-  [0.9386,0.9703,0.4241],
-  [1.0000,0.9379,0.3738],
-  [1.0000,0.8138,0.3214],
-  [1.0000,0.6897,0.2690],
-  [1.0000,0.5655,0.2166],
-  [1.0000,0.4414,0.1641],
-  [1.0000,0.3172,0.1117],
-  [1.0000,0.1931,0.0593],
-  [0.9897,0.0966,0.0193],
-  [0.9483,0.0828,0.0166],
-  [0.9069,0.0690,0.0138],
-  [0.8655,0.0552,0.0110],
-  [0.8241,0.0414,0.0083],
-  [0.7828,0.0276,0.0055],
-  [0.7414,0.0138,0.0028],
-  [0.7000,0.0000,0.0000]
-]);
+// fig7MomPalette -> movida a js/supplementary.js como figS1MomPalette
 
 const fig7MaePalette = rgb01ToPlotlyScale([
   [0.3020,0.7451,0.9333],
@@ -737,15 +708,11 @@ const fig7MaePalette = rgb01ToPlotlyScale([
   [0.4941,0.1843,0.5569]
 ]);
 
+// El panel (a) MOM se fue a Supplementary Figure 1 (js/supplementary.js);
+// aqui la Figura 7 se queda solo con el MAE:
+//   MOM: { label: 'MOM', unit: 'm', cmin: 0, cmax: 3, decimals: 2,
+//          colorscale: fig7MomPalette },
 const FIG7_METRICS = {
-  MOM: {
-    label: 'MOM',
-    unit: 'm',
-    cmin: 0,
-    cmax: 3,
-    decimals: 2,
-    colorscale: fig7MomPalette
-  },
   MAE: {
     label: 'MAE',
     unit: 'cm',
@@ -756,16 +723,10 @@ const FIG7_METRICS = {
   }
 };
 
-let FIG7A_DATA = [];
+// FIG7A_DATA (MOM) -> ahora FIGS1_DATA en js/supplementary.js
 let FIG7B_DATA = [];
 
-function buildFig7aHover(d) {
-  return (
-    `Lon: ${d.lon.toFixed(3)}°<br>` +
-    `Lat: ${d.lat.toFixed(3)}°<br>` +
-    `MOM: ${d.MOM.toFixed(2)} m`
-  );
-}
+// buildFig7aHover -> ahora buildFigS1Hover en js/supplementary.js
 
 function buildFig7bHover(d) {
   return (
@@ -776,23 +737,9 @@ function buildFig7bHover(d) {
   );
 }
 
+// Al quedar un solo panel ya no hay que elegir barra: la rama del MOM se fue
+// con la Supplementary Figure 1.
 function getFig7Colorbar(metricName, cfg) {
-  if (metricName === 'MOM') {
-    return {
-      title: `${cfg.label} [${cfg.unit}]`,
-      orientation: 'h',
-      x: 0.5,
-      y: -0.08,
-      xanchor: 'center',
-      len: 0.75,
-      thickness: 18,
-      tickmode: 'array',
-      tickvals: [0, 0.5, 1, 1.5, 2, 2.5, 3],
-      ticktext: ['0', '0.5', '1', '1.5', '2', '2.5', '>3'],
-      tickfont: { size: 13 }
-    };
-  }
-
   return {
     title: `${cfg.label} [${cfg.unit}]`,
     orientation: 'h',
@@ -848,32 +795,14 @@ function plotFig7Map({ data, metricName, hoverBuilder, pointSize, lineWidth }) {
 function updateFig7Stats(metricName, data) {
   const n = data.length;
 
-  if (metricName === 'MOM') {
-    document.getElementById('fig7-stats').innerHTML = `
-      <span class="pill">N = ${n} coastal points</span>
-      <span class="pill">MOM range = [0, >3] m</span>
-    `;
-    return;
-  }
-
+  // la rama del MOM se fue con la Supplementary Figure 1
   document.getElementById('fig7-stats').innerHTML = `
     <span class="pill">N = ${n} stations</span>
     <span class="pill">MAE range = [-14, 53] cm</span>
   `;
 }
 
-function parseFig7aRows(rows) {
-  return rows.map((r, i) => ({
-    station: `Coastal point ${i + 1}`,
-    lon: parseNumber(r.lon),
-    lat: parseNumber(r.lat),
-    MOM: parseNumber(r.MOM)
-  })).filter(d =>
-    Number.isFinite(d.lon) &&
-    Number.isFinite(d.lat) &&
-    Number.isFinite(d.MOM)
-  );
-}
+// parseFig7aRows -> ahora parseFigS1Rows en js/supplementary.js
 
 function parseFig7bRows(rows) {
   return rows.map(r => ({
@@ -889,33 +818,18 @@ function parseFig7bRows(rows) {
   );
 }
 
+// Un solo panel: ya no hay selector ni rama para el MOM.
 function renderFigure7() {
-  const selector = document.getElementById('fig7-select');
-
-  if (selector.value === '7a') {
-    plotFig7Map({
-      data: FIG7A_DATA,
-      metricName: 'MOM',
-      hoverBuilder: buildFig7aHover,
-      pointSize: 3,
-      lineWidth: 0
-    });
-  } else {
-    plotFig7Map({
-      data: FIG7B_DATA,
-      metricName: 'MAE',
-      hoverBuilder: buildFig7bHover,
-      pointSize: 8,
-      lineWidth: 0.5
-    });
-  }
+  plotFig7Map({
+    data: FIG7B_DATA,
+    metricName: 'MAE',
+    hoverBuilder: buildFig7bHover,
+    pointSize: 8,
+    lineWidth: 0.5
+  });
 }
 
-function initFigure7Selector() {
-  const selector = document.getElementById('fig7-select');
-
-  selector.addEventListener('change', renderFigure7);
-
+function initFigure7() {
   renderFigure7();
 }
 // =============================
@@ -1916,31 +1830,23 @@ Promise.all([
     showError('fig5-error', err.message);
   });
 // Figure 7
-Promise.all([
-  fetch('data/fig_7a.csv?cache=' + Date.now()).then(response => {
-    if (!response.ok) throw new Error('Could not read data/fig_7a.csv');
-    return response.text();
-  }),
-  fetch('data/fig_7b.csv?cache=' + Date.now()).then(response => {
-    if (!response.ok) throw new Error('Could not read data/fig_7b.csv');
+// El antiguo fig_7a.csv (MOM) es ahora data/fig_s1.csv y lo carga
+// js/supplementary.js; aqui solo queda el MAE, en data/fig_7.csv.
+fetch('data/fig_7.csv?cache=' + Date.now())
+  .then(response => {
+    if (!response.ok) throw new Error('Could not read data/fig_7.csv');
     return response.text();
   })
-])
-  .then(([text6a, text6b]) => {
+  .then(text => {
     hideError('fig7-error');
 
-    FIG7A_DATA = parseFig7aRows(parseCSV(text6a));
-    FIG7B_DATA = parseFig7bRows(parseCSV(text6b));
-
-    if (!FIG7A_DATA.length) {
-      throw new Error('fig_7a.csv has no valid rows.');
-    }
+    FIG7B_DATA = parseFig7bRows(parseCSV(text));
 
     if (!FIG7B_DATA.length) {
-      throw new Error('fig_7b.csv has no valid rows.');
+      throw new Error('fig_7.csv has no valid rows.');
     }
 
-    initFigure7Selector();
+    initFigure7();
   })
   .catch(err => {
     showError('fig7-error', err.message);
