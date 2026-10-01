@@ -77,8 +77,10 @@ const FIG4_COL_MM = 'rgb(128,128,128)';   // col_mm  = [0.5 0.5 0.5]
 const FIG4_COL_MON = 'rgb(255,0,0)';      // col_mon = 'r'
 const FIG4_COL_INT = 'rgb(0,0,255)';      // col_int = 'b'
 
-// Z con macron combinante (U+0305), equivalente al \overline{Z_{50}} del paper
-const FIG4_LBL_MON = 'Z̅<sub>50</sub>(t)';
+// El macron (U+0305) marca la integracion anual, asi que solo lo lleva el
+// nivel integrado. El dependiente del tiempo va sin el:
+//   const FIG4_LBL_MON = 'Z̅<sub>50</sub>(t)';
+const FIG4_LBL_MON = 'Z<sub>50</sub>(t)';
 const FIG4_LBL_INT = 'Z̅<sub>50</sub>';
 
 let FIG4_MM = {};       // panel -> [{ date, t, value }]
@@ -157,9 +159,11 @@ function plotFig4All() {
       title: i === 0 ? '[m]' : ''
     });
 
-    // titulo de cada panel: letra + nombre de la estacion
+    // titulo de cada panel: solo la letra. El nombre de la estacion ya va en
+    // el pie de figura, asi que no se repite aqui:
+    //   text: `${FIG4_PANEL_LETTERS[i]} ${meta.station ?? ''}`.trim(),
     annotations.push({
-      text: `${FIG4_PANEL_LETTERS[i]} ${meta.station ?? ''}`.trim(),
+      text: FIG4_PANEL_LETTERS[i],
       x: x0 + width / 2,
       xref: 'paper',
       xanchor: 'center',
@@ -234,18 +238,14 @@ function plotFig4All() {
 }
 
 function updateFig4Stats() {
+  // Solo la letra del panel: el nombre de la estacion va en el pie de figura.
   const pills = FIG4_PANEL_KEYS.map((panelKey, i) => {
     const meta = FIG4_PANELS[panelKey] ?? {};
-    const station = meta.station ?? '—';
     const z50 = Number.isFinite(meta.z50_int) ? meta.z50_int.toFixed(3) : '—';
 
-    return `<span class="pill"> ${station} &middot; ` +
+    return `<span class="pill">${FIG4_PANEL_LETTERS[i]} ` +
            `Z&#773;<sub>50</sub> = ${z50} m</span>`;
   });
-
-  const totalMm = FIG4_PANEL_KEYS.reduce(
-    (acc, panelKey) => acc + (FIG4_MM[panelKey] ?? []).length, 0);
-
 
   document.getElementById('fig4-stats').innerHTML = pills.join('\n');
 }
